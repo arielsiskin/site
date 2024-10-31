@@ -52,7 +52,9 @@ export default function Home() {
         >
           Mayday Global
         </h1>
-        <p className={`${azoSans.className} text-center text-base md:text-lg`}>
+        <p
+          className={`${azoSans.className} text-center text-white text-base md:text-lg`}
+        >
           Hub de soluciones tecnológicas para empresas
         </p>
         <Banner />
