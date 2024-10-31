@@ -36,10 +36,8 @@ export default function Home() {
     <div
       className={`h-screen w-full flex flex-col items-center justify-center`}
     >
-      <img src="assets/logo.svg" alt="logo mayday" />{" "}
-      <h1
-        className={`${azoSans.className} text-5xl font-bold title mt-5 mb-2`}
-      >
+      <img src="assets/logo.svg" alt="logo mayday" />
+      <h1 className={`${azoSans.className} text-5xl font-bold title mt-5 mb-2`}>
         Mayday Global
       </h1>
       <p className={`${azoSans.className}`}>
