@@ -1,4 +1,5 @@
 import Banner from "@/components/Banner/Banner.component";
+import { Vortex } from "@/components/UI/Vortex";
 import localFont from "next/font/local";
 
 const azoSans = localFont({
@@ -33,17 +34,29 @@ const azoSans = localFont({
 
 export default function Home() {
   return (
-    <div
-      className={`h-screen w-full flex flex-col items-center justify-center`}
-    >
-      <img src="assets/logo.svg" alt="logo mayday" />
-      <h1 className={`${azoSans.className} text-5xl font-bold title mt-5 mb-2`}>
-        Mayday Global
-      </h1>
-      <p className={`${azoSans.className}`}>
-        Hub de soluciones tecnológicas para empresas
-      </p>
-      <Banner />
+    <div className="h-screen w-full flex flex-col items-center justify-center">
+      <Vortex
+        backgroundColor="black"
+        rangeY={800}
+        particleCount={500}
+        baseHue={200}
+        className="flex flex-col items-center justify-center px-4 py-4 w-full h-full md:px-10"
+      >
+        <img
+          src="assets/logo.svg"
+          alt="logo mayday"
+          className="w-32 h-auto md:w-40 lg:w-48"
+        />
+        <h1
+          className={`${azoSans.className} title text-3xl font-bold mt-4 mb-2 md:text-5xl`}
+        >
+          Mayday Global
+        </h1>
+        <p className={`${azoSans.className} text-center text-base md:text-lg`}>
+          Hub de soluciones tecnológicas para empresas
+        </p>
+        <Banner />
+      </Vortex>
     </div>
   );
 }

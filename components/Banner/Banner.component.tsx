@@ -26,17 +26,17 @@ const imgs = [
     alt: "s1 logo",
   },
 ];
+
 const Banner = () => {
   return (
-    <div className="w-full absolute bottom-[50px] p-2 mt-10 bg-white">
-      <div className="w-full flex gap-10 justify-center items-center">
+    <div className="w-full absolute bottom-12 p-2 bg-white">
+      <div className="w-full flex flex-wrap gap-4 justify-center items-center sm:gap-10">
         {imgs.map((img) => (
           <img
-            style={{ width: "150px", height: "70px" }}
             key={img.id}
             src={img.url}
             alt={img.alt}
-            className={img.className}
+            className={`${img.className} w-24 h-12 sm:w-36 sm:h-16 md:w-40 md:h-20`}
           />
         ))}
       </div>
