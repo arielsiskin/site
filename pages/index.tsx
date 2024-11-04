@@ -79,20 +79,20 @@ export default function Home() {
             className="flex flex-col items-center justify-center w-full h-full"
           >
             <img
-              src="assets/logo.svg"
+              src="assets/logo-web.svg"
               alt="logo mayday"
-              className="w-32 h-auto md:w-40 lg:w-48"
+              className="w-32 h-auto md:w-40 lg:w-80"
             />
-            <h1
+            {/* <h1
               className={`${azoSans.className} title text-3xl font-bold mt-4 mb-2 md:text-5xl`}
             >
               Mayday Global
-            </h1>
-            <p
+            </h1> */}
+            {/* <p
               className={`${azoSans.className} text-center text-white text-base md:text-lg`}
             >
               HUB DE SOLUCIONES IT PARA EMPRESAS
-            </p>
+            </p> */}
             <Banner />
           </motion.div>
         )}
