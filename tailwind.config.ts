@@ -17,8 +17,7 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       backgroundImage: {
-        "custom-gradient":
-          "linear-gradient(90deg, rgba(0,0,27,1) 0%, rgba(1,1,53,1) 100%)",
+        "custom-gradient": "radial-gradient(rgba(1,1,53,1), rgba(0,0,27,1))",
       },
     },
   },
