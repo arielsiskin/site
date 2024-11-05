@@ -36,7 +36,7 @@ const Banner = () => {
             key={img.id}
             src={img.url}
             alt={img.alt}
-            className={`${img.className} w-24 h-12 sm:w-36 sm:h-16 md:w-40 md:h-20`}
+            className={`${img.className} w-16 h-12 sm:w-36 sm:h-16 md:w-40 md:h-20`}
           />
         ))}
       </div>
