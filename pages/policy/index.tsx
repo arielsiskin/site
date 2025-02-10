@@ -4,16 +4,16 @@ import Banner from "@/components/Banner/Banner.component";
 
 const Policy = () => {
   return (
-    <div>
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-start overflow-auto">
       <AnimatePresence>
         <motion.div
-          className="absolute inset-0 flex items-center justify-center z-50 h-screen w-full"
+          className="flex items-center justify-center z-50 h-screen w-full"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <motion.div className="p-20">
+          <motion.div className="p-8 pb-20 md:p-20">
             <PolicyText />
           </motion.div>
 
@@ -35,8 +35,7 @@ export const PolicyText = () => {
         información de nuestros clientes, colaboradores y socios estratégicos.
         Nos comprometemos a garantizar la calidad en nuestros servicios y el
         cumplimiento de los más altos estándares de seguridad de datos,
-        alineándonos con el
-        <b>Reglamento General de Protección de Datos (GDPR)</b> y otras
+        alineándonos con el <b>Reglamento General de Protección de Datos (GDPR)</b> y otras
         normativas internacionales.
       </p>
 

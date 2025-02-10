@@ -29,7 +29,7 @@ const imgs = [
 
 const Banner = () => {
   return (
-    <div className="w-full absolute bottom-12 p-2 bg-white">
+    <div className="w-full fixed bottom-4 p-1 bg-white">
       <div className="w-full flex flex-wrap gap-4 justify-center items-center sm:gap-10">
         {imgs.map((img) => (
           <img
