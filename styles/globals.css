@@ -5,28 +5,40 @@
 :root {
   --background: hsl(0, 0%, 100%);
   --foreground: #fff;
-  --primary: #419fca;
+  --primary: #000000;
+  --secondary: #ffffff;
+  --mayday: #2a449e;
+  --mayday-darker:  #010136;
 }
 
-/* @media (prefers-color-scheme: dark) {
+html {
+  scroll-behavior: smooth;
+}
+
+@theme inline {
+  /* Configure your theme variables here */
+  --font-display: "Inter", "sans-serif";
+  --color-primary-500: oklch(0.84 0.18 117.33);
+  --spacing: 0.25rem;
+}
+@media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #000000;
     --foreground: #ededed;
+    /* --primary: #ffffff;
+    --secondary: #000000; */
   }
-} */
+}
 
 body {
   color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
-  overflow-y: hidden;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Only prevent horizontal scroll */
 }
 
 main {
   padding: 0 !important;
   margin: 0 !important;
-  max-width: 100% !important;
 }
 
 .title {
