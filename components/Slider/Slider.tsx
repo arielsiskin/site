@@ -83,13 +83,13 @@ export default function SimpleSlider() {
       subtleDots
       containerClassName="bg-[linear-gradient(0.72deg,rgba(42,68,158,0)_3.72%,#2A449E_42.95%,#000000_77.1%)]"
     >
-      <div className="w-[100vw]">
+      <div className="w-[100vw] h-[75vh]">
         <Slider
           {...settings}
           nextArrow={<SampleNextArrow className="top-10" />}
           prevArrow={<SamplePrevArrow className="top-10" />}
         >
-          <div className="relative w-full sm:h-[500px] md:h-[550px] lg:h-[65vh] 2xl:h-[75vh]">
+          <div className="relative w-full h-[500px] md:h-[550px] lg:h-[65vh] 2xl:h-[75vh]">
             <img
               src="/assets/home-slide-1.png"
               alt="Mayday slide 1"
@@ -101,7 +101,7 @@ export default function SimpleSlider() {
               style={{ zIndex: 2 }}
             />
             <div
-              className="absolute inset-0 flex flex-col justify-center items-start left-[10%] text-center px-4"
+              className="absolute inset-0 flex p-4 md:p-0 flex-col justify-end md:justify-center items-start md:left-[10%]  "
               style={{ zIndex: 3 }}
             >
               <h2 className="text-base sm:text-lg md:text-xl font-bold mb-2 sm:mb-3 text-white">
@@ -112,7 +112,7 @@ export default function SimpleSlider() {
               </h1>
             </div>
           </div>
-          <div className="relative w-full lg:h-[65vh] 2xl:h-[75vh] sm:h-[500px] md:h-[550px]">
+          <div className="relative w-full h-[500px] md:h-[550px] lg:h-[65vh] 2xl:h-[75vh]">
             <img
               src="/assets/home-slide-2.png"
               alt="Mayday slide 2"
@@ -124,7 +124,7 @@ export default function SimpleSlider() {
               style={{ zIndex: 2 }}
             />
             <div
-              className="absolute inset-0 flex flex-col justify-center items-start left-[10%] text-center px-4"
+              className="absolute inset-0 flex p-4 md:p-0 flex-col justify-end md:justify-center items-start md:left-[10%]  "
               style={{ zIndex: 3 }}
             >
               <h2 className="text-base sm:text-lg md:text-xl font-bold mb-2 sm:mb-3 text-white">
@@ -135,7 +135,7 @@ export default function SimpleSlider() {
               </h1>
             </div>
           </div>
-          <div className="relative w-full lg:h-[65vh] 2xl:h-[75vh] sm:h-[500px] md:h-[550px]">
+          <div className="relative w-full h-[500px] md:h-[550px] lg:h-[65vh] 2xl:h-[75vh]">
             <div className="absolute top-1/2 left-[40%] -translate-x-1/2 -translate-y-1/2">
               <h2 className="text-lg font-bold"></h2>
               <h1 className="text-4xl font-bold">
@@ -154,7 +154,7 @@ export default function SimpleSlider() {
               style={{ zIndex: 2 }}
             />
             <div
-              className="absolute inset-0 flex flex-col justify-center items-start left-[10%] text-center px-4"
+              className="absolute inset-0 flex p-4 md:p-0 flex-col justify-end md:justify-center items-start md:left-[10%]  "
               style={{ zIndex: 3 }}
             >
               <h2 className="text-base sm:text-lg md:text-xl font-bold mb-2 sm:mb-3 text-white">
