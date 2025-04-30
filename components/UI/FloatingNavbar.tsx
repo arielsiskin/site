@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
@@ -133,13 +133,26 @@ export const FloatingNav = ({
   const [visible, setVisible] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkMobile();
+
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     if (typeof current === "number") {
       let direction = current! - scrollYProgress.getPrevious()!;
 
       if (scrollYProgress.get() < 0.05) {
-        setVisible(false);
+        setVisible(true);
       } else {
         if (direction < 0) {
           setVisible(true);
@@ -169,17 +182,7 @@ export const FloatingNav = ({
           className
         )}
       >
-        <div
-          className="relative logo-container"
-          onMouseEnter={() => setActiveItem("logo")}
-          onMouseLeave={(e) => {
-            // Check if we're not hovering over the dropdown
-            const relatedTarget = e.relatedTarget as HTMLElement;
-            if (!relatedTarget?.closest(".logo-dropdown")) {
-              setActiveItem(null);
-            }
-          }}
-        >
+        <div className="flex-shrink-0 logo-container">
           <Link href={"/"} className="flex-shrink-0">
             <motion.img
               initial={{ scale: 1 }}
@@ -189,33 +192,8 @@ export const FloatingNav = ({
               className="w-24 h-auto lg:w-40"
             />
           </Link>
-          {activeItem === "logo" && logoDropdownContent && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.85, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={transition}
-              className="absolute w-[400px] top-[calc(100%)] left-0 pt-4 logo-dropdown"
-              onMouseEnter={() => setActiveItem("logo")}
-              onMouseLeave={(e) => {
-                // Check if we're not hovering over the logo container
-                const relatedTarget = e.relatedTarget as HTMLElement;
-                if (!relatedTarget?.closest(".logo-container")) {
-                  setActiveItem(null);
-                }
-              }}
-            >
-              <motion.div
-                transition={transition}
-                layoutId="active"
-                className="bg-white dark:bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
-              >
-                {logoDropdownContent}
-              </motion.div>
-            </motion.div>
-          )}
         </div>
 
-        {/* Mobile menu button */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="lg:hidden p-2 text-neutral-600"
@@ -237,31 +215,69 @@ export const FloatingNav = ({
           </motion.svg>
         </button>
 
-        {/* Desktop navigation */}
         <div className="hidden lg:flex items-center space-x-6 mx-2">
           {navItems.map((navItem: any, idx: number) => (
-            <Link
-              key={`link-${idx}`}
-              href={navItem.link}
-              className="text-sm uppercase font-medium relative dark:text-neutral-50 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
-            >
-              {navItem.name}
-            </Link>
+            <div key={`link-${idx}`} className="relative">
+              {navItem.name === "Soluciones" ? (
+                <div
+                  className="relative"
+                  onMouseEnter={() => setActiveItem("soluciones")}
+                  onMouseLeave={(e) => {
+                    const relatedTarget = e.relatedTarget as HTMLElement;
+                    if (!relatedTarget?.closest(".solutions-dropdown")) {
+                      setActiveItem(null);
+                    }
+                  }}
+                >
+                  <Link
+                    href={navItem.link}
+                    className="text-sm uppercase font-medium relative dark:text-neutral-50 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
+                  >
+                    {navItem.name}
+                  </Link>
+
+                  {activeItem === "soluciones" && logoDropdownContent && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.85, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={transition}
+                      className="absolute w-[400px] top-[calc(100%_+_0.5rem)] left-1/2 transform -translate-x-1/2 pt-4 solutions-dropdown"
+                      onMouseEnter={() => setActiveItem("soluciones")}
+                      onMouseLeave={() => setActiveItem(null)}
+                    >
+                      <motion.div
+                        transition={transition}
+                        layoutId="active"
+                        className="bg-white dark:bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
+                      >
+                        {logoDropdownContent}
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  href={navItem.link}
+                  className="text-sm uppercase font-medium relative dark:text-neutral-50 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
+                >
+                  {navItem.name}
+                </Link>
+              )}
+            </div>
           ))}
         </div>
 
-        {/* Mobile navigation */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="absolute top-full left-0 right-0 bg-white dark:bg-black mt-2 py-2 rounded-lg shadow-lg lg:hidden"
+              className="absolute top-full left-0 right-0 bg-white dark:bg-black mt-2 py-2 rounded-lg shadow-lg lg:hidden z-50"
             >
               {navItems.map((navItem: any, idx: number) => (
                 <motion.div
-                  key={`mobile-link=${idx}`}
+                  key={`mobile-link-${idx}`}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.1 }}
@@ -271,13 +287,23 @@ export const FloatingNav = ({
                     className={cn(
                       "block px-4 py-2 text-sm text-neutral-600 dark:text-neutral-50 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                     )}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => {
+                      if (navItem.name !== "Soluciones") {
+                        setIsMenuOpen(false);
+                      }
+                    }}
                   >
                     <span className="flex items-center gap-2">
                       {navItem.icon}
                       {navItem.name}
                     </span>
                   </Link>
+
+                  {navItem.name === "Soluciones" && logoDropdownContent && (
+                    <div className="px-4 py-2 bg-neutral-50 dark:bg-neutral-900">
+                      {logoDropdownContent}
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </motion.div>

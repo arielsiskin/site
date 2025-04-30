@@ -10,8 +10,9 @@ interface Props {
   title: string;
   ctaUrl: string;
   description: string;
+  descriptionList?: string[];
   ctaText?: string;
-  width: number;
+  width?: number;
 }
 
 const Card = ({
@@ -21,10 +22,12 @@ const Card = ({
   legend,
   title,
   description,
+  descriptionList,
   ctaUrl,
   ctaText,
   width,
 }: Props) => {
+  console.log("width", width);
   return (
     <div
       style={{
@@ -45,7 +48,10 @@ const Card = ({
         <h2 className="text-2xl font-extrabold text-white mb-4 leading-tight md:mb-2">
           {title}
         </h2>
-        <p className="text-sm text-white mb-4 md:mb-2">{description}</p>
+        {description && (
+          <p className="text-sm text-white mb-4 md:mb-2">{description}</p>
+        )}
+
         <Link href={ctaUrl} className="w-full flex">
           <Button>{ctaText || "Ver más"}</Button>
         </Link>
@@ -58,7 +64,7 @@ const Card = ({
               ? "top-1/2 -translate-y-1/2 left-[60px] lg:left-[125px]"
               : "top-1/2 -translate-y-1/2 right-[60px] lg:right-[125px]"
           }
-          ${width ? `w-[40%]` : "auto"}`}
+          ${width ? `w-[${width}px]` : "w-[40%]"}`}
       >
         <h3
           className={`text-xs lg:text-lg font-normal uppercase ${
@@ -74,10 +80,20 @@ const Card = ({
         >
           {title}
         </h2>
+        {descriptionList && descriptionList.length > 0 && (
+          <div>
+            {descriptionList.map((item) => (
+              <p className="text-sm md:text-lg leading-[1] text-white">
+                <span key={item}>{item}</span>
+              </p>
+            ))}
+          </div>
+        )}
         <p
           className={`text-xs lg:text-lg ${
             mode === "dark" ? "text-primary" : "text-white"
           }`}
+          style={width ? { width: `${width}px` } : {}}
         >
           {description}
         </p>

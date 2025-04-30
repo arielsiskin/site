@@ -70,7 +70,6 @@ const Products = () => {
                   title={product.title}
                   description={product.description}
                   ctaText={"MÁS DETALLES"}
-                  width={product.width}
                 />
               </motion.div>
             );

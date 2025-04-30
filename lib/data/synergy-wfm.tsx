@@ -12,14 +12,18 @@ export const features: FeatureItem[] = [
     id: 2,
     title: "Optimización de turnos",
     description:
-      "y descansos, con solicitudes centralizadas y aprobación en tiempo real.",
+      "Permite una gestión inteligente y centralizada de los turnos y descansos del personal, garantizando una planificación más eficiente y equilibrada. A través de la plataforma los colaboradores pueden solicitar descansos, mientras que los supervisores pueden aprobar o modificar en tiempo real, manteniendo la operación ágil y sin interrupciones.",
     layout: "text-text",
     link: "/demo",
   },
   {
     id: 3,
     title: "Autogestión de licencias",
-    description: "y ausencias con reportes detallados.",
+    description: "",
+    bullets: [
+      "Los colaboradores gestionan de forma autónoma sus licencias y ausencias. El sistema permite solicitudes ágiles, seguimiento del estado y notificaciones automatizadas.",
+      "A su vez, los líderes cuentan con reportes en tiempo real, que brindan una visión del historial, frecuencia y patrones de ausentismo, facilitando una toma de decisiones y la planificación operativa.",
+    ],
     layout: "text-text",
     link: "/demo",
   },

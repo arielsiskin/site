@@ -53,7 +53,7 @@ export const InternBanner: React.FC<InternBannerProps> = ({
             initial={{ opacity: 0, x: -20 }}
             animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
             transition={{ duration: 0.6 }}
-            className={`text-white px-4 py-16 md:py-24 ${
+            className={`text-white px-4 py-16 md:py-24 md:px-24 ${
               !image && "max-w-4xl mx-auto text-center"
             }`}
           >

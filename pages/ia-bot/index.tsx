@@ -10,7 +10,7 @@ const IaBot = () => {
       <InternHero
         title="IA Bot"
         description="Tenemos la solución más confiable para automatizar tu atención al cliente con bots inteligentes, mejorando la experiencia del usuario y reduciendo costos operativos."
-        imageUrl="/assets/products/product-3.png"
+        imageUrl="/assets/ia-bot/robot.png"
       />
 
       <ProductsIntern features={features} />

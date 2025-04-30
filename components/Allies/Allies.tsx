@@ -96,7 +96,7 @@ const AlliesGroup: React.FC<AlliesGroupProps> = ({ group, index }) => {
       </h3>
 
       <motion.div
-        className="flex flex-wrap justify-center gap-8"
+        className="grid grid-cols-2 md:flex md:flex-wrap justify-center gap-8"
         initial={{ opacity: 0, y: 50 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
         transition={{

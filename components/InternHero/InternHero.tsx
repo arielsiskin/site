@@ -4,16 +4,20 @@ import Card from "../Brands/Card/Card";
 
 interface InternHeroProps {
   title: string;
-  description: string;
+  description?: string;
   imageUrl: string;
+  descriptionList?: string[];
   ctaUrl?: string;
+  width?: number;
 }
 
 export const InternHero: React.FC<InternHeroProps> = ({
   title,
   description,
   imageUrl,
+  descriptionList,
   ctaUrl = "/",
+  width = 320,
 }) => {
   return (
     <HeroHighlight
@@ -27,9 +31,10 @@ export const InternHero: React.FC<InternHeroProps> = ({
           imageUrl={imageUrl}
           legend=""
           title={title}
-          description={description}
+          description={description || ""}
+          descriptionList={descriptionList}
           ctaUrl={ctaUrl}
-          width={320}
+          width={width}
           ctaText="Solicitar demo"
         />
       </div>

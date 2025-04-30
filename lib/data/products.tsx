@@ -27,7 +27,7 @@ export const productList = [
     id: 3,
     textPosition: "left",
     mode: "light",
-    imageUrl: "/assets/products/product-3.png",
+    imageUrl: "/assets/ia-bot/robot.png",
     ctaUrl: "/ia-bot",
     width: 480,
     legend: "nuestras soluciones",
