@@ -3,6 +3,7 @@ import ProductsIntern from "@/components/ProductsIntern/ProductsIntern";
 import { features, solutionsFeatures } from "@/lib/data/synergy-wfm";
 import InternBanner from "@/components/InternBanner/InternBanner";
 import SynergyFeatures from "@/components/SynergyFeatures/SynergyFeatures";
+import SynergyWorkers from "@/components/SynergyWorkers/SynergyWorkers";
 
 const SynergyWfm = () => {
   return (
@@ -18,17 +19,22 @@ const SynergyWfm = () => {
         imageUrl="/assets/products/product-2b.png"
         width={600}
       />
+      <SynergyWorkers />
 
       <ProductsIntern features={features} />
 
       <InternBanner
         title="Synergy está desarrollado sobre AWS"
-        features={["Servicio 100% seguro", "SLA alto y estable ", "Desempeño ágil y dinámico."]}
+        features={[
+          "Servicio 100% seguro",
+          "SLA alto y estable ",
+          "Desempeño ágil y dinámico.",
+        ]}
         image="/assets/synergy-wfm/banner-1.png"
         logoImage="/assets/synergy-wfm/aws.png"
       />
 
-      <SynergyFeatures 
+      <SynergyFeatures
         features={[
           { text: "Genera métricas unificadas" },
           { text: "Implementación rápida y personalizada" },

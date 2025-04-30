@@ -10,7 +10,7 @@ const Layout = ({ children }: LayoutProps) => {
   const navItems = [
     { name: "Clientes", link: "/#clientes" },
     { name: "Soluciones", link: "/#soluciones" },
-    { name: "Nosotros", link: "/#nosotros" },
+    { name: "Nosotros", link: "/about-us" },
     { name: "Contacto", link: "/#contacto" },
   ];
 
