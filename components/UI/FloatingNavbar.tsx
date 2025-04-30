@@ -34,7 +34,7 @@ export const MenuItem = ({
     <div onMouseEnter={() => setActive(item)} className="relative ">
       <motion.p
         transition={{ duration: 0.3 }}
-        className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
+        className="cursor-pointer text-white hover:opacity-[0.9]"
       >
         {item}
       </motion.p>
@@ -49,7 +49,7 @@ export const MenuItem = ({
               <motion.div
                 transition={transition}
                 layoutId="active"
-                className="bg-white dark:bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
+                className="bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-white/[0.2] shadow-xl"
               >
                 <motion.div layout className="w-max h-full p-4">
                   {children}
@@ -73,7 +73,7 @@ export const Menu = ({
   return (
     <nav
       onMouseLeave={() => setActive(null)}
-      className="relative rounded-full border border-transparent dark:bg-black dark:border-white/[0.2] bg-white shadow-input flex justify-center space-x-4 px-8 py-6"
+      className="relative rounded-full border border-white/[0.2] bg-black shadow-input flex justify-center space-x-4 px-8 py-6"
     >
       {children}
     </nav>
@@ -92,12 +92,16 @@ export const ProductItem = ({
   src?: string;
 }) => {
   return (
-    <Link href={href} className="flex space-x-2">
+    <Link href={href} className="flex space-x-2" onClick={() => {
+      // Close any open menus when clicking a product item
+      const event = new CustomEvent('closeMenu');
+      window.dispatchEvent(event);
+    }}>
       <div>
-        <h4 className="text-xl font-bold mb-1 text-black dark:text-white">
+        <h4 className="text-xl font-bold mb-1 text-white">
           {title}
         </h4>
-        <p className="text-neutral-700 text-sm max-w-[10rem] dark:text-neutral-300">
+        <p className="text-neutral-300 text-sm max-w-[10rem]">
           {description}
         </p>
       </div>
@@ -109,7 +113,7 @@ export const HoveredLink = ({ children, ...rest }: any) => {
   return (
     <Link
       {...rest}
-      className="text-neutral-700 dark:text-neutral-200 hover:text-black"
+      className="text-neutral-200 hover:text-white"
     >
       {children}
     </Link>
@@ -143,8 +147,19 @@ export const FloatingNav = ({
     checkMobile();
 
     window.addEventListener("resize", checkMobile);
+    
+    // Add event listener for closing menu
+    const handleCloseMenu = () => {
+      setIsMenuOpen(false);
+      setActiveItem(null);
+    };
+    
+    window.addEventListener('closeMenu', handleCloseMenu);
 
-    return () => window.removeEventListener("resize", checkMobile);
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener('closeMenu', handleCloseMenu);
+    };
   }, []);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
@@ -178,7 +193,7 @@ export const FloatingNav = ({
           duration: 0.2,
         }}
         className={cn(
-          "flex w-[95%]  border border-white/[0.8] fixed top-4 inset-x-0 lg:w-[900px] 2xl:w-[1196px] mx-auto rounded-[10px] dark:bg-black bg-white shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[5000] pr-2 pl-4 py-2 items-center justify-between",
+          "flex w-[95%]  border border-white/[0.8] fixed top-4 inset-x-0 lg:w-[900px] 2xl:w-[1196px] mx-auto rounded-[10px] bg-black shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[5000] pr-2 pl-4 py-2 items-center justify-between",
           className
         )}
       >
@@ -231,7 +246,11 @@ export const FloatingNav = ({
                 >
                   <Link
                     href={navItem.link}
-                    className="text-sm uppercase font-medium relative dark:text-neutral-50 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
+                    className="text-sm uppercase font-medium relative text-neutral-50 hover:text-neutral-300"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setActiveItem(null);
+                    }}
                   >
                     {navItem.name}
                   </Link>
@@ -241,16 +260,18 @@ export const FloatingNav = ({
                       initial={{ opacity: 0, scale: 0.85, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       transition={transition}
-                      className="absolute w-[400px] top-[calc(100%_+_0.5rem)] left-1/2 transform -translate-x-1/2 pt-4 solutions-dropdown"
+                      className="absolute w-[400px] top-[calc(100%_+_0.2rem)] left-1/2 transform -translate-x-1/2 pt-2 solutions-dropdown"
                       onMouseEnter={() => setActiveItem("soluciones")}
                       onMouseLeave={() => setActiveItem(null)}
                     >
                       <motion.div
                         transition={transition}
                         layoutId="active"
-                        className="bg-white dark:bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
+                        className="bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-white/[0.2] shadow-xl"
                       >
-                        {logoDropdownContent}
+                        <div onClick={() => setActiveItem(null)}>
+                          {logoDropdownContent}
+                        </div>
                       </motion.div>
                     </motion.div>
                   )}
@@ -258,7 +279,11 @@ export const FloatingNav = ({
               ) : (
                 <Link
                   href={navItem.link}
-                  className="text-sm uppercase font-medium relative dark:text-neutral-50 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
+                  className="text-sm uppercase font-medium relative text-neutral-50 hover:text-neutral-300"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setActiveItem(null);
+                  }}
                 >
                   {navItem.name}
                 </Link>
@@ -273,7 +298,7 @@ export const FloatingNav = ({
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="absolute top-full left-0 right-0 bg-white dark:bg-black mt-2 py-2 rounded-lg shadow-lg lg:hidden z-50"
+              className="absolute top-full left-0 right-0 bg-black mt-2 py-2 rounded-lg shadow-lg lg:hidden z-50"
             >
               {navItems.map((navItem: any, idx: number) => (
                 <motion.div
@@ -285,7 +310,7 @@ export const FloatingNav = ({
                   <Link
                     href={navItem.link}
                     className={cn(
-                      "block px-4 py-2 text-sm text-neutral-600 dark:text-neutral-50 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                      "block px-4 py-2 text-sm text-neutral-50 hover:bg-neutral-800"
                     )}
                     onClick={() => {
                       if (navItem.name !== "Soluciones") {
@@ -300,7 +325,7 @@ export const FloatingNav = ({
                   </Link>
 
                   {navItem.name === "Soluciones" && logoDropdownContent && (
-                    <div className="px-4 py-2 bg-neutral-50 dark:bg-neutral-900">
+                    <div className="px-4 py-2 bg-neutral-900" onClick={() => setIsMenuOpen(false)}>
                       {logoDropdownContent}
                     </div>
                   )}
