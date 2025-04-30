@@ -25,6 +25,7 @@ const SynergyWfm = () => {
         title="Synergy está desarrollado sobre AWS"
         features={["Servicio 100% seguro", "SLA alto y estable ", "Desempeño ágil y dinámico."]}
         image="/assets/synergy-wfm/banner-1.png"
+        logoImage="/assets/synergy-wfm/aws.png"
       />
 
       <SynergyFeatures 

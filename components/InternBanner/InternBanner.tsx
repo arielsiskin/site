@@ -9,6 +9,7 @@ interface InternBannerProps {
   features?: string[];
   image?: string;
   subtitle?: string;
+  logoImage?: string;
 }
 
 export const InternBanner: React.FC<InternBannerProps> = ({
@@ -16,6 +17,7 @@ export const InternBanner: React.FC<InternBannerProps> = ({
   features = [],
   image,
   subtitle,
+  logoImage,
 }) => {
   const { ref, inView } = useInView({
     threshold: 0.1,
@@ -57,6 +59,11 @@ export const InternBanner: React.FC<InternBannerProps> = ({
               !image && "max-w-4xl mx-auto text-center"
             }`}
           >
+            {logoImage && (
+              <div className="mb-6">
+                <img src={logoImage} alt="Logo" className="h-16 w-auto" />
+              </div>
+            )}
             <h2 className="text-2xl md:text-4xl font-bold mb-4 text-[#04CCDB] uppercase">
               {title}
             </h2>

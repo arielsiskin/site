@@ -101,7 +101,7 @@ export const ProductItem = ({
         <h4 className="text-xl font-bold mb-1 text-white">
           {title}
         </h4>
-        <p className="text-neutral-300 text-sm max-w-[10rem]">
+        <p className="text-neutral-300 text-sm max-w-[20rem]">
           {description}
         </p>
       </div>
@@ -260,7 +260,7 @@ export const FloatingNav = ({
                       initial={{ opacity: 0, scale: 0.85, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       transition={transition}
-                      className="absolute w-[400px] top-[calc(100%_+_0.2rem)] left-1/2 transform -translate-x-1/2 pt-2 solutions-dropdown"
+                      className="absolute w-[400px] top-[calc(100%_+_0.2rem)] left-0 pt-2 solutions-dropdown"
                       onMouseEnter={() => setActiveItem("soluciones")}
                       onMouseLeave={() => setActiveItem(null)}
                     >

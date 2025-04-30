@@ -108,7 +108,7 @@ const AlliesGroup: React.FC<AlliesGroupProps> = ({ group, index }) => {
         {group.brands.map((brand, brandIndex) => (
           <motion.div
             key={`${brand.name}-${brandIndex}`}
-            className="flex-shrink-0 h-24 w-40 flex items-center justify-center p-4 rounded-lg transition-transform duration-300 hover:scale-105"
+            className="flex-shrink-0 h-24 w-36 sm:w-40 flex items-center justify-center p-2 sm:p-4 rounded-lg transition-transform duration-300 hover:scale-105"
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{
@@ -120,9 +120,9 @@ const AlliesGroup: React.FC<AlliesGroupProps> = ({ group, index }) => {
               <Image
                 src={brand.logo}
                 alt={brand.name}
-                width={140}
-                height={80}
-                style={{ objectFit: "contain" }}
+                width={120}
+                height={70}
+                style={{ objectFit: "contain", maxWidth: "100%" }}
                 className="filter grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
               />
             </div>

@@ -29,8 +29,11 @@ const Products = () => {
   ];
   return (
     <HeroHighlight subtleDots>
-      <div id="soluciones" className="w-full mx-auto mt-10 2xl:mt-40 lg:w-[900px] 2xl:w-[1196px] relative">
-        <div className="p-10 lg:py-20 flex items-center justify-center text-primary">
+      <div
+        id="soluciones"
+        className="w-full mx-auto sm:mt-10 md:mt-0 2xl:mt-20 lg:w-[900px] 2xl:w-[1196px] relative"
+      >
+        <div className="p-10 flex items-center justify-center text-primary">
           <h3 className="text-md lg:text-2xl font-normal uppercase text-center">
             {words.map((text, index) => (
               <TextGenerateEffect

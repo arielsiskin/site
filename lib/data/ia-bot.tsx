@@ -5,8 +5,8 @@ export const features: FeatureItem[] = [
     id: 1,
     title: ["ATENCIÓN 24/7", "VIDEOLLAMADAS Y ASISTENCIA EN TIEMPO REAL"],
     description: [
-      "sin necesidad de agentes humanos.",
-      "agrega llamadas y videos a tus chats.",
+      "Ofrece una atención continua y sin interrupciones, brindando respuestas inmediatas, sin necesidad de agentes humanos. Nuestra tecnología conversacional permite resolver consultas, gestionar operaciones y acompañar al usuario en todo momento, mejorando la experiencia del cliente y reduciendo costos operativos.",
+      "Potencia tus interacciones con clientes sumando videollamadas directamente desde el chat. Escala conversaciones a canales visuales facilitando el soporte técnico o la demostración de productos. Una solución ideal para ofrecer una experiencia omnicanal fluida y de alto valor agregado.",
     ],
     layout: "image-text-text",
     image: "/assets/ia-bot/image-1.png",
@@ -23,15 +23,18 @@ export const features: FeatureItem[] = [
   {
     id: 3,
     title: "Análisis y Optimización Contínua",
-    description:
-      "métricas en tiempo real y generación de leads con flujos inteligentes.",
+    bullets: [
+      "Accede a métricas en tiempo real para analizar tus interacciones. Además, mediante flujos conversacionales inteligentes podrás automatizar tareas, generar y calificar leads de manera proactiva.",
+      "Una herramienta clave para equipos que buscan una evolución constante basada en datos.",
+    ],
+    description: "",
     layout: "text-image",
     image: "/assets/ia-bot/image-3.png",
   },
   {
     id: 4,
     title: "Procesamiento de Lenguaje Natural (NLP) y Machine Learning",
-    description: "para respuestas más precisas.",
+    description: "La plataforma incorpora tecnologías avanzadas de Procesamiento de Lenguaje Natural (NLP) y Machine Learning para comprender con mayor profundidad la intención detrás de cada mensaje del usuario, incluso en contextos complejos o con lenguaje coloquial.",
     layout: "image-text",
     image: "/assets/ia-bot/image-4.png",
   },

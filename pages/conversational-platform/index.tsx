@@ -19,7 +19,9 @@ const index = () => {
 
       <InternBanner
         title="Plataforma educativa Learning Experience"
-        features={["para facilitar el aprendizaje."]}
+        features={[
+          "Diseñada para capacitar a equipos de atención y ventas de forma continua y dinámica. Ofrece contenidos interactivos, rutas de aprendizaje personalizadas y métricas de seguimiento para mejorar el desempeño.",
+        ]}
         image="/assets/conversational-platform/banner-1.png"
       />
 
