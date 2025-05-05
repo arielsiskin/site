@@ -43,7 +43,7 @@ const alliesData = [
       },
       {
         name: "Megared",
-        logo: "/assets/allies/paraguay/megared.jpeg",
+        logo: "/assets/allies/paraguay/megared.png",
       },
     ],
   },
