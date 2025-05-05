@@ -35,7 +35,8 @@ export const PolicyText = () => {
         información de nuestros clientes, colaboradores y socios estratégicos.
         Nos comprometemos a garantizar la calidad en nuestros servicios y el
         cumplimiento de los más altos estándares de seguridad de datos,
-        alineándonos con el <b>Reglamento General de Protección de Datos (GDPR)</b> y otras
+        alineándonos con el{" "}
+        <b>Reglamento General de Protección de Datos (GDPR)</b> y otras
         normativas internacionales.
       </p>
 

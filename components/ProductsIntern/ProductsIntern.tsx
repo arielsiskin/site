@@ -35,9 +35,68 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
   askDemo = false,
 }) => {
   const { ref, inView } = useInView({
-    threshold: 0.1,
+    threshold: 0.2,
     triggerOnce: true,
+    rootMargin: "-50px",
   });
+
+  // Enhanced animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
+        duration: 0.5,
+      },
+    },
+  };
+
+  const textContentVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: (index: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        delay: index * 0.1,
+        duration: 0.6,
+      },
+    }),
+  };
+
+  const imageVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: (index: number) => ({
+      opacity: 1,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        delay: index * 0.1,
+        duration: 0.7,
+      },
+    }),
+  };
+
+  const bulletVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: (delay: number) => ({
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        delay: delay * 0.1,
+        duration: 0.5,
+      },
+    }),
+  };
 
   const renderTextContent = (
     item: FeatureItem,
@@ -45,10 +104,9 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
     isSecondary = false
   ) => (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className={`flex flex-col justify-center p-8  ${
+      custom={index}
+      variants={textContentVariants}
+      className={`flex flex-col justify-center p-8 ${
         item.hasBorder ? "border-2 p-[32px] border-gray-200 rounded-[30px]" : ""
       }`}
     >
@@ -67,19 +125,21 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
       )}
       {Array.isArray(item.title) && Array.isArray(item.description) ? (
         <>
-          <h3 className="text-xl uppercase md:text-3xl text-mayday mb-4">
+          <motion.h3 className="text-xl uppercase md:text-3xl text-mayday mb-4">
             {item.title[isSecondary ? 1 : 0]}
-          </h3>
-          <p className="text-maydayDarker text-sm md:text-lg mb-4">
+          </motion.h3>
+          <motion.p className="text-maydayDarker text-sm md:text-lg mb-4">
             {item.description[isSecondary ? 1 : 0]}
-          </p>
+          </motion.p>
         </>
       ) : (
         <>
-          <h3 className="text-xl uppercase md:text-3xl text-mayday mb-4">{item.title}</h3>
-          <p className="text-maydayDarker text-sm md:text-lg mb-4">
+          <motion.h3 className="text-xl uppercase md:text-3xl text-mayday mb-4">
+            {item.title}
+          </motion.h3>
+          <motion.p className="text-maydayDarker text-sm md:text-lg mb-4">
             {item.description}
-          </p>
+          </motion.p>
         </>
       )}
       {item.bullets && (
@@ -87,9 +147,8 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
           {item.bullets.map((bullet, bulletIndex) => (
             <motion.li
               key={bulletIndex}
-              initial={{ opacity: 0, x: -20 }}
-              animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-              transition={{ duration: 0.6, delay: (index + bulletIndex) * 0.1 }}
+              custom={index + bulletIndex * 0.1}
+              variants={bulletVariants}
               className="flex items-start space-x-2"
             >
               <span className="text-maydayDarker mt-1">•</span>
@@ -106,11 +165,8 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
   const renderImageContent = (item: FeatureItem, index: number) =>
     item.image && (
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={
-          inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }
-        }
-        transition={{ duration: 0.6, delay: index * 0.1 }}
+        custom={index}
+        variants={imageVariants}
         className="relative h-full min-h-[300px]"
       >
         <img
@@ -134,13 +190,8 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
           <motion.div key={currentFeature.id} className="mb-16 md:mb-24">
             <div className="w-full flex justify-center">
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={
-                  inView
-                    ? { opacity: 1, scale: 1 }
-                    : { opacity: 0, scale: 0.95 }
-                }
-                transition={{ duration: 0.6, delay: i * 0.1 }}
+                custom={i}
+                variants={imageVariants}
                 className="relative w-full max-w-[594px]"
               >
                 <img
@@ -241,17 +292,27 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
   };
 
   return (
-    <div ref={ref} className="w-full px-4 py-16 md:py-24">
+    <motion.div
+      ref={ref}
+      className="w-full px-4 py-16 md:py-24"
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={containerVariants}
+    >
       <HeroHighlight subtleDots>
         <div className="max-w-[1196px] mx-auto">{renderFeatures()}</div>
 
         {askDemo && (
-          <div className="w-full flex justify-center mb-[8rem]">
+          <motion.div
+            variants={textContentVariants}
+            custom={features.length}
+            className="w-full flex justify-center mb-[8rem]"
+          >
             <Button>Solicitar demo</Button>
-          </div>
+          </motion.div>
         )}
       </HeroHighlight>
-    </div>
+    </motion.div>
   );
 };
 

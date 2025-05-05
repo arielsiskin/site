@@ -41,13 +41,17 @@ const alliesData = [
         name: "Sistemas y Gestiones",
         logo: "/assets/allies/paraguay/sistemasygestiones.png",
       },
-      { name: "Dr. Max", logo: "/assets/allies/paraguay/drmax.png" },
-      { name: "Medismart", logo: "/assets/allies/paraguay/medismart.png" },
+      {
+        name: "Megared",
+        logo: "/assets/allies/paraguay/megared.jpeg",
+      },
     ],
   },
   {
     country: "COSTA RICA, REPÚBLICA DOMINICANA, VENEZUELA, EL SALVADOR",
     brands: [
+      { name: "Dr. Max", logo: "/assets/allies/paraguay/drmax.png" },
+      { name: "Medismart", logo: "/assets/allies/paraguay/medismart.png" },
       { name: "Farma", logo: "/assets/allies/rest/farma.png" },
       { name: "OnCall", logo: "/assets/allies/rest/oncall.png" },
       { name: "Puntual", logo: "/assets/allies/rest/puntual.png" },

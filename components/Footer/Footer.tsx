@@ -25,8 +25,7 @@ const locations = [
     country: "ESTADOS UNIDOS",
     flag: "/assets/flags/usa.svg",
     address: "201 Collins Av. Apt 1226, 33139",
-    city: "Miami Beach,",
-    phone: "Tel: +1305 775 1474",
+    city: "Miami Beach.",
   },
 ];
 
@@ -54,12 +53,6 @@ const Footer = () => {
                   {location.address}
                   <br />
                   {location.city}
-                  {location.phone && (
-                    <>
-                      <br />
-                      {location.phone}
-                    </>
-                  )}
                 </p>
               </div>
             </div>

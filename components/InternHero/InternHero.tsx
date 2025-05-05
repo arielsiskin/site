@@ -1,6 +1,8 @@
 import React from "react";
 import { HeroHighlight } from "../UI/HeroHighlight";
 import Card from "../Brands/Card/Card";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 interface InternHeroProps {
   title: string;
@@ -19,12 +21,34 @@ export const InternHero: React.FC<InternHeroProps> = ({
   ctaUrl = "/",
   width = 320,
 }) => {
+  const { ref, inView } = useInView({
+    threshold: 0.2,
+    triggerOnce: true,
+    rootMargin: "-50px",
+  });
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { 
+        duration: 0.6,
+      },
+    },
+  };
+
   return (
     <HeroHighlight
       subtleDots
       containerClassName="bg-[linear-gradient(0.72deg,rgba(42,68,158,0)_3.72%,#2A449E_42.95%,#000000_77.1%)]"
     >
-      <div className="md:mt-10 2xl:mt-40 w-[100vw] md:w-[700px] lg:w-[900px] 2xl:w-[1196px]">
+      <motion.div
+        ref={ref}
+        className="md:mt-10 2xl:mt-40 w-[100vw] md:w-[700px] lg:w-[900px] 2xl:w-[1196px]"
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+        variants={containerVariants}
+      >
         <Card
           textPosition="left"
           mode="light"
@@ -37,7 +61,7 @@ export const InternHero: React.FC<InternHeroProps> = ({
           width={width}
           ctaText="Solicitar demo"
         />
-      </div>
+      </motion.div>
     </HeroHighlight>
   );
 };

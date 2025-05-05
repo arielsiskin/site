@@ -10,6 +10,7 @@ import Achievements from "@/components/Achievements/Achievements";
 import WhyUs from "@/components/WhyUs/WhyUs";
 import Contact from "@/components/Contact/Contact";
 import Allies from "@/components/Allies/Allies";
+import AnimateInView from "@/components/UI/AnimateInView";
 
 const azoSans = localFont({
   src: [
@@ -54,17 +55,29 @@ export default function Home() {
     <div className={`w-full ${azoSans.className}`}>
       <SimpleSlider />
 
-      <Brands />
+      <AnimateInView animation="fadeIn" duration={0.8}>
+        <Brands />
+      </AnimateInView>
 
-      <Products />
+      <AnimateInView animation="slideUp" delay={0.1} threshold={0.2}>
+        <Products />
+      </AnimateInView>
 
-      <Achievements />
+      <AnimateInView animation="fadeIn" delay={0.2} threshold={0.3}>
+        <Achievements />
+      </AnimateInView>
 
-      <WhyUs />
+      <AnimateInView animation="slideUp" delay={0.1} threshold={0.2}>
+        <WhyUs />
+      </AnimateInView>
 
-      <Allies />
+      <AnimateInView animation="fadeIn" delay={0.2}>
+        <Allies />
+      </AnimateInView>
 
-      <Contact />
+      <AnimateInView animation="slideUp" delay={0.3}>
+        <Contact />
+      </AnimateInView>
     </div>
   );
 }

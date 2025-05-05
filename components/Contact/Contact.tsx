@@ -1,10 +1,12 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import emailjs from '@emailjs/browser';
+import { EMAILJS_CONFIG } from '../../emailjs';
 
 const contactSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -25,17 +27,55 @@ const Contact = () => {
     triggerOnce: true,
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   });
 
   const onSubmit = async (data: ContactFormData) => {
-    console.log(data);
-    // Here you would typically send the data to your backend
+    setIsSubmitting(true);
+    setSubmitError("");
+    
+    try {
+      // Prepare the email template parameters
+      const templateParams = {
+        to_email: EMAILJS_CONFIG.TO_EMAIL,
+        from_name: data.name,
+        from_email: data.email,
+        phone: data.phone,
+        position: data.position,
+        message: data.message || "No message provided",
+      };
+      
+      // Send the email using EmailJS
+      await emailjs.send(
+        EMAILJS_CONFIG.SERVICE_ID,
+        EMAILJS_CONFIG.TEMPLATE_ID,
+        templateParams,
+        EMAILJS_CONFIG.PUBLIC_KEY
+      );
+      
+      setSubmitSuccess(true);
+      reset(); // Reset form after successful submission
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setSubmitSuccess(false);
+      }, 5000);
+    } catch (error) {
+      console.error("Error sending email:", error);
+      setSubmitError("Hubo un error al enviar el formulario. Por favor intente nuevamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputClasses =
@@ -68,12 +108,25 @@ const Contact = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-4"
           >
+            {submitSuccess && (
+              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                <span className="block sm:inline">¡Gracias por contactarnos! Nos pondremos en contacto contigo pronto.</span>
+              </div>
+            )}
+            
+            {submitError && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                <span className="block sm:inline">{submitError}</span>
+              </div>
+            )}
+            
             <div>
               <input
                 type="text"
                 placeholder="NOMBRE Y APELLIDO*"
                 {...register("name")}
                 className={inputClasses}
+                disabled={isSubmitting}
               />
               {errors.name && (
                 <p className={errorClasses}>{errors.name.message}</p>
@@ -86,6 +139,7 @@ const Contact = () => {
                 placeholder="EMAIL EMPRESARIAL*"
                 {...register("email")}
                 className={inputClasses}
+                disabled={isSubmitting}
               />
               {errors.email && (
                 <p className={errorClasses}>{errors.email.message}</p>
@@ -98,6 +152,7 @@ const Contact = () => {
                 placeholder="TELÉFONO*"
                 {...register("phone")}
                 className={inputClasses}
+                disabled={isSubmitting}
               />
               {errors.phone && (
                 <p className={errorClasses}>{errors.phone.message}</p>
@@ -110,6 +165,7 @@ const Contact = () => {
                 placeholder="PUESTO PROFESIONAL*"
                 {...register("position")}
                 className={inputClasses}
+                disabled={isSubmitting}
               />
               {errors.position && (
                 <p className={errorClasses}>{errors.position.message}</p>
@@ -121,6 +177,7 @@ const Contact = () => {
                 placeholder="DEJA UN COMENTARIO (OPCIONAL)"
                 {...register("message")}
                 className={`${inputClasses} h-32 resize-none`}
+                disabled={isSubmitting}
               />
             </div>
 
@@ -129,6 +186,7 @@ const Contact = () => {
                 type="checkbox"
                 {...register("terms")}
                 className="h-4 w-4 text-[#2A449E] rounded focus:ring-[#2A449E]"
+                disabled={isSubmitting}
               />
               <label className="text-sm">
                 He leído y acepto los términos y condiciones
@@ -142,9 +200,14 @@ const Contact = () => {
               type="submit"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-full bg-[#04CCDB] text-white py-3 rounded-md font-medium hover:bg-[#03b5c2] transition-colors"
+              className={`w-full py-3 rounded-md font-medium transition-colors ${
+                isSubmitting 
+                  ? "bg-gray-400 cursor-not-allowed" 
+                  : "bg-[#04CCDB] text-white hover:bg-[#03b5c2]"
+              }`}
+              disabled={isSubmitting}
             >
-              CONOCER MÁS
+              {isSubmitting ? "ENVIANDO..." : "CONOCER MÁS"}
             </motion.button>
           </motion.form>
         </div>
