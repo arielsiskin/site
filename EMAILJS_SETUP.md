@@ -36,12 +36,14 @@ Create a `.env.local` file in the root of your project with the following variab
 NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_service_id
 NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_template_id
 NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
 ```
 
 Replace the placeholder values with your actual EmailJS credentials:
 - `your_service_id`: Found in the "Email Services" section
 - `your_template_id`: Found in the "Email Templates" section
 - `your_public_key`: Found in the "Account" section under "API Keys"
+- `your_recaptcha_site_key`: Found in the Google reCAPTCHA admin console
 
 ## Step 5: Initialize EmailJS (Optional)
 
@@ -58,6 +60,27 @@ useEffect(() => {
 }, []);
 ```
 
+## Step 6: Google reCAPTCHA Integration
+
+To enhance security and prevent spam submissions, the contact form uses Google reCAPTCHA v2.
+
+### Setting up reCAPTCHA:
+
+1. Go to the [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin/create)
+2. Register a new site with the following details:
+   - Label: Mayday Contact Form
+   - reCAPTCHA type: reCAPTCHA v2 - "I'm not a robot" Checkbox
+   - Domains: Add your domain(s) where the form will be hosted
+3. After registration, you'll receive a Site Key and Secret Key
+4. Add the Site Key to your `.env.local` file as `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`
+
+### How it works:
+
+1. The reCAPTCHA component is displayed in the form
+2. Users must complete the CAPTCHA challenge before submitting
+3. The CAPTCHA response token is sent along with the form data to EmailJS
+4. This helps prevent automated spam submissions to your contact form
+
 ## Testing
 
-After setting up, test your contact form to ensure emails are being sent correctly. You should receive test submissions at ventas@mayday.global.
+After setting up, test your contact form to ensure emails are being sent correctly and the CAPTCHA is working properly. You should receive test submissions at ventas@mayday.global.

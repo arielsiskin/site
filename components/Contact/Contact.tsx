@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import emailjs from '@emailjs/browser';
 import { EMAILJS_CONFIG } from '../../emailjs';
+import ReCAPTCHA from "react-google-recaptcha";
 
 const contactSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -30,6 +31,9 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
+  const [captchaError, setCaptchaError] = useState("");
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const {
     register,
@@ -41,6 +45,13 @@ const Contact = () => {
   });
 
   const onSubmit = async (data: ContactFormData) => {
+    // Validate reCAPTCHA
+    if (!captchaValue) {
+      setCaptchaError("Por favor, complete el captcha");
+      return;
+    }
+    
+    setCaptchaError("");
     setIsSubmitting(true);
     setSubmitError("");
     
@@ -53,6 +64,7 @@ const Contact = () => {
         phone: data.phone,
         position: data.position,
         message: data.message || "No message provided",
+        'g-recaptcha-response': captchaValue,
       };
       
       // Send the email using EmailJS
@@ -66,6 +78,12 @@ const Contact = () => {
       setSubmitSuccess(true);
       reset(); // Reset form after successful submission
       
+      // Reset reCAPTCHA
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+      }
+      setCaptchaValue(null);
+      
       // Reset success message after 5 seconds
       setTimeout(() => {
         setSubmitSuccess(false);
@@ -75,6 +93,13 @@ const Contact = () => {
       setSubmitError("Hubo un error al enviar el formulario. Por favor intente nuevamente.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleCaptchaChange = (value: string | null) => {
+    setCaptchaValue(value);
+    if (value) {
+      setCaptchaError("");
     }
   };
 
@@ -194,6 +219,18 @@ const Contact = () => {
             </div>
             {errors.terms && (
               <p className={errorClasses}>{errors.terms.message}</p>
+            )}
+
+            {/* Google reCAPTCHA */}
+            <div className="flex justify-center my-4">
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+                onChange={handleCaptchaChange}
+              />
+            </div>
+            {captchaError && (
+              <p className={errorClasses}>{captchaError}</p>
             )}
 
             <motion.button
