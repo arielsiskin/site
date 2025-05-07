@@ -1,4 +1,5 @@
 import { FeatureItem } from "@/components/ProductsIntern/ProductsIntern";
+import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 
 export const omniChannelProducts: FeatureItem[] = [
   {
@@ -63,7 +64,7 @@ export const omniChannelProducts2: FeatureItem[] = [
       "Dashboard unificado con métricas de llamadas y desempeño del equipo.",
     ],
     layout: "text-text",
-    link: "/demo",
+    link: DEMO_WHATSAPP_URL,
   },
 ];
 

@@ -6,6 +6,7 @@ import { useInView } from "react-intersection-observer";
 import Link from "next/link";
 import { HeroHighlight } from "../UI/HeroHighlight";
 import Button from "../Button/Button";
+import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 
 export interface FeatureItem {
   id: number;
@@ -308,7 +309,9 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
             custom={features.length}
             className="w-full flex justify-center mb-[8rem]"
           >
-            <Button>Solicitar demo</Button>
+            <Link href={DEMO_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+              <Button>Solicitar demo</Button>
+            </Link>
           </motion.div>
         )}
       </HeroHighlight>
