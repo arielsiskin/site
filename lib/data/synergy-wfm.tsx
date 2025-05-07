@@ -1,4 +1,5 @@
 import { FeatureItem } from "@/components/ProductsIntern/ProductsIntern";
+import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 
 export const features: FeatureItem[] = [
   {
@@ -14,7 +15,7 @@ export const features: FeatureItem[] = [
     description:
       "Permite una gestión inteligente y centralizada de los turnos y descansos del personal, garantizando una planificación más eficiente y equilibrada. A través de la plataforma los colaboradores pueden solicitar descansos, mientras que los supervisores pueden aprobar o modificar en tiempo real, manteniendo la operación ágil y sin interrupciones.",
     layout: "text-text",
-    link: "/demo",
+    link: DEMO_WHATSAPP_URL,
   },
   {
     id: 3,
@@ -25,7 +26,7 @@ export const features: FeatureItem[] = [
       "A su vez, los líderes cuentan con reportes en tiempo real, que brindan una visión del historial, frecuencia y patrones de ausentismo, facilitando una toma de decisiones y la planificación operativa.",
     ],
     layout: "text-text",
-    link: "/demo",
+    link: DEMO_WHATSAPP_URL,
   },
 ];
 
@@ -36,13 +37,13 @@ export const solutionsFeatures: FeatureItem[] = [
     title: "Comunicación y Soporte Continuo",
     description: "con dashboards personalizables.",
     layout: "text-text",
-    link: "/demo",
+    link: DEMO_WHATSAPP_URL,
   },
   {
     id: 2,
     title: "Control de Adherencia y Cumplimiento en Tiempo Real",
     description: "para garantizar la productividad.",
     layout: "text-text",
-    link: "/demo",
+    link: DEMO_WHATSAPP_URL,
   },
 ];

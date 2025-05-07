@@ -1,4 +1,5 @@
 import { FeatureItem } from "@/components/ProductsIntern/ProductsIntern";
+import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 
 export const features: FeatureItem[] = [
   {
@@ -11,7 +12,7 @@ export const features: FeatureItem[] = [
     layout: "image-text-text",
     image: "/assets/ia-bot/image-1.png",
     hasBorder: false,
-    link: "/demo",
+    link: DEMO_WHATSAPP_URL,
   },
   {
     id: 2,

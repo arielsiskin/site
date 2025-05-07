@@ -6,7 +6,7 @@ const locations = [
   {
     country: "ARGENTINA",
     flag: "/assets/flags/argentina.svg",
-    address: "Corrientes 2335 Of. 902,",
+    address: "Corrientes 2335 Of. 802,",
     city: "CABA, Buenos Aires.",
   },
   {
@@ -63,7 +63,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-4">
               <Link
-                href="https://www.linkedin.com"
+                href="https://www.linkedin.com/company/mayday-global/posts/?feedView=all"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-gray-300 hover:text-white transition-colors"
@@ -78,16 +78,10 @@ const Footer = () => {
             <div className="flex items-center gap-4 text-sm text-gray-300">
               <div className="flex flex-col items-center gap-1">
                 <Link
-                  href="/privacy"
+                  href="/policy"
                   className="hover:text-white transition-colors"
                 >
                   Política de Privacidad
-                </Link>
-                <Link
-                  href="/cookies"
-                  className="hover:text-white transition-colors"
-                >
-                  Política de Uso de cookies
                 </Link>
               </div>
             </div>

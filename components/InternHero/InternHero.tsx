@@ -3,6 +3,7 @@ import { HeroHighlight } from "../UI/HeroHighlight";
 import Card from "../Brands/Card/Card";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 
 interface InternHeroProps {
   title: string;
@@ -18,7 +19,7 @@ export const InternHero: React.FC<InternHeroProps> = ({
   description,
   imageUrl,
   descriptionList,
-  ctaUrl = "/",
+  ctaUrl = DEMO_WHATSAPP_URL,
   width = 320,
 }) => {
   const { ref, inView } = useInView({

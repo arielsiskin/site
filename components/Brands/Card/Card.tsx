@@ -3,6 +3,7 @@ import React from "react";
 import Button from "../../Button/Button";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 
 interface Props {
   textPosition: string;
@@ -154,7 +155,12 @@ const Card = ({
           animate={inView ? "visible" : "hidden"}
           variants={buttonVariants}
         >
-          <Link href={ctaUrl} className="w-full flex">
+          <Link 
+            href={ctaText === "Solicitar demo" ? DEMO_WHATSAPP_URL : ctaUrl} 
+            className="w-full flex"
+            target={ctaText === "Solicitar demo" ? "_blank" : undefined}
+            rel={ctaText === "Solicitar demo" ? "noopener noreferrer" : undefined}
+          >
             <Button>{ctaText || "Ver más"}</Button>
           </Link>
         </motion.div>
@@ -221,7 +227,12 @@ const Card = ({
           animate={inView ? "visible" : "hidden"}
           variants={buttonVariants}
         >
-          <Link href={ctaUrl} className="text-primary">
+          <Link 
+            href={ctaText === "Solicitar demo" ? DEMO_WHATSAPP_URL : ctaUrl} 
+            className="text-primary"
+            target={ctaText === "Solicitar demo" ? "_blank" : undefined}
+            rel={ctaText === "Solicitar demo" ? "noopener noreferrer" : undefined}
+          >
             <Button>{ctaText || "Ver más"}</Button>
           </Link>
         </motion.div>
