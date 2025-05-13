@@ -29,6 +29,20 @@ export default function Document() {
         />
         <meta name="twitter:image" content="/assets/og-image-new.png" />
 
+        {/* Google Analytics */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-B9175NWQJS"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-B9175NWQJS');
+            `
+          }}
+        />
+        {/* End Google Analytics */}
+        
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{

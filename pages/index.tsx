@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Banner from "@/components/Banner/Banner.component";
 import localFont from "next/font/local";
+import Head from "next/head";
 import { HeroHighlight } from "@/components/UI/HeroHighlight";
 import SimpleSlider from "@/components/Slider/Slider";
 import Brands from "@/components/Brands/Brands";
@@ -53,6 +54,10 @@ const azoSans = localFont({
 export default function Home() {
   return (
     <div className={`w-full ${azoSans.className}`}>
+      <Head>
+        <title>Mayday Global | Soluciones para Contact Centers</title>
+        <meta name="description" content="Mayday Global es sinónimo de agilidad en los procesos, personalización en la atención y excelencia en el servicio post venta. Somos más que una plataforma, somos el motor que impulsa a los contact centers al siguiente nivel." />
+      </Head>
       <SimpleSlider />
 
       <AnimateInView animation="fadeIn" duration={0.8}>
