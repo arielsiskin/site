@@ -4,6 +4,31 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
+        {/* Standard SEO */}
+        <meta name="description" content="Mayday Global es sinónimo de agilidad en los procesos, personalización en la atención y excelencia en el servicio post venta. Somos más que una plataforma, somos el motor que impulsa a los contact centers al siguiente nivel." />
+        <meta name="keywords" content="contact center, atención al cliente, plataforma omnicanal, soluciones IT, Mayday Global" />
+        <meta name="author" content="Mayday Global" />
+        
+        {/* Open Graph / Social Media Metadata */}
+        <meta property="og:title" content="Mayday Global" />
+        <meta
+          property="og:description"
+          content="Mayday Global es sinónimo de agilidad en los procesos, personalización en la atención y excelencia en el servicio post venta. Somos más que una plataforma, somos el motor que impulsa a los contact centers al siguiente nivel."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://maydayglobal.com" />
+        <meta property="og:image" content="/assets/og-image.png" />
+        <meta property="og:site_name" content="Mayday Global" />
+
+        {/* Twitter Card data */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Mayday Global" />
+        <meta
+          name="twitter:description"
+          content="Mayday Global es sinónimo de agilidad en los procesos, personalización en la atención y excelencia en el servicio post venta. Somos más que una plataforma, somos el motor que impulsa a los contact centers al siguiente nivel."
+        />
+        <meta name="twitter:image" content="/assets/og-image.png" />
+
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
