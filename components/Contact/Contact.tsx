@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +8,7 @@ import { useInView } from "react-intersection-observer";
 import emailjs from '@emailjs/browser';
 import { EMAILJS_CONFIG } from '../../emailjs';
 import ReCAPTCHA from "react-google-recaptcha";
+import dynamic from 'next/dynamic';
 
 const contactSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -253,4 +254,5 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+// Use dynamic import with SSR disabled to prevent useLayoutEffect warnings
+export default dynamic(() => Promise.resolve(Contact), { ssr: false });

@@ -44,7 +44,7 @@ export default function SimpleSlider() {
           position: "absolute",
           width: "30px",
           height: "30px",
-          "@media (max-width: 768px)": {
+          "@media (maxWidth: 768px)": {
             display: "none",
           },
         }}
@@ -70,7 +70,7 @@ export default function SimpleSlider() {
           width: "30px",
           zIndex: 1,
           height: "30px",
-          "@media (max-width: 768px)": {
+          "@media (maxWidth: 768px)": {
             display: "none",
           },
         }}
