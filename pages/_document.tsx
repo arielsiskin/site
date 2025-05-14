@@ -5,10 +5,16 @@ export default function Document() {
     <Html lang="en">
       <Head>
         {/* Standard SEO */}
-        <meta name="description" content="Mayday Global es sinónimo de agilidad en los procesos, personalización en la atención y excelencia en el servicio post venta. Somos más que una plataforma, somos el motor que impulsa a los contact centers al siguiente nivel." />
-        <meta name="keywords" content="contact center, atención al cliente, plataforma omnicanal, soluciones IT, Mayday Global" />
+        <meta
+          name="description"
+          content="Mayday Global es sinónimo de agilidad en los procesos, personalización en la atención y excelencia en el servicio post venta. Somos más que una plataforma, somos el motor que impulsa a los contact centers al siguiente nivel."
+        />
+        <meta
+          name="keywords"
+          content="contact center, atención al cliente, plataforma omnicanal, soluciones IT, Mayday Global"
+        />
         <meta name="author" content="Mayday Global" />
-        
+
         {/* Open Graph / Social Media Metadata */}
         <meta property="og:title" content="Mayday Global" />
         <meta
@@ -17,7 +23,10 @@ export default function Document() {
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://mayday.global" />
-        <meta property="og:image" content="https://mayday.global/assets/og-image.png" />
+        <meta
+          property="og:image"
+          content="https://mayday.global/assets/og-image.jpg"
+        />
         <meta property="og:site_name" content="Mayday Global" />
 
         {/* Twitter Card data */}
@@ -27,10 +36,16 @@ export default function Document() {
           name="twitter:description"
           content="Mayday Global es sinónimo de agilidad en los procesos, personalización en la atención y excelencia en el servicio post venta. Somos más que una plataforma, somos el motor que impulsa a los contact centers al siguiente nivel."
         />
-        <meta name="twitter:image" content="https://mayday.global/assets/og-image.png" />
+        <meta
+          name="twitter:image"
+          content="https://mayday.global/assets/og-image.jpg"
+        />
 
         {/* Google Analytics */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-B9175NWQJS"></script>
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-B9175NWQJS"
+        ></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -38,11 +53,11 @@ export default function Document() {
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'G-B9175NWQJS');
-            `
+            `,
           }}
         />
         {/* End Google Analytics */}
-        
+
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
