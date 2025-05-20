@@ -83,6 +83,22 @@ export default function Document() {
         {/* End Google Tag Manager (noscript) */}
         <Main />
         <NextScript />
+        
+        {/* Botmaker Webchat */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                let js = document.createElement('script');
+                js.type = 'text/javascript';
+                js.async = 1;
+                js.src = 'https://go.botmaker.com/rest/webchat/p/KZGAU0Z40F/init.js';
+                document.body.appendChild(js);
+              })();
+            `,
+          }}
+        />
+        {/* END Botmaker Webchat */}
       </body>
     </Html>
   );
