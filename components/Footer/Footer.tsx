@@ -6,7 +6,7 @@ const locations = [
   {
     country: "ARGENTINA",
     flag: "/assets/flags/argentina.svg",
-    address: "Gorostiaga 2335 Of. 802,",
+    address: "Gorostiaga 2355 Of. 802,",
     city: "CABA, Buenos Aires.",
   },
   {
