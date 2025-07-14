@@ -36,9 +36,9 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
   askDemo = false,
 }) => {
   const { ref, inView } = useInView({
-    threshold: 0.2,
+    threshold: [0, 0.1, 0.2, 0.3],
     triggerOnce: true,
-    rootMargin: "-50px",
+    rootMargin: "50px",
   });
 
   // Enhanced animation variants
@@ -232,8 +232,10 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
                   : ""
               }`}
             >
-              {renderImageContent(currentFeature, i)}
-              <div className="grid grid-cols-1 gap-8">
+              <div className="order-2 md:order-1 mb-6 md:mb-0">
+                {renderImageContent(currentFeature, i)}
+              </div>
+              <div className="grid grid-cols-1 gap-6 md:gap-8 order-1 md:order-2">
                 {renderTextContent(currentFeature, i)}
                 {renderTextContent(currentFeature, i, true)}
               </div>
@@ -251,11 +253,13 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
                   : ""
               }`}
             >
-              <div className="grid grid-cols-1 gap-8">
+              <div className="grid grid-cols-1 gap-6 md:gap-8 order-1">
                 {renderTextContent(currentFeature, i)}
                 {renderTextContent(currentFeature, i, true)}
               </div>
-              {renderImageContent(currentFeature, i)}
+              <div className="order-2 mt-6 md:mt-0">
+                {renderImageContent(currentFeature, i)}
+              </div>
             </div>
           </motion.div>
         );
@@ -309,7 +313,11 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
             custom={features.length}
             className="w-full flex justify-center mb-[8rem]"
           >
-            <Link href={DEMO_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+            <Link
+              href={DEMO_WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Button>Solicitar demo</Button>
             </Link>
           </motion.div>
