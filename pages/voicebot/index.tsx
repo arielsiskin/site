@@ -9,14 +9,14 @@ const Voicebot = () => {
     <div className="w-full">
       <InternHero
         title="VoiceBot"
-        description="Automatizá tus llamadas entrantes y salientes con inteligencia artificial. El VoiceBot de Collaborix convierte cada interacción telefónica en una experiencia fluida, eficiente y disponible las 24 horas."
-        imageUrl="/assets/products/product-3.png"
+        description="Automatizá tus llamadas entrantes y salientes con inteligencia artificial. Convierte cada interacción telefónica en una experiencia fluida, eficiente y disponible las 24 horas."
+        imageUrl="/assets/voicebot/voicebot-hero.png"
       />
 
       <ProductsIntern features={features} />
 
       <InternBanner
-        title="Potenciado por Collaborix AI"
+        title="Tecnología de Voz con IA Avanzada"
         features={[
           "Reconocimiento de voz, síntesis natural, NLP avanzado e integración nativa con tus sistemas.",
         ]}

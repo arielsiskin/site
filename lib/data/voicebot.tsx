@@ -7,10 +7,10 @@ export const features: FeatureItem[] = [
     title: ["LLAMADAS AUTOMATIZADAS 24/7", "VOCES SINTÉTICAS NATURALES"],
     description: [
       "Gestiona miles de llamadas entrantes y salientes de forma simultánea, sin tiempos de espera ni agentes disponibles. Nuestro VoiceBot opera sin interrupciones las 24 horas, resolviendo consultas, validando datos y guiando al usuario en cada paso del proceso con respuestas precisas e inmediatas.",
-      "Gracias a la tecnología de síntesis de voz avanzada de Collaborix, las conversaciones suenan naturales y fluidas. El sistema adapta el tono, ritmo y entonación para ofrecer una experiencia cercana al humano, mejorando la percepción de tu marca y la satisfacción del cliente.",
+      "Las conversaciones suenan naturales y fluidas gracias a síntesis de voz de última generación. El sistema adapta el tono, ritmo y entonación para ofrecer una experiencia cercana al humano, mejorando la percepción de tu marca y la satisfacción del cliente.",
     ],
     layout: "image-text-text",
-    image: "/assets/products/product-3.png",
+    image: "/assets/voicebot/voicebot-hero.png",
     hasBorder: false,
     link: DEMO_WHATSAPP_URL,
   },

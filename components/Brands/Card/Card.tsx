@@ -179,9 +179,7 @@ const Card = ({
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={legendVariants}
-          className={`text-xs lg:text-lg font-normal uppercase ${
-            mode === "dark" ? "text-[#2A449E]" : "text-white"
-          }`}
+          className="text-xs lg:text-lg font-normal uppercase text-white"
         >
           {legend}
         </motion.h3>
@@ -189,9 +187,7 @@ const Card = ({
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={titleVariants}
-          className={`text-lg lg:text-[3rem] leading-[1] font-black uppercase ${
-            mode === "dark" ? "text-primary " : "text-white "
-          }`}
+          className="text-lg lg:text-[3rem] leading-[1] font-black uppercase text-white"
         >
           {title}
         </motion.h2>
@@ -215,9 +211,7 @@ const Card = ({
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={descriptionVariants}
-          className={`text-xs lg:text-lg ${
-            mode === "dark" ? "text-primary" : "text-white"
-          }`}
+          className="text-xs lg:text-lg text-white"
           style={width ? { width: `${width}px` } : {}}
         >
           {description}
