@@ -4,21 +4,21 @@ import { HeroHighlight } from "../UI/HeroHighlight";
 
 const Brands = () => {
   const brands = [
-    { name: "Brand 1", logo: "/assets/brands/botmaker.svg" },
-    { name: "Brand 2", logo: "/assets/brands/neotel.svg" },
-    { name: "Brand 3", logo: "/assets/brands/s1.svg" },
-    { name: "Brand 4", logo: "/assets/brands/botmaker.svg" },
-    { name: "Brand 5", logo: "/assets/brands/neotel.svg" },
-    { name: "Brand 6", logo: "/assets/brands/s1.svg" },
-    { name: "Brand 6", logo: "/assets/WFMOp.svg" },
+    { name: "Botmaker", logo: "/assets/brands/botmaker.svg" },
+    { name: "Neotel", logo: "/assets/brands/neotel.svg" },
+    { name: "Collaborix", logo: "/assets/brands/collaborix.svg" },
+    { name: "Botmaker", logo: "/assets/brands/botmaker.svg" },
+    { name: "Neotel", logo: "/assets/brands/neotel.svg" },
+    { name: "Collaborix", logo: "/assets/brands/collaborix.svg" },
+    { name: "WFMOp", logo: "/assets/WFMOp.svg" },
     // Duplicate brands to create seamless loop
-    { name: "Brand 1", logo: "/assets/brands/botmaker.svg" },
-    { name: "Brand 2", logo: "/assets/brands/neotel.svg" },
-    { name: "Brand 3", logo: "/assets/brands/s1.svg" },
-    { name: "Brand 4", logo: "/assets/brands/botmaker.svg" },
-    { name: "Brand 5", logo: "/assets/brands/neotel.svg" },
-    { name: "Brand 6", logo: "/assets/brands/s1.svg" },
-    { name: "Brand 6", logo: "/assets/WFMOp.svg" },
+    { name: "Botmaker", logo: "/assets/brands/botmaker.svg" },
+    { name: "Neotel", logo: "/assets/brands/neotel.svg" },
+    { name: "Collaborix", logo: "/assets/brands/collaborix.svg" },
+    { name: "Botmaker", logo: "/assets/brands/botmaker.svg" },
+    { name: "Neotel", logo: "/assets/brands/neotel.svg" },
+    { name: "Collaborix", logo: "/assets/brands/collaborix.svg" },
+    { name: "WFMOp", logo: "/assets/WFMOp.svg" },
   ];
 
   return (

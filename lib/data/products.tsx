@@ -35,16 +35,28 @@ export const productList = [
     description:
       "Tenemos la solución más confiable para automatizar tu atención al cliente con bots inteligentes, mejorando la experiencia del usuario y reduciendo costos operativos.",
   },
+  // {
+  //   id: 4,
+  //   textPosition: "right",
+  //   mode: "dark",
+  //   imageUrl: "/assets/products/product-4.png",
+  //   ctaUrl: "/conversational-platform",
+  //   width: 421,
+  //   legend: "nuestras soluciones",
+  //   title: "Conversational Platform",
+  //   description:
+  //     "Ofrecemos una eficiente plataforma integral de atención al cliente que optimiza la comunicación multicanal ideada para transacciones de comerciales.",
+  // },
   {
-    id: 4,
+    id: 5,
     textPosition: "right",
     mode: "dark",
-    imageUrl: "/assets/products/product-4.png",
-    ctaUrl: "/conversational-platform",
+    imageUrl: "/assets/products/product-3.png",
+    ctaUrl: "/voicebot",
     width: 421,
     legend: "nuestras soluciones",
-    title: "Conversational Platform",
+    title: "VoiceBot",
     description:
-      "Ofrecemos una eficiente plataforma integral de atención al cliente que optimiza la comunicación multicanal ideada para transacciones de comerciales.",
+      "Automatizá llamadas entrantes y salientes con inteligencia artificial. El VoiceBot de Collaborix convierte cada interacción telefónica en una experiencia fluida, con voces sintéticas naturales y reconocimiento de lenguaje avanzado.",
   },
 ];
