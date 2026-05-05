@@ -1,5 +1,7 @@
 import Layout from "@/components/Layout/Layout";
 import "@/styles/globals.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import emailjs from "@emailjs/browser";
