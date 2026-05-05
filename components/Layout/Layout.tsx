@@ -29,10 +29,10 @@ const Layout = ({ children }: LayoutProps) => {
         src="/solutions/ia-bot.jpg"
       />
       <ProductItem
-        title="CONVERSATIONAL PLATFORM"
-        description="Gestiona la comunicación multicanal"
-        href="/conversational-platform"
-        src="/solutions/conversational.jpg"
+        title="VOICEBOT"
+        description="Experiencia Humana + Agentes IA"
+        href="/voicebot"
+        src="/solutions/voicebot.jpg"
       />
       <ProductItem
         title="SYNERGY WFM"
