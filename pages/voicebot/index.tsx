@@ -10,7 +10,7 @@ const Voicebot = () => {
       <InternHero
         title="VoiceBot"
         description="Automatizá tus llamadas entrantes y salientes con inteligencia artificial. Convierte cada interacción telefónica en una experiencia fluida, eficiente y disponible las 24 horas."
-        imageUrl="/assets/voicebot/voicebot-hero.png"
+        imageUrl="/assets/voicebot/voicebot-hero.jpg"
       />
 
       <ProductsIntern features={features} />

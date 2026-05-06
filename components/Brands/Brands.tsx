@@ -7,17 +7,23 @@ const Brands = () => {
     { name: "Botmaker", logo: "/assets/brands/botmaker.svg" },
     { name: "Neotel", logo: "/assets/brands/neotel.svg" },
     { name: "Collaborix", logo: "/assets/brands/collaborix.svg" },
-    { name: "Botmaker", logo: "/assets/brands/botmaker.svg" },
-    { name: "Neotel", logo: "/assets/brands/neotel.svg" },
-    { name: "Collaborix", logo: "/assets/brands/collaborix.svg" },
+    { name: "Vocalcom", logo: "/assets/brands/vocalcom.png" },
     { name: "WFMOp", logo: "/assets/WFMOp.svg" },
-    // Duplicate brands to create seamless loop
     { name: "Botmaker", logo: "/assets/brands/botmaker.svg" },
     { name: "Neotel", logo: "/assets/brands/neotel.svg" },
     { name: "Collaborix", logo: "/assets/brands/collaborix.svg" },
+    { name: "Vocalcom", logo: "/assets/brands/vocalcom.png" },
+    { name: "WFMOp", logo: "/assets/WFMOp.svg" },
+    // Duplicate for seamless loop
     { name: "Botmaker", logo: "/assets/brands/botmaker.svg" },
     { name: "Neotel", logo: "/assets/brands/neotel.svg" },
     { name: "Collaborix", logo: "/assets/brands/collaborix.svg" },
+    { name: "Vocalcom", logo: "/assets/brands/vocalcom.png" },
+    { name: "WFMOp", logo: "/assets/WFMOp.svg" },
+    { name: "Botmaker", logo: "/assets/brands/botmaker.svg" },
+    { name: "Neotel", logo: "/assets/brands/neotel.svg" },
+    { name: "Collaborix", logo: "/assets/brands/collaborix.svg" },
+    { name: "Vocalcom", logo: "/assets/brands/vocalcom.png" },
     { name: "WFMOp", logo: "/assets/WFMOp.svg" },
   ];
 

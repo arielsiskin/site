@@ -51,7 +51,7 @@ export const productList = [
     id: 5,
     textPosition: "right",
     mode: "dark",
-    imageUrl: "/assets/products/product-3.png",
+    imageUrl: "/assets/voicebot/voicebot-hero.jpg",
     ctaUrl: "/voicebot",
     width: 421,
     legend: "nuestras soluciones",

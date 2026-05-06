@@ -10,7 +10,7 @@ export const features: FeatureItem[] = [
       "Las conversaciones suenan naturales y fluidas gracias a síntesis de voz de última generación. El sistema adapta el tono, ritmo y entonación para ofrecer una experiencia cercana al humano, mejorando la percepción de tu marca y la satisfacción del cliente.",
     ],
     layout: "image-text-text",
-    image: "/assets/voicebot/voicebot-hero.png",
+    image: "/assets/voicebot/voicebot-hero.jpg",
     hasBorder: false,
     link: DEMO_WHATSAPP_URL,
   },
