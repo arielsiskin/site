@@ -12,12 +12,10 @@ export const omniChannelProducts: FeatureItem[] = [
   },
   {
     id: 2,
-    title: ["CONECTORES CRM NATIVOS", "CUSTOMER JOURNEY PERSONALIZADO"],
-    description: [
+    title: "CONECTORES CRM NATIVOS",
+    description:
       "Compatibilidad nativa con Microsoft Dynamics 365, Salesforce, Zendesk y más. Tus agentes operan directamente desde su CRM con visión 360° del cliente, reduciendo tiempos de gestión y eliminando cambios de pantalla.",
-      "Accedé a los datos del cliente desde el IVR para proponer un journey pertinente, omnicanal y predictivo. Comunicá con tus clientes por el canal que ellos prefieren, con el historial completo siempre disponible para el agente.",
-    ],
-    layout: "image-text-text",
+    layout: "image-text",
     image: "/assets/omni-channel/CRM.JPG",
     link: "#",
   },
