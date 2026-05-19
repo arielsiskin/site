@@ -1,5 +1,4 @@
 import { FeatureItem } from "@/components/ProductsIntern/ProductsIntern";
-import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 
 export const omniChannelProducts: FeatureItem[] = [
   {
@@ -53,20 +52,12 @@ export const omniChannelProducts2: FeatureItem[] = [
     id: 2,
     title: "INSTALACIÓN RÁPIDA",
     description:
-      "Plataforma 100% en la nube GCP (Google Cloud), sin necesidad de infraestructura física.",
+      "Plataforma 100% en la nube, disponible sobre GCP (Google Cloud Platform) o AWS (Amazon Web Services), sin necesidad de infraestructura física.",
     layout: "text-text",
-  },
-  {
-    id: 3,
-    title: "ANÁLISIS DE DATOS EN TIEMPO REAL",
-    description: "",
-    bullets: [
-      "+100 reportes built-in para analizar rendimiento.",
-      "Integración con Power BI y Tableau para visualización avanzada.",
-      "Dashboard unificado con métricas de llamadas y desempeño del equipo.",
+    imgUrls: [
+      "/assets/omni-channel/gcp.svg",
+      "/assets/omni-channel/aws.png",
     ],
-    layout: "text-text",
-    link: DEMO_WHATSAPP_URL,
   },
 ];
 

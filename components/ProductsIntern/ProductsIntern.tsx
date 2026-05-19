@@ -24,6 +24,7 @@ export interface FeatureItem {
     | "full-image";
   image?: string;
   imgUrl?: string;
+  imgUrls?: string[];
 }
 
 interface ProductFeaturesProps {
@@ -111,7 +112,13 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
         item.hasBorder ? "border-2 p-[32px] border-gray-200 rounded-[30px]" : ""
       }`}
     >
-      {(item.link || item.imgUrl) && (
+      {item.imgUrls && item.imgUrls.length > 0 ? (
+        <div className="flex items-center gap-6 my-4">
+          {item.imgUrls.map((url, i) => (
+            <img key={i} src={url} alt="" className="h-10 object-contain" />
+          ))}
+        </div>
+      ) : (item.link || item.imgUrl) && (
         <motion.div whileHover={{ x: 5 }} className={`my-4`}>
           <Link
             href={item.link || "#"}
