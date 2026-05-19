@@ -15,36 +15,27 @@ const alliesData = [
       { name: "ECD", logo: "/assets/allies/mexico/ecd.png" },
       { name: "ecatepac", logo: "/assets/allies/mexico/ecatepac.png" },
       { name: "univer", logo: "/assets/allies/mexico/univer.png" },
-      { name: "Vivaro", logo: "/assets/allies/mexico/vivaro.png" },
-      {
-        name: "Brain Network",
-        logo: "/assets/allies/mexico/fkt.png",
-      },
-      {
-        name: "UB",
-        logo: "/assets/allies/mexico/britanica.png",
-      },
-      {
-        name: "Vasconcelos",
-        logo: "/assets/allies/mexico/vasconcelos.png",
-      },
+      { name: "Autofin", logo: "/assets/allies/mexico/autofin.png" },
+      { name: "Pulser Education", logo: "/assets/allies/mexico/pulser.webp" },
+      { name: "Brain Network", logo: "/assets/allies/mexico/fkt.png" },
+      { name: "UB", logo: "/assets/allies/mexico/britanica.png" },
+      { name: "Vasconcelos", logo: "/assets/allies/mexico/vasconcelos.png" },
+    ],
+  },
+  {
+    country: "ARGENTINA",
+    brands: [
+      { name: "AAARBA", logo: "/assets/allies/argentina/aaarba.png" },
+      { name: "Clínica de Cuyo", logo: "/assets/allies/argentina/cuyo.svg" },
+      { name: "Comunicaciones del Sol", logo: "/assets/allies/argentina/comdelsol.webp" },
     ],
   },
   {
     country: "PARAGUAY",
     brands: [
-      {
-        name: "CrediSolución",
-        logo: "/assets/allies/paraguay/credisolucion.png",
-      },
-      {
-        name: "Sistemas y Gestiones",
-        logo: "/assets/allies/paraguay/sistemasygestiones.png",
-      },
-      {
-        name: "Megared",
-        logo: "/assets/allies/paraguay/megared.png",
-      },
+      { name: "CrediSolución", logo: "/assets/allies/paraguay/credisolucion.png" },
+      { name: "Sistemas y Gestiones", logo: "/assets/allies/paraguay/sistemasygestiones.png" },
+      { name: "Code100", logo: "/assets/allies/paraguay/code100.webp" },
     ],
   },
   {
@@ -52,7 +43,7 @@ const alliesData = [
     brands: [
       { name: "Dr. Max", logo: "/assets/allies/paraguay/drmax.png" },
       { name: "Medismart", logo: "/assets/allies/paraguay/medismart.png" },
-      { name: "Farma", logo: "/assets/allies/rest/farma.png" },
+      { name: "Artelec", logo: "/assets/allies/rest/artelec.png" },
       { name: "OnCall", logo: "/assets/allies/rest/oncall.png" },
       { name: "Puntual", logo: "/assets/allies/rest/puntual.png" },
       { name: "1000Tips", logo: "/assets/allies/rest/scc.png" },
