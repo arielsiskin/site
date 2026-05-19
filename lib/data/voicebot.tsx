@@ -19,25 +19,6 @@ export const features: FeatureItem[] = [
     image: "/assets/voicebot/voicebot-hero.jpg",
   },
   {
-    id: 3,
-    title: "Reconocimiento de Voz e Intención (ASR + NLP)",
-    description:
-      "El VoiceBot comprende el lenguaje natural del usuario en tiempo real. Mediante tecnologías de reconocimiento automático de voz (ASR) y procesamiento de lenguaje natural (NLP), identifica la intención detrás de cada frase, incluso en contextos coloquiales, acentos regionales o frases incompletas, garantizando interacciones efectivas.",
-    layout: "image-text",
-    image: "/assets/products/product-2b.png",
-  },
-  {
-    id: 4,
-    title: "Analítica en tiempo real",
-    bullets: [
-      "Accedé a métricas detalladas de cada interacción: duración, intención detectada, tasa de resolución y satisfacción del cliente. Los dashboards en tiempo real permiten optimizar flujos, identificar cuellos de botella y tomar decisiones basadas en datos.",
-      "Integrá el VoiceBot con tu CRM, plataforma omnicanal o sistemas internos para enriquecer cada conversación con contexto del cliente y registrar automáticamente los resultados de cada llamada.",
-    ],
-    description: "",
-    layout: "text-image",
-    image: "/assets/ia-bot/image-3.png",
-  },
-  {
     id: 5,
     title: "Reportes Detallados en Tiempo Real",
     description:
