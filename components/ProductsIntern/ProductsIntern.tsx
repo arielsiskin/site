@@ -226,18 +226,20 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
               <motion.div
                 custom={i}
                 variants={imageVariants}
-                className="flex flex-col items-center gap-3 bg-gray-100 rounded-3xl p-8"
+                className="order-2 md:order-1 flex flex-col items-center gap-3 bg-gray-100 rounded-3xl p-8"
               >
                 <img src={currentFeature.imgUrls[0]} alt="" className="h-16 object-contain" />
                 {currentFeature.imgLabels?.[0] && (
                   <span className="text-sm text-gray-500 font-medium text-center">{currentFeature.imgLabels[0]}</span>
                 )}
               </motion.div>
-              {renderTextContent(currentFeature, i)}
+              <div className="order-1 md:order-2">
+                {renderTextContent(currentFeature, i)}
+              </div>
               <motion.div
                 custom={i + 0.5}
                 variants={imageVariants}
-                className="flex flex-col items-center gap-3 bg-gray-100 rounded-3xl p-8"
+                className="order-3 flex flex-col items-center gap-3 bg-gray-100 rounded-3xl p-8"
               >
                 <img src={currentFeature.imgUrls[1]} alt="" className="h-16 object-contain" />
                 {currentFeature.imgLabels?.[1] && (
@@ -320,8 +322,12 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
                 </>
               ) : (
                 <>
-                  {renderImageContent(currentFeature, i)}
-                  {renderTextContent(currentFeature, i)}
+                  <div className="order-2 md:order-1">
+                    {renderImageContent(currentFeature, i)}
+                  </div>
+                  <div className="order-1 md:order-2">
+                    {renderTextContent(currentFeature, i)}
+                  </div>
                 </>
               )}
             </div>
