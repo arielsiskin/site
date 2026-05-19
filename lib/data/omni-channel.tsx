@@ -55,8 +55,8 @@ export const omniChannelProducts2: FeatureItem[] = [
       "Arquitectura elástica sin servidores físicos locales. Disponible sobre Google Cloud Platform o Amazon Web Services según tu preferencia.",
     layout: "text-text",
     imgUrls: [
-      "/assets/omni-channel/gcp.svg",
-      "/assets/omni-channel/aws.png",
+      "/assets/omni-channel/gcp.png",
+      "/assets/omni-channel/aws-dark.png",
     ],
     imgLabels: ["Google Cloud Platform", "Amazon Web Services"],
   },
