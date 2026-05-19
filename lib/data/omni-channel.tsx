@@ -43,7 +43,7 @@ export const omniChannelProducts2: FeatureItem[] = [
     id: 1,
     title: "SOPORTE Y CAPACITACIÓN",
     description:
-      "desde el primer día. Nuestro equipo de expertos brinda asistencia personalizada y formación continua para garantizar el máximo rendimento de nuestras tecnologías.",
+      "Desde el primer día. Nuestro equipo de expertos brinda asistencia personalizada y formación continua para garantizar el máximo rendimento de nuestras tecnologías.",
     image: "/assets/omni-channel/soporte.png",
     layout: "text-image",
     hasBorder: true,
@@ -52,12 +52,13 @@ export const omniChannelProducts2: FeatureItem[] = [
     id: 2,
     title: "INSTALACIÓN RÁPIDA",
     description:
-      "Plataforma 100% en la nube, disponible sobre GCP (Google Cloud Platform) o AWS (Amazon Web Services), sin necesidad de infraestructura física.",
+      "Arquitectura elástica sin servidores físicos locales. Disponible sobre Google Cloud Platform o Amazon Web Services según tu preferencia.",
     layout: "text-text",
     imgUrls: [
       "/assets/omni-channel/gcp.svg",
       "/assets/omni-channel/aws.png",
     ],
+    imgLabels: ["Google Cloud Platform", "Amazon Web Services"],
   },
 ];
 

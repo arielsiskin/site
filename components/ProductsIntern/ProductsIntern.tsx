@@ -25,6 +25,7 @@ export interface FeatureItem {
   image?: string;
   imgUrl?: string;
   imgUrls?: string[];
+  imgLabels?: string[];
 }
 
 interface ProductFeaturesProps {
@@ -104,21 +105,17 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
     item: FeatureItem,
     index: number,
     isSecondary = false
-  ) => (
+  ) => {
+    const isCentered = !!(item.imgUrls && item.imgUrls.length >= 2);
+    return (
     <motion.div
       custom={index}
       variants={textContentVariants}
-      className={`flex flex-col justify-center p-8 ${
+      className={`flex flex-col justify-center p-8 ${isCentered ? "items-center text-center" : ""} ${
         item.hasBorder ? "border-2 p-[32px] border-gray-200 rounded-[30px]" : ""
       }`}
     >
-      {item.imgUrls && item.imgUrls.length > 0 ? (
-        <div className="flex items-center gap-6 my-4">
-          {item.imgUrls.map((url, i) => (
-            <img key={i} src={url} alt="" className="h-10 object-contain" />
-          ))}
-        </div>
-      ) : (item.link || item.imgUrl) && (
+      {(item.link || item.imgUrl) && !(item.imgUrls?.length) && (
         <motion.div whileHover={{ x: 5 }} className={`my-4`}>
           <Link
             href={item.link || "#"}
@@ -169,6 +166,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
       )}
     </motion.div>
   );
+  };
 
   const renderImageContent = (item: FeatureItem, index: number) =>
     item.image && (
@@ -211,6 +209,40 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
                   }
                   className="w-full h-auto object-contain"
                 />
+              </motion.div>
+            </div>
+          </motion.div>
+        );
+        i += 1;
+      } else if (
+        currentFeature.layout === "text-text" &&
+        currentFeature.imgUrls &&
+        currentFeature.imgUrls.length >= 2 &&
+        nextFeature?.layout !== "text-text"
+      ) {
+        result.push(
+          <motion.div key={currentFeature.id} className="mb-16 md:mb-24">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr,1.4fr,1fr] gap-8 items-center">
+              <motion.div
+                custom={i}
+                variants={imageVariants}
+                className="flex flex-col items-center gap-3 bg-gray-100 rounded-3xl p-8"
+              >
+                <img src={currentFeature.imgUrls[0]} alt="" className="h-16 object-contain" />
+                {currentFeature.imgLabels?.[0] && (
+                  <span className="text-sm text-gray-500 font-medium text-center">{currentFeature.imgLabels[0]}</span>
+                )}
+              </motion.div>
+              {renderTextContent(currentFeature, i)}
+              <motion.div
+                custom={i + 0.5}
+                variants={imageVariants}
+                className="flex flex-col items-center gap-3 bg-gray-100 rounded-3xl p-8"
+              >
+                <img src={currentFeature.imgUrls[1]} alt="" className="h-16 object-contain" />
+                {currentFeature.imgLabels?.[1] && (
+                  <span className="text-sm text-gray-500 font-medium text-center">{currentFeature.imgLabels[1]}</span>
+                )}
               </motion.div>
             </div>
           </motion.div>
