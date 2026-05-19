@@ -118,8 +118,8 @@ const Card = ({
       }}
       className={`relative container w-[100%] md:w-[80%] lg:w-[900px] 2xl:w-[1196px] h-[406px] md:h-[300px] lg:h-[420px] 2xl:h-[640px] mx-auto md:mt-10 md:rounded-sm overflow-hidden`}
     >
-      {/* Overlay: dark on mobile, transparent on md+ */}
-      <div className="absolute inset-0 bg-black/60 md:bg-transparent z-10 transition-colors duration-300" />
+      {/* Overlay: dark on mobile and md+ for text readability */}
+      <div className="absolute inset-0 bg-black/60 md:bg-black/50 z-10 transition-colors duration-300" />
       {/* Responsive Content */}
       {/* Mobile: bottom overlay, centered */}
       <div className="absolute z-20 flex flex-col justify-center w-[70%] md:w-full h-full p-6 md:hidden bottom-0 left-0">
