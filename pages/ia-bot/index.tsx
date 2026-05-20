@@ -9,17 +9,16 @@ const IaBot = () => {
     <div className="w-full">
       <InternHero
         title="IA Bot"
-        description="Tenemos la solución más confiable para automatizar tu atención al cliente con bots inteligentes, mejorando la experiencia del usuario y reduciendo costos operativos."
+        description="Gestiona conversaciones y procesos de manera autónoma con agentes de IA en WhatsApp, Instagram, Webchat, TikTok, Callbots y Mailbots."
         imageUrl="/assets/ia-bot/robot.png"
       />
 
       <ProductsIntern features={features} />
 
       <InternBanner
-        title="Más de 20 canales conectados"
-        features={[
-          "WhatsApp, Webchat, e-mail, redes, Telegram, Slack, Microsoft Teams y más.",
-        ]}
+        title="Recomendado por los usuarios en G2"
+        image="/assets/ia-bot/recomendado.png"
+        imageRight
       />
 
       <ProductsIntern features={solutionsFeatures} askDemo={true} />

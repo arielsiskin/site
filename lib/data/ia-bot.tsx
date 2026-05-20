@@ -4,25 +4,30 @@ import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 export const features: FeatureItem[] = [
   {
     id: 1,
-    title: ["ATENCIÓN 24/7", "VIDEOLLAMADAS Y ASISTENCIA EN TIEMPO REAL"],
-    description: [
-      "Ofrece una atención continua y sin interrupciones, brindando respuestas inmediatas, sin necesidad de agentes humanos. Nuestra tecnología conversacional permite resolver consultas, gestionar operaciones y acompañar al usuario en todo momento, mejorando la experiencia del cliente y reduciendo costos operativos.",
-      "Potencia tus interacciones con clientes sumando videollamadas directamente desde el chat. Escala conversaciones a canales visuales facilitando el soporte técnico o la demostración de productos. Una solución ideal para ofrecer una experiencia omnicanal fluida y de alto valor agregado.",
-    ],
-    layout: "image-text-text",
-    image: "/assets/ia-bot/image-1.png",
-    hasBorder: false,
+    title: "INTELIGENCIA EN CADA CONVERSACIÓN",
+    description:
+      "Diseña, orquesta y supervisa agentes autónomos que resuelven ventas, atención y operaciones a escala. Nuestros agentes IA entienden, deciden y resuelven.",
+    layout: "text-image",
+    image: "/assets/ia-bot/orquestador.png",
     link: DEMO_WHATSAPP_URL,
   },
   {
     id: 2,
+    title: "CONECTA TODOS TUS CANALES DIGITALES",
+    description:
+      "Conversa con tus clientes a través de WhatsApp, Instagram, TikTok, E-mail y Teléfono y conéctalo nativamente con tu CRM, ERP, Sistemas de Pago o API Propia.",
+    layout: "image-text",
+    image: "/assets/ia-bot/redes_sociales.png",
+  },
+  {
+    id: 3,
     title: "Analytics Dashboard",
     description: "",
     layout: "full-image",
     image: "/assets/ia-bot/image-2.png",
   },
   {
-    id: 3,
+    id: 4,
     title: "Análisis y Optimización Contínua",
     bullets: [
       "Accede a métricas en tiempo real para analizar tus interacciones. Además, mediante flujos conversacionales inteligentes podrás automatizar tareas, generar y calificar leads de manera proactiva.",
@@ -33,9 +38,10 @@ export const features: FeatureItem[] = [
     image: "/assets/ia-bot/image-3.png",
   },
   {
-    id: 4,
+    id: 5,
     title: "Procesamiento de Lenguaje Natural (NLP) y Machine Learning",
-    description: "La plataforma incorpora tecnologías avanzadas de Procesamiento de Lenguaje Natural (NLP) y Machine Learning para comprender con mayor profundidad la intención detrás de cada mensaje del usuario, incluso en contextos complejos o con lenguaje coloquial.",
+    description:
+      "La plataforma incorpora tecnologías avanzadas de Procesamiento de Lenguaje Natural (NLP) y Machine Learning para comprender con mayor profundidad la intención detrás de cada mensaje del usuario, incluso en contextos complejos o con lenguaje coloquial.",
     layout: "image-text",
     image: "/assets/ia-bot/image-4.png",
   },
@@ -48,7 +54,7 @@ export const solutionsFeatures: FeatureItem[] = [
     description:
       "con API certificada para una implementación segura y escalable.",
     layout: "text-text",
-    image: "/assets/icons/whatsapp.svg", // You can still use the image prop for the icon
+    image: "/assets/icons/whatsapp.svg",
     imgUrl: "/assets/ia-bot/whatsapp.svg",
     hasBorder: true,
   },

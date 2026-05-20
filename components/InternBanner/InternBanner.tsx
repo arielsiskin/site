@@ -10,6 +10,7 @@ interface InternBannerProps {
   image?: string;
   subtitle?: string;
   logoImage?: string;
+  imageRight?: boolean;
 }
 
 export const InternBanner: React.FC<InternBannerProps> = ({
@@ -18,6 +19,7 @@ export const InternBanner: React.FC<InternBannerProps> = ({
   image,
   subtitle,
   logoImage,
+  imageRight = false,
 }) => {
   const { ref, inView } = useInView({
     threshold: 0.2,
@@ -92,11 +94,15 @@ export const InternBanner: React.FC<InternBannerProps> = ({
       <div className="max-w-[100%] mx-auto">
         <div
           className={`grid grid-cols-1 ${
-            image ? "lg:grid-cols-2" : "lg:grid-cols-1"
+            image && !imageRight
+              ? "lg:grid-cols-2"
+              : image && imageRight
+              ? "lg:grid-cols-[1fr,1.5fr]"
+              : "lg:grid-cols-1"
           }`}
         >
-          {/* Image - Hidden on mobile */}
-          {image && (
+          {/* Image Left - Hidden on mobile */}
+          {image && !imageRight && (
             <motion.div
               variants={imageVariants}
               className="hidden lg:block relative h-full min-h-[500px]"
@@ -154,6 +160,20 @@ export const InternBanner: React.FC<InternBannerProps> = ({
               </ul>
             )}
           </div>
+
+          {/* Image Right - visible on desktop */}
+          {image && imageRight && (
+            <motion.div
+              variants={imageVariants}
+              className="hidden lg:flex items-center justify-center px-8 py-12"
+            >
+              <img
+                src={image}
+                alt="Banner illustration"
+                className="w-full max-h-[360px] object-contain"
+              />
+            </motion.div>
+          )}
         </div>
       </div>
     </motion.div>
