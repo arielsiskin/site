@@ -15,7 +15,7 @@ const alliesData = [
       { name: "ECD", logo: "/assets/allies/mexico/ecd.png" },
       { name: "ecatepac", logo: "/assets/allies/mexico/ecatepac.png" },
       { name: "univer", logo: "/assets/allies/mexico/univer.png" },
-      { name: "Autofin", logo: "/assets/allies/mexico/autofin.png" },
+      { name: "Autofin", logo: "/assets/allies/mexico/autofin_monterrey.png" },
       { name: "Pulser Education", logo: "/assets/allies/mexico/pulser.webp" },
       { name: "Brain Network", logo: "/assets/allies/mexico/fkt.png" },
       { name: "UB", logo: "/assets/allies/mexico/britanica.png" },
