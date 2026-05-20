@@ -1,8 +1,9 @@
 import { InternHero } from "@/components/InternHero/InternHero";
 import React from "react";
 import ProductsIntern from "@/components/ProductsIntern/ProductsIntern";
-import { features, solutionsFeatures } from "@/lib/data/ia-bot";
+import { features } from "@/lib/data/ia-bot";
 import InternBanner from "@/components/InternBanner/InternBanner";
+import AgentsCards from "@/components/AgentsCards/AgentsCards";
 
 const IaBot = () => {
   return (
@@ -18,10 +19,10 @@ const IaBot = () => {
       <InternBanner
         title="Recomendado por los usuarios en G2"
         image="/assets/ia-bot/recomendado.png"
-        imageRight
+        centeredImage
       />
 
-      <ProductsIntern features={solutionsFeatures} askDemo={true} />
+      <AgentsCards />
     </div>
   );
 };

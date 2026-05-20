@@ -111,7 +111,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
     <motion.div
       custom={index}
       variants={textContentVariants}
-      className={`flex flex-col justify-center p-8 ${isCentered ? "items-center text-center" : ""} ${
+      className={`flex flex-col justify-center p-8 h-full ${isCentered ? "items-center text-center" : ""} ${
         item.hasBorder ? "border-2 p-[32px] border-gray-200 rounded-[30px]" : ""
       }`}
     >
@@ -309,7 +309,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
         const content = (
           <motion.div key={currentFeature.id} className="mb-16 md:mb-24">
             <div
-              className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${
+              className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch ${
                 currentFeature.hasBorder
                   ? "border-2 p-[32px] border-gray-200 rounded-[30px]"
                   : ""
@@ -367,7 +367,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button>Solicitar demo</Button>
+              <Button size="lg" className="!w-56">Solicitar demo</Button>
             </Link>
           </motion.div>
         )}
