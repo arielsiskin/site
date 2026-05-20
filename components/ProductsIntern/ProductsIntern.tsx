@@ -267,7 +267,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
         result.push(
           <motion.div key={currentFeature.id} className="mb-16 md:mb-24">
             <div
-              className={`grid grid-cols-1 md:grid-cols-[1fr,2fr] gap-8 items-center ${
+              className={`grid grid-cols-1 md:grid-cols-[1fr,2fr] gap-8 items-start ${
                 currentFeature.hasBorder
                   ? "border-2 p-[32px] border-gray-200 rounded-[30px]"
                   : ""
@@ -317,8 +317,12 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
             >
               {currentFeature.layout === "text-image" ? (
                 <>
-                  {renderTextContent(currentFeature, i)}
-                  {renderImageContent(currentFeature, i)}
+                  <div className="order-1">
+                    {renderTextContent(currentFeature, i)}
+                  </div>
+                  <div className="order-2">
+                    {renderImageContent(currentFeature, i)}
+                  </div>
                 </>
               ) : (
                 <>

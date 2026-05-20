@@ -1,5 +1,4 @@
 import { FeatureItem } from "@/components/ProductsIntern/ProductsIntern";
-import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 
 export const features: FeatureItem[] = [
   {
@@ -10,7 +9,7 @@ export const features: FeatureItem[] = [
     layout: "image-text",
     image: "/assets/voicebot/Rag System.JPG",
     hasBorder: false,
-    link: DEMO_WHATSAPP_URL,
+    link: "#",
   },
   {
     id: 2,
@@ -19,7 +18,7 @@ export const features: FeatureItem[] = [
       "Las conversaciones suenan naturales y fluidas gracias a síntesis de voz de última generación. El sistema adapta el tono, ritmo y entonación para ofrecer una experiencia cercana al humano, mejorando la percepción de tu marca y la satisfacción del cliente.",
     layout: "text-image",
     image: "/assets/voicebot/voicebot-hero.jpg",
-    link: DEMO_WHATSAPP_URL,
+    link: "#",
   },
   {
     id: 5,
@@ -28,7 +27,7 @@ export const features: FeatureItem[] = [
       "Accedé a reportes completos de cada interacción telefónica en tiempo real. Cada llamada genera automáticamente un informe con transcripción completa del diálogo, acceso al audio original en línea y métricas de rendimiento por sesión. Tomá decisiones ágiles con información precisa al instante, sin esperar cierres de jornada ni procesos manuales.",
     layout: "image-text",
     image: "/assets/voicebot/Reporte.jfif",
-    link: DEMO_WHATSAPP_URL,
+    link: "#",
   },
   {
     id: 6,
@@ -37,7 +36,7 @@ export const features: FeatureItem[] = [
       "Transformá cada conversación en datos accionables. Nuestra plataforma consolida estadísticas avanzadas de todas las interacciones incorporando análisis de emociones y sentimiento en tiempo real para entender el estado del cliente más allá de las palabras. Accedé a información consolidada sobre tendencias, patrones de comportamiento y niveles de satisfacción para optimizar continuamente la experiencia y tomar decisiones estratégicas basadas en datos.",
     layout: "text-image",
     image: "/assets/voicebot/metricas.JPG",
-    link: DEMO_WHATSAPP_URL,
+    link: "#",
   },
 ];
 
