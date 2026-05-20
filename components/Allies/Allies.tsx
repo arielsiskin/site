@@ -59,7 +59,7 @@ const Allies: React.FC = () => {
           MAYDAY GLOBAL ES EL ALIADO ESTRATÉGICO DE IMPORTANTES <br />
           EMPRESAS EN DIVERSOS SECTORES.
         </h2>
-        <p className="text-center mb-12 text-maydayDarker">
+        <p className="text-center mb-12 text-maydayDarker text-lg">
           Algunas de las organizaciones que han confiado en nuestras soluciones
           son:
         </p>

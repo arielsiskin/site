@@ -99,7 +99,7 @@ const SynergyFeatures: React.FC<SynergyFeaturesProps> = ({
                     </svg>
                   </div>
                 </div>
-                <p className="text-gray-700 font-medium">{feature.text}</p>
+                <p className="text-gray-700 font-medium text-lg">{feature.text}</p>
               </motion.div>
             ))}
           </div>
@@ -133,7 +133,7 @@ const SynergyFeatures: React.FC<SynergyFeaturesProps> = ({
                     </svg>
                   </div>
                 </div>
-                <p className="text-gray-700 font-medium">{feature.text}</p>
+                <p className="text-gray-700 font-medium text-lg">{feature.text}</p>
               </motion.div>
             ))}
           </div>

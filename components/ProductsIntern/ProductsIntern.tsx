@@ -133,7 +133,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
           <motion.h3 className="text-xl uppercase md:text-3xl text-mayday mb-4">
             {item.title[isSecondary ? 1 : 0]}
           </motion.h3>
-          <motion.p className="text-maydayDarker text-sm md:text-lg mb-4">
+          <motion.p className="text-maydayDarker text-lg mb-4">
             {item.description[isSecondary ? 1 : 0]}
           </motion.p>
         </>
@@ -142,7 +142,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
           <motion.h3 className="text-xl uppercase md:text-3xl text-mayday mb-4">
             {item.title}
           </motion.h3>
-          <motion.p className="text-maydayDarker text-sm md:text-lg mb-4">
+          <motion.p className="text-maydayDarker text-lg mb-4">
             {item.description}
           </motion.p>
         </>
@@ -157,7 +157,7 @@ export const ProductFeatures: React.FC<ProductFeaturesProps> = ({
               className="flex items-start space-x-2"
             >
               <span className="text-maydayDarker mt-1">•</span>
-              <span className="text-maydayDarker text-sm md:text-base">
+              <span className="text-maydayDarker text-lg">
                 {bullet}
               </span>
             </motion.li>

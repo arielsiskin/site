@@ -16,7 +16,6 @@ const cards = [
     ),
     title: "Agentes de IA para Chat",
     description: "Automatiza conversaciones en WhatsApp, Instagram, Webchat y otros canales. Resuelve consultas frecuentes y califica leads 24/7.",
-    link: "#",
   },
   {
     icon: (
@@ -26,7 +25,6 @@ const cards = [
     ),
     title: "Agentes de IA para E-mail",
     description: "Agentes de IA que leen, clasifican y responden correos electrónicos. Mantén conversaciones fluidas por email sin intervención humana.",
-    link: "#",
   },
   {
     icon: (
@@ -36,7 +34,6 @@ const cards = [
     ),
     title: "Agentes de IA para Voz",
     description: "Automatiza llamadas por teléfono y WhatsApp Business entrantes y salientes para ventas, cobranzas o soporte con agentes de IA.",
-    link: "#",
   },
 ];
 
@@ -58,18 +55,12 @@ const AgentsCards: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-[#EEF2FF] flex items-center justify-center text-[#6366F1] mb-6">
                 {card.icon}
               </div>
-              <h3 className="text-lg font-bold text-maydayDarker mb-3">
+              <h3 className="text-xl font-bold text-maydayDarker mb-3">
                 {card.title}
               </h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-grow">
+              <p className="text-gray-500 text-lg leading-relaxed">
                 {card.description}
               </p>
-              <Link
-                href={card.link}
-                className="text-primary font-medium text-sm hover:underline"
-              >
-                Ver más →
-              </Link>
             </motion.div>
           ))}
         </div>

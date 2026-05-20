@@ -102,7 +102,7 @@ const SynergyWorkers = () => {
                 <h3 className="text-xl font-normal mb-3 text-mayday">
                   {worker.title}
                 </h3>
-                <p className="text-sm text-gray-600 max-w-xs mx-auto">
+                <p className="text-lg text-gray-600 max-w-xs mx-auto">
                   {worker.description}
                 </p>
               </div>

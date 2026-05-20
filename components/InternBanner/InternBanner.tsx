@@ -178,7 +178,7 @@ export const InternBanner: React.FC<InternBannerProps> = ({
                       className="flex items-start space-x-2"
                     >
                       <span className="text-[#00E5FF] mt-1">•</span>
-                      <span className="text-sm md:text-base w-[300px]">
+                      <span className="text-lg w-[300px]">
                         {feature}
                       </span>
                     </motion.li>
