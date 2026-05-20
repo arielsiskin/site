@@ -35,11 +35,11 @@ const COUNTRIES = [
 ];
 
 const VERTICALS = [
-  "Omnichannel",
-  "VoiceBot",
-  "IA Bot",
+  "OMNICHANNEL",
+  "VOICEBOT",
+  "IA BOT",
   "WFM",
-  "Otros",
+  "OTROS",
 ];
 
 const contactSchema = z.object({
@@ -74,7 +74,7 @@ const Contact = () => {
     formState: { errors },
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
-    defaultValues: { countryCode: "+54" },
+    defaultValues: { countryCode: "🇦🇷 +54" },
   });
 
   const onSubmit = async (data: ContactFormData) => {
@@ -197,7 +197,7 @@ const Contact = () => {
                   className={`${selectClasses} flex-shrink-0`}
                 >
                   {COUNTRIES.map((c) => (
-                    <option key={c.code + c.name} value={c.code}>
+                    <option key={c.code + c.name} value={`${c.flag} ${c.code}`}>
                       {c.flag} {c.code}
                     </option>
                   ))}
