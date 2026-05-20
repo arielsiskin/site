@@ -18,6 +18,7 @@ const IaBot = () => {
 
       <InternBanner
         title="Recomendado por los usuarios en G2"
+        subtitle="High Performers en categorías de IA y mensajería, según las reseñas verificadas de quienes nos usan todos los días."
         image="/assets/ia-bot/recomendado.png"
         centeredImage
       />

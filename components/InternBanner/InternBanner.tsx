@@ -100,10 +100,18 @@ export const InternBanner: React.FC<InternBannerProps> = ({
           <div className="flex flex-col items-center text-center px-4 py-16 md:py-20">
             <motion.h2
               variants={titleVariants}
-              className="text-2xl md:text-4xl font-bold mb-10 text-[#04CCDB] uppercase"
+              className="text-2xl md:text-4xl font-bold mb-4 text-[#04CCDB] uppercase"
             >
               {title}
             </motion.h2>
+            {subtitle && (
+              <motion.p
+                variants={titleVariants}
+                className="text-lg text-white opacity-80 max-w-2xl mb-10"
+              >
+                {subtitle}
+              </motion.p>
+            )}
             {image && (
               <motion.div
                 variants={imageVariants}
