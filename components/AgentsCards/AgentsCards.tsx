@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import Link from "next/link";
@@ -37,6 +37,79 @@ const cards = [
   },
 ];
 
+interface CardItemProps {
+  card: typeof cards[0];
+  index: number;
+  inView: boolean;
+}
+
+const CardItem: React.FC<CardItemProps> = ({ card, index, inView }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.5, delay: index * 0.15 }}
+      className="relative rounded-2xl"
+      style={{
+        boxShadow: isHovered
+          ? "0 8px 32px rgba(99,102,241,0.22)"
+          : "0 1px 4px rgba(0,0,0,0.06)",
+        transition: "box-shadow 0.3s ease",
+      }}
+    >
+      {/* Gradient border — fades in on hover */}
+      <div
+        className="absolute inset-0 rounded-2xl transition-opacity duration-300 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(135deg, #7C3AED 0%, #4F46E5 45%, #06B6D4 100%)",
+          opacity: isHovered ? 1 : 0,
+        }}
+      />
+      {/* Default border — fades out on hover */}
+      <div
+        className="absolute inset-0 rounded-2xl border border-gray-100 transition-opacity duration-300 pointer-events-none"
+        style={{ opacity: isHovered ? 0 : 1 }}
+      />
+
+      {/* Card surface */}
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="relative m-[1px] rounded-2xl p-8 flex flex-col"
+        style={{
+          background: isHovered
+            ? `radial-gradient(circle at ${mousePos.x}px ${mousePos.y}px, rgba(238,242,255,0.9) 0%, white 60%)`
+            : "white",
+          transition: "background 0.08s ease",
+        }}
+      >
+        <div className="w-12 h-12 rounded-full bg-[#EEF2FF] flex items-center justify-center text-[#6366F1] mb-6">
+          {card.icon}
+        </div>
+        <h3 className="text-xl font-bold text-maydayDarker mb-3">
+          {card.title}
+        </h3>
+        <p className="text-gray-500 text-lg leading-relaxed">
+          {card.description}
+        </p>
+      </div>
+    </motion.div>
+  );
+};
+
 const AgentsCards: React.FC = () => {
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
 
@@ -45,23 +118,7 @@ const AgentsCards: React.FC = () => {
       <div className="max-w-[1196px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {cards.map((card, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.5, delay: index * 0.15 }}
-              className="flex flex-col p-8 bg-white rounded-2xl border border-gray-100 shadow-sm"
-            >
-              <div className="w-12 h-12 rounded-full bg-[#EEF2FF] flex items-center justify-center text-[#6366F1] mb-6">
-                {card.icon}
-              </div>
-              <h3 className="text-xl font-bold text-maydayDarker mb-3">
-                {card.title}
-              </h3>
-              <p className="text-gray-500 text-lg leading-relaxed">
-                {card.description}
-              </p>
-            </motion.div>
+            <CardItem key={index} card={card} index={index} inView={inView} />
           ))}
         </div>
 
