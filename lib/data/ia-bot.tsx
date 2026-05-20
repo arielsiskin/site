@@ -20,13 +20,6 @@ export const features: FeatureItem[] = [
     image: "/assets/ia-bot/redes_sociales.png",
   },
   {
-    id: 3,
-    title: "Analytics Dashboard",
-    description: "",
-    layout: "full-image",
-    image: "/assets/ia-bot/image-2.png",
-  },
-  {
     id: 4,
     title: "Análisis y Optimización Contínua",
     bullets: [
