@@ -46,6 +46,8 @@ export default defineAgent({
       // Our own wrapper (eleven-tts.ts): the official ElevenLabs plugin stalls on every reply in agents 1.8.1.
       tts: new ElevenTTS({ voiceId: process.env.ELEVEN_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL' }),
       vad: ctx.proc.userData.vad as InstanceType<typeof SileroVAD>,
+      // Default 3 s: the visitor could not cut the ~4 s greeting. 1 s is enough for the browser echo canceller to settle.
+      aecWarmupDuration: 1000,
       turnHandling: {
         turnDetection: new inference.TurnDetector({ version: 'v1-mini' }),
         // No preemptiveTts (QualityIQ turns it on): here the preemptive TTS stream sometimes never closed and the reply
