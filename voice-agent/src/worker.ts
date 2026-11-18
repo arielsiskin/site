@@ -2,10 +2,11 @@
 // un voicebot de contact center. Deepgram escucha, Gemini contesta y ElevenLabs pone la voz. El visitante la puede
 // interrumpir hablando encima (VAD). Adaptado del worker de QualityIQ (quality-iq/apps/voice-agent/src/worker.ts).
 import { fileURLToPath } from 'node:url';
+import { RoomEvent } from '@livekit/rtc-node';
 import { Agent, AgentSession, AgentSessionEventTypes, cli, defineAgent, inference, ServerOptions, type JobContext } from '@livekit/agents';
 import { STT as DeepgramSTT } from '@livekit/agents-plugin-deepgram';
 import { LLM as GoogleLLM } from '@livekit/agents-plugin-google';
-import { TTS as ElevenTTS } from '@livekit/agents-plugin-elevenlabs';
+import { TTS as ElevenTTS } from './eleven-tts.js';
 import { VAD as SileroVAD } from '@livekit/agents-plugin-silero';
 
 export const AGENT_NAME = 'mayday-site-demo';
@@ -42,11 +43,13 @@ export default defineAgent({
     const session = new AgentSession({
       stt: new DeepgramSTT({ model: 'nova-3', language: 'es-419' }),
       llm: new GoogleLLM({ model: process.env.DEMO_MODEL || 'gemini-3.5-flash-lite', apiKey: process.env.GEMINI_API_KEY }),
-      tts: new ElevenTTS({ voiceId: process.env.ELEVEN_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL', model: 'eleven_flash_v2_5', language: 'es' }),
+      // Our own wrapper (eleven-tts.ts): the official ElevenLabs plugin stalls on every reply in agents 1.8.1.
+      tts: new ElevenTTS({ voiceId: process.env.ELEVEN_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL' }),
       vad: ctx.proc.userData.vad as InstanceType<typeof SileroVAD>,
       turnHandling: {
         turnDetection: new inference.TurnDetector({ version: 'v1-mini' }),
-        preemptiveGeneration: { preemptiveTts: true },
+        // No preemptiveTts (QualityIQ turns it on): here the preemptive TTS stream sometimes never closed and the reply
+        // stalled 10 s in silence. The LLM still drafts the reply early (default), the voice starts once the turn ends.
         endpointing: { mode: 'dynamic', maxDelay: 1200 },
         // Sin LiveKit Cloud el detector "adaptive" no tiene credenciales: VAD corta a Maya apenas el visitante habla.
         interruption: { mode: 'vad' },
@@ -59,7 +62,8 @@ export default defineAgent({
     // No se loguea el texto: el sitio promete que la demo no guarda lo que dice el visitante.
     session.on(AgentSessionEventTypes.ConversationItemAdded, ev => {
       if (ev.item.type !== 'message' || !ev.item.textContent) return;
-      send({ type: 'transcript', role: ev.item.role === 'assistant' ? 'bot' : 'user', text: ev.item.textContent });
+      // The sentence tokenizer glues sentences ("Maya.¿Qué"): put the space back for the screen.
+      send({ type: 'transcript', role: ev.item.role === 'assistant' ? 'bot' : 'user', text: ev.item.textContent.replace(/([.?!])(?=[¿¡A-ZÁÉÍÓÚÑ])/g, '$1 ') });
     });
     session.on(AgentSessionEventTypes.Close, () => end('Llamada finalizada'));
 
@@ -72,7 +76,16 @@ export default defineAgent({
       await ctx.deleteRoom().catch(err => console.error('[demo] no se pudo cerrar la sala', err));
     });
 
+    // The browser says "hello" once its mic is on (VoiceDemo.tsx), like QualityIQ's "answer": speaking before the
+    // visitor's side is ready left the first utterance stalled ~10 s with no audio. Fallback: greet after 4 s anyway.
+    const hello = new Promise<void>(resolve => {
+      ctx.room.on(RoomEvent.DataReceived, payload => {
+        try { if (JSON.parse(new TextDecoder().decode(payload)).type === 'hello') resolve(); } catch { /* not ours */ }
+      });
+      setTimeout(resolve, 4000);
+    });
     await session.start({ agent: Agent.create({ instructions: c.instructions }), room: ctx.room });
+    await hello;
     console.log(`[demo] llamada ${ctx.room.name}`);
     session.say(c.greeting);
   },

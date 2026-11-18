@@ -78,6 +78,8 @@ export function VoiceDemo() {
       await r.localParticipant.setMicrophoneEnabled(true).catch(() => {
         throw new Error("Necesitamos permiso para usar el micrófono.");
       });
+      // Maya greets when this arrives (voice-agent/src/worker.ts): the visitor is connected and listening.
+      await r.localParticipant.publishData(new TextEncoder().encode(JSON.stringify({ type: "hello" })), { reliable: true });
       setSeconds(s.maxSeconds);
       setPhase("live");
     } catch (e) {

@@ -14,4 +14,6 @@ COPY package.json ./
 RUN npm install --omit=dev
 COPY --from=build /app/dist ./dist
 ENV NODE_ENV=production
+# warn: at info the framework logs every utterance (lk.pii.*), and the site promises not to keep conversations.
+ENV LOG_LEVEL=warn
 CMD ["node", "dist/worker.js", "start"]
