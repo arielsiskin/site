@@ -7,7 +7,7 @@
     "dev": "node --env-file-if-exists=.env.local ./node_modules/astro/bin/astro.mjs dev",
     "build": "astro build",
     "start": "node dist/server/entry.mjs",
-    "check": "tsc --noEmit && node --experimental-strip-types src/lib/qiq.check.ts && node --experimental-strip-types src/lib/mis.check.ts && node --experimental-strip-types src/lib/ratelimit.check.ts && node --experimental-strip-types src/lib/voicebot.check.ts && node --experimental-strip-types voice-agent/src/farewell.check.ts"
+    "check": "tsc --noEmit && node --experimental-strip-types src/lib/qiq.check.ts && node --experimental-strip-types src/lib/mis.check.ts && node --experimental-strip-types src/lib/insults.check.ts && node --experimental-strip-types src/lib/ratelimit.check.ts && node --experimental-strip-types src/lib/voicebot.check.ts && node --experimental-strip-types voice-agent/src/farewell.check.ts"
   },
   "dependencies": {
     "@astrojs/node": "11.1.9",

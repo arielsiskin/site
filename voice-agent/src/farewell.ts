@@ -12,7 +12,7 @@ export function shouldHangUp(bot: string, userSaidBye: boolean) {
   return FAREWELL.test(bot) && !bot.trim().endsWith('?');
 }
 
-/** Insults common across LatAm, for the softphone alert (Maya's reaction comes from the prompt, the model understands
+/** Same list as src/lib/insults.ts (the site keeps a copy: change both). Insults common across LatAm, for the softphone alert (Maya's reaction comes from the prompt, the model understands
  *  context). Left out on purpose: words that are friendly in some countries ("boludo", "güey", "huevón" among friends).
  *  shortcut: a word list misses creative insults; ask the LLM per turn if the alert ever needs to be exact. */
 export const INSULT = /\b(idiota|imb[eé]cil|est[uú]pid[oa]|pelotud[oa]|forr[oa]|tarad[oa]|in[uú]til|mog[oó]lic[oa]|hij[oa] de (puta|perra)|hdp|put[oa]|la concha|concha ?(e ?)?tu ?madre|conchetumadre|mierda|pendej[oa]|cabr[oó]n|chinga(da|tu)?|pinche|gonorrea|malparid[oa]|culiad[oa]|maric[oó]n|basura)\b/i;

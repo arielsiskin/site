@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { INSULT } from "@/lib/insults";
 import { Aurora, SectionTitle } from "./ui";
 
 // Simulated agent desktop: contacts from every channel land in one inbox, get routed by skill, and the customer
@@ -58,6 +59,7 @@ export function OmniDemo() {
   const [sel, setSel] = useState(1);
   const [draft, setDraft] = useState("");
   const [counter, setCounter] = useState(0);
+  const [blocked, setBlocked] = useState(false);
   const conv = convs.find((c) => c.id === sel) ?? convs[0];
   const cust = CUSTOMERS[conv.customer];
 
@@ -71,11 +73,15 @@ export function OmniDemo() {
 
   function open(id: number) {
     setSel(id);
+    setBlocked(false);
     setConvs((cs) => cs.map((c) => (c.id === id ? { ...c, unread: false } : c)));
   }
 
   function reply(text: string) {
     if (!text.trim()) return;
+    // The agent cannot send an insult: the message stays in the box so they can rewrite it.
+    if (INSULT.test(text)) return setBlocked(true);
+    setBlocked(false);
     const id = conv.id;
     const add = (m: Msg) => setConvs((cs) => cs.map((c) => (c.id === id ? { ...c, msgs: [...c.msgs, m] } : c)));
     add({ from: "agente", text });
@@ -160,8 +166,14 @@ export function OmniDemo() {
                     <button key={q} onClick={() => reply(q)} className="rounded-full bg-md-chip px-3 py-1 text-xs text-md-ink hover:bg-[#E0E5F4]">{q}</button>
                   ))}
                 </div>
+                {blocked && (
+                  <p role="alert" className="mb-2 flex items-center gap-2 rounded-xl border border-[#E7B3B9] bg-[#FBE7E9] px-3 py-2 text-xs text-[#A32634]">
+                    <span className="rounded-full bg-[#C4303F] px-2 py-0.5 text-[10px] font-bold uppercase text-white">Alerta</span>
+                    Insulto detectado: el mensaje no va a ser enviado.
+                  </p>
+                )}
                 <form onSubmit={(e) => { e.preventDefault(); reply(draft); }} className="flex gap-2">
-                  <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={`Responder por ${CH[conv.channel].label}…`} aria-label="Respuesta" className="h-10 flex-1 rounded-full border border-md-line px-4 text-sm outline-none focus:border-md-blue" />
+                  <input value={draft} onChange={(e) => { setDraft(e.target.value); setBlocked(false); }} placeholder={`Responder por ${CH[conv.channel].label}…`} aria-label="Respuesta" className="h-10 flex-1 rounded-full border border-md-line px-4 text-sm outline-none focus:border-md-blue" />
                   <button className="h-10 rounded-full bg-md-blue px-4 text-sm font-semibold text-white hover:bg-md-indigo">Enviar</button>
                 </form>
               </div>
