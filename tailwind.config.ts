@@ -3,15 +3,13 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 
 const config: Config = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{astro,md,mdx,js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       fontFamily: {
         cfont: ["var(--font-cfont)", ...fontFamily.sans],
-        // Mayday design system (quality-iq/apps/web/src/tokens.ts), set by next/font in pages/v2.tsx
+        // Mayday design system (quality-iq/apps/web/src/tokens.ts), set in src/styles/global.css
         display: ["var(--font-display)", "var(--font-body)", ...fontFamily.sans],
         body: ["var(--font-body)", ...fontFamily.sans],
         data: ["var(--font-data)", ...fontFamily.mono],

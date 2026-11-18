@@ -1,0 +1,44 @@
+@import "@fontsource-variable/urbanist";
+@import "@fontsource-variable/dm-sans";
+@import "@fontsource-variable/jetbrains-mono";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mayday design system families (quality-iq/apps/web/src/tokens.ts) */
+:root {
+  --font-display: "Urbanist Variable";
+  --font-body: "DM Sans Variable";
+  --font-data: "JetBrains Mono Variable";
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #fff;
+  color: #0b0d3a;
+}
+
+/* Scroll reveal without hydrating React: Layout's script sets data-shown when the element enters the viewport. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

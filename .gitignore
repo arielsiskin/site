@@ -41,3 +41,7 @@ out/
 
 # Other
 *.lock
+
+# astro
+/dist
+/.astro

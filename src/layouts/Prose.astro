@@ -1,0 +1,31 @@
+---
+// Layout for Markdown pages (src/pages/*.md): `title`, `description` and `eyebrow` come from the frontmatter.
+import Layout from "./Layout.astro";
+import { Eyebrow } from "@/components/ui";
+const { frontmatter } = Astro.props;
+---
+
+<Layout title={`${frontmatter.title} | Mayday Global`} description={frontmatter.description}>
+  <section class="bg-md-sky pb-16 pt-40 md:pt-44">
+    <div class="mx-auto max-w-3xl px-4">
+      {frontmatter.eyebrow && <Eyebrow>{frontmatter.eyebrow}</Eyebrow>}
+      <h1 class="mt-3 font-display text-4xl font-extrabold tracking-tight text-md-ink md:text-6xl">{frontmatter.title}</h1>
+      {frontmatter.description && <p class="mt-4 text-md-muted md:text-lg">{frontmatter.description}</p>}
+    </div>
+  </section>
+  <article class="prose-md mx-auto max-w-3xl px-4 py-16">
+    <slot />
+  </article>
+</Layout>
+
+<style is:global>
+  .prose-md { color: #0b0d3a; line-height: 1.75; }
+  .prose-md h2 { font-family: var(--font-display); font-weight: 800; font-size: 1.75rem; margin: 2.5rem 0 1rem; letter-spacing: -0.02em; }
+  .prose-md h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; margin: 2rem 0 0.75rem; }
+  .prose-md p { margin: 1rem 0; color: #525a7a; }
+  .prose-md ul { margin: 1rem 0; padding-left: 1.25rem; list-style: disc; color: #525a7a; }
+  .prose-md li { margin: 0.5rem 0; }
+  .prose-md li::marker { color: #0896a4; }
+  .prose-md strong { color: #0b0d3a; font-weight: 600; }
+  .prose-md a { color: #2a449e; text-decoration: underline; text-underline-offset: 3px; }
+</style>

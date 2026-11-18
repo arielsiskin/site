@@ -1,40 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Mayday Global, sitio institucional
 
-## Getting Started
+Astro (HTML estático) con islas React para las demos interactivas y dos rutas de servidor para la IA.
+Corre en Cloud Run, proyecto `ar-mayday-global-site` (carpeta Proyectos Internos), región `us-central1`.
 
-First, run the development server:
+## Desarrollo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:4321, lee las claves de .env.local
+npm run check    # tipos + self-checks (puntaje QualityIQ, Erlang C, rate limit)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`.env.local` (no se commitea):
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```
+GEMINI_API_KEY=...      # clave propia del sitio: gcloud secrets versions access latest --secret=gemini-api-key --project=ar-mayday-global-site
+ELEVEN_API_KEY=...      # opcional; sin ella el voicebot muestra "falta la clave"
+ELEVEN_VOICE_ID=EXAVITQu4vr4xnSDxMaL
+```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Deploy
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+```bash
+scripts/deploy.sh
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Las claves salen de Secret Manager (`gemini-api-key`, `elevenlabs-api-key`). Para cargar o rotar ElevenLabs:
 
-## Learn More
+```bash
+printf '%s' "$CLAVE" | gcloud secrets versions add elevenlabs-api-key --data-file=- --project=ar-mayday-global-site
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Dónde está cada cosa
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+| Qué | Dónde |
+|---|---|
+| Home y sus secciones | `src/pages/index.astro`, `src/components/*.tsx` |
+| Páginas de texto (Markdown) | `src/pages/*.md` con `layout: ../layouts/Prose.astro` |
+| Demo voicebot / IA Bot | `src/components/VoiceDemo.tsx`, `BotDemo.tsx`, escenarios en `src/lib/voicebot.ts`, API en `src/pages/api/voice.ts` |
+| Demo QualityIQ | `src/components/QualityDemo.tsx`, protocolo y ejemplo en `src/lib/qiq.ts`, API en `src/pages/api/analyze.ts` |
+| Omnichannel / WFM | `src/components/OmniDemo.tsx`, `WfmDemo.tsx` (todo en el navegador; Erlang C en `src/lib/erlang.ts`) |
+| Colores y tipografías | `tailwind.config.ts` (tokens de `quality-iq/apps/web/src/tokens.ts`) |
+| Redirecciones de URLs viejas | `astro.config.mjs` |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+Analytics (GA + GTM) solo se cargan en `mayday.global`; en la URL de Cloud Run y en local no.

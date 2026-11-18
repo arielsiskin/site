@@ -1,0 +1,28 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { Hero } from "@/components/Hero";
+import { VoiceDemo } from "@/components/VoiceDemo";
+import { VoiceScreens } from "@/components/VoiceScreens";
+import { QualityDemo } from "@/components/QualityDemo";
+import { OmniDemo } from "@/components/OmniDemo";
+import { BotDemo } from "@/components/BotDemo";
+import { WfmDemo } from "@/components/WfmDemo";
+import { Closing, Faq, Numbers, Solutions } from "@/components/Sections";
+---
+
+<Layout
+  title="Mayday Global | IA para contact centers"
+  description="Voicebots, QualityIQ, IA Bot, Omnichannel y Synergy WFM para contact centers de América Latina. Probá cada solución en vivo."
+>
+  <Hero client:load />
+  <Solutions />
+  <VoiceDemo client:visible />
+  <VoiceScreens client:visible />
+  <QualityDemo client:visible />
+  <OmniDemo client:visible />
+  <BotDemo client:visible />
+  <WfmDemo client:visible />
+  <Numbers client:visible />
+  <Faq />
+  <Closing />
+</Layout>

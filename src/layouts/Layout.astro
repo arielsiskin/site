@@ -1,0 +1,71 @@
+---
+import "@/styles/global.css";
+import { Nav } from "@/components/Hero";
+import { Footer } from "@/components/Sections";
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const url = new URL(Astro.url.pathname, "https://mayday.global");
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    <link rel="icon" href="/favicon.ico" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content="https://mayday.global/assets/og-image.jpg" />
+    <meta property="og:site_name" content="Mayday Global" />
+    <meta property="og:locale" content="es_AR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <noscript><style>[data-reveal]{opacity:1;transform:none}</style></noscript>
+    <!-- Google Analytics + Tag Manager, only on the real domain so test URLs (Cloud Run, localhost) stay out of the stats -->
+    <script is:inline>
+      if (location.hostname.endsWith("mayday.global")) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag("js", new Date());
+        gtag("config", "G-B9175NWQJS");
+        dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+        for (const src of ["https://www.googletagmanager.com/gtag/js?id=G-B9175NWQJS", "https://www.googletagmanager.com/gtm.js?id=GTM-KXJFG95B"]) {
+          const s = document.createElement("script");
+          s.async = true;
+          s.src = src;
+          document.head.appendChild(s);
+        }
+      }
+    </script>
+  </head>
+  <body class="min-h-screen bg-white font-body text-md-ink antialiased">
+    <Nav client:load />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            (e.target as HTMLElement).dataset.shown = "";
+            io.unobserve(e.target);
+          }
+        },
+        { threshold: 0.2 },
+      );
+      document.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
+    </script>
+    <!-- Botmaker webchat (Mayday's own support chat) -->
+    <script is:inline async src="https://go.botmaker.com/rest/webchat/p/KZGAU0Z40F/init.js"></script>
+  </body>
+</html>
