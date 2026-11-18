@@ -14,7 +14,7 @@ const json = (body: unknown, status = 200) => Response.json(body, { status });
 
 /** Abre una llamada con Maya: sala de LiveKit + token del visitante. Cuenta las pruebas por cookie y, como la cookie
  *  se borra fácil, también por IP. */
-export const POST: APIRoute = async ({ request, cookies, url }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   const { LIVEKIT_URL: lkUrl, LIVEKIT_API_SECRET: secret } = process.env;
   if (!lkUrl || !secret) return json({ error: "La llamada en vivo todavía no está configurada." }, 503);
 
@@ -36,6 +36,6 @@ export const POST: APIRoute = async ({ request, cookies, url }) => {
   token.addGrant({ room, roomJoin: true, canPublish: true, canSubscribe: true, canPublishData: true });
   token.roomConfig = new RoomConfiguration({ name: room, agents: [new RoomAgentDispatch({ agentName: AGENT_NAME, metadata: JSON.stringify(config) })] });
 
-  cookies.set(COOKIE, String(used + 1), { path: "/", maxAge: 30 * 86400, sameSite: "lax", secure: url.protocol === "https:" });
+  cookies.set(COOKIE, String(used + 1), { path: "/", maxAge: 30 * 86400, sameSite: "lax", secure: import.meta.env.PROD });
   return json({ url: lkUrl, token: await token.toJwt(), left: MAX_CALLS - used - 1, maxSeconds: CALL_SECONDS });
 };
