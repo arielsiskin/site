@@ -28,7 +28,7 @@ export type ScenarioId = keyof typeof SCENARIOS;
 export const isScenario = (id: unknown): id is ScenarioId => typeof id === "string" && id in SCENARIOS;
 
 export const STYLE =
-  "Sos cálida y profesional. Respuestas de voz: máximo dos oraciones cortas, sin listas, emojis ni markdown. Si el audio no se entiende, pedí que lo repita.";
+  "Sos cálida y profesional. Respuestas de voz: máximo dos oraciones cortas, sin listas, emojis ni markdown. Si el audio no se entiende, pedí que lo repita. Cuando el cliente se despida, o la gestión quede resuelta y no necesite nada más, despedite en una sola frase corta y sin preguntas: la llamada se corta ahí.";
 export const CHAT_STYLE =
   "El cliente te escribe por WhatsApp. Español latinoamericano neutro, cálido y profesional. Mensajes cortos (máximo 3 oraciones), podés usar algún emoji con moderación, sin markdown.";
 export const INTENT_HINT =
@@ -55,7 +55,7 @@ export const COUNTRIES = {
   co: { label: "Colombia", accent: "colombiano", voice: "b2htR0pMe28pYwCY9gnP", speech: "Hablás como una colombiana: tuteo cordial (tú, quieres), con la amabilidad típica del servicio al cliente colombiano, nunca voseo. El documento es la cédula." },
   cl: { label: "Chile", accent: "chileno", voice: "oJIuRMopN0sojGjwD6rQ", speech: "Hablás como una chilena en atención al cliente: tuteo neutro (tú, quieres), sin modismos difíciles, nunca voseo. El documento es el RUT." },
   pe: { label: "Perú", accent: "peruano", voice: "saqk76H0L3GCnuHtLDw6", speech: "Hablás como una peruana: tuteo cortés (tú, quieres), tono amable, nunca voseo. El documento es el DNI." },
-  latam: { label: "Otro país", accent: "latino neutro", voice: "EXAVITQu4vr4xnSDxMaL", speech: "Hablás en español latinoamericano neutro: tuteo (tú, quieres), sin regionalismos, nunca voseo." },
+  latam: { label: "Otro país", accent: "latino neutro", voice: "87bJkTOBRagtx7PAFZDB", speech: "Hablás en español latinoamericano neutro: tuteo (tú, quieres), sin regionalismos, nunca voseo." },
 } as const;
 
 export type CountryId = keyof typeof COUNTRIES;

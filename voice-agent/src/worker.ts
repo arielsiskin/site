@@ -8,6 +8,7 @@ import { STT as DeepgramSTT } from '@livekit/agents-plugin-deepgram';
 import { LLM as GoogleLLM } from '@livekit/agents-plugin-google';
 import { TTS as ElevenTTS } from './eleven-tts.js';
 import { VAD as SileroVAD } from '@livekit/agents-plugin-silero';
+import { FAREWELL, shouldHangUp } from './farewell.js';
 
 export const AGENT_NAME = 'mayday-site-demo';
 
@@ -45,7 +46,7 @@ export default defineAgent({
       llm: new GoogleLLM({ model: process.env.DEMO_MODEL || 'gemini-3.5-flash-lite', apiKey: process.env.GEMINI_API_KEY }),
       // Our own wrapper (eleven-tts.ts): the official ElevenLabs plugin stalls on every reply in agents 1.8.1.
       // The voice of the country the visitor chose (src/lib/voicebot.ts COUNTRIES).
-      tts: new ElevenTTS({ voiceId: c.voice || process.env.ELEVEN_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL' }),
+      tts: new ElevenTTS({ voiceId: c.voice || process.env.ELEVEN_VOICE_ID || '87bJkTOBRagtx7PAFZDB' }),
       vad: ctx.proc.userData.vad as InstanceType<typeof SileroVAD>,
       // Default 3 s: the visitor could not cut the ~4 s greeting. 1 s is enough for the browser echo canceller to settle.
       aecWarmupDuration: 1000,
@@ -62,9 +63,26 @@ export default defineAgent({
     session.on(AgentSessionEventTypes.UserInputTranscribed, ev => {
       if (!ev.isFinal && ev.transcript.trim()) send({ type: 'partial', text: ev.transcript.trim() });
     });
+    // Someone said goodbye: hang up once Maya finishes her last line (farewell.ts has the rule).
+    let userSaidBye = false;
+    let hangUp = false;
+    let agentSpeaking = false;
+    const hangUpSoon = () => setTimeout(() => end('Se despidieron'), 700); // let the last syllable reach the browser
+    session.on(AgentSessionEventTypes.AgentStateChanged, ev => {
+      agentSpeaking = ev.newState === 'speaking';
+      if (hangUp && ev.oldState === 'speaking') hangUpSoon();
+    });
+
     // No se loguea el texto: el sitio promete que la demo no guarda lo que dice el visitante.
     session.on(AgentSessionEventTypes.ConversationItemAdded, ev => {
       if (ev.item.type !== 'message' || !ev.item.textContent) return;
+      const text = ev.item.textContent;
+      if (ev.item.role === 'user') userSaidBye = FAREWELL.test(text);
+      else if (ev.item.role === 'assistant' && !hangUp && shouldHangUp(text, userSaidBye)) {
+        hangUp = true;
+        // The item usually lands when her audio already finished; if she is still talking, AgentStateChanged hangs up.
+        if (!agentSpeaking) hangUpSoon();
+      }
       // The sentence tokenizer glues sentences ("Maya.¿Qué"): put the space back for the screen.
       send({ type: 'transcript', role: ev.item.role === 'assistant' ? 'bot' : 'user', text: ev.item.textContent.replace(/([.?!])(?=[¿¡A-ZÁÉÍÓÚÑ])/g, '$1 ') });
     });

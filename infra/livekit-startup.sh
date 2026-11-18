@@ -75,7 +75,7 @@ if docker login -u oauth2accesstoken -p "$TOKEN" https://us-central1-docker.pkg.
   docker run -d --name voice-agent --restart always --network host --pull always \
     -e LIVEKIT_URL=ws://localhost:7880 -e LIVEKIT_API_KEY=mayday-site -e LIVEKIT_API_SECRET="$LIVEKIT_SECRET" \
     -e GEMINI_API_KEY="$(secret gemini-api-key || true)" -e DEEPGRAM_API_KEY="$(secret deepgram-api-key || true)" \
-    -e ELEVEN_API_KEY="$(secret elevenlabs-api-key || true)" -e ELEVEN_VOICE_ID=EXAVITQu4vr4xnSDxMaL \
+    -e ELEVEN_API_KEY="$(secret elevenlabs-api-key || true)" -e ELEVEN_VOICE_ID=87bJkTOBRagtx7PAFZDB \
     "$WORKER_IMAGE" || log "ERROR: no levantó voice-agent (¿se publicó la imagen?)"
 else
   log "ERROR: no pudo entrar a Artifact Registry: sin voice-agent"
