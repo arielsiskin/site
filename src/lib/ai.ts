@@ -8,7 +8,7 @@ export type Content = { role: "user" | "model"; parts: Part[] };
 
 export async function gemini<T>(model: string, contents: Content[], schema: object, system?: string): Promise<T> {
   const key = process.env.GEMINI_API_KEY;
-  if (!key) throw new AiNotConfigured("Falta GEMINI_API_KEY en .env.local");
+  if (!key) throw new AiNotConfigured("Esta demo todavía no está configurada (falta GEMINI_API_KEY).");
   const res = await fetch(`${GEMINI}/${model}:generateContent`, {
     method: "POST",
     headers: { "content-type": "application/json", "x-goog-api-key": key },
@@ -28,7 +28,7 @@ export async function gemini<T>(model: string, contents: Content[], schema: obje
 /** Text to speech with the account's Spanish voice: base64 mp3. */
 export async function tts(text: string): Promise<string> {
   const key = process.env.ELEVEN_API_KEY;
-  if (!key) throw new AiNotConfigured("Falta ELEVEN_API_KEY en .env.local");
+  if (!key) throw new AiNotConfigured("La voz de esta demo todavía no está configurada (falta ELEVEN_API_KEY).");
   const voice = process.env.ELEVEN_VOICE_ID || "EXAVITQu4vr4xnSDxMaL";
   const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_64`, {
     method: "POST",
