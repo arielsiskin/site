@@ -25,7 +25,7 @@ export function BotDemo() {
     const res = await fetch("/api/voice", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ scenario, history, text, speak: false }),
+      body: JSON.stringify({ scenario, history, text }),
     });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(json.error || `Error ${res.status}`);

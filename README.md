@@ -1,6 +1,6 @@
 # Mayday Global, sitio institucional
 
-Astro (HTML estático) con islas React para las demos interactivas y dos rutas de servidor para la IA.
+Astro (HTML estático) con islas React para las demos interactivas y tres rutas de servidor (`/api/voice` chat, `/api/analyze` QualityIQ, `/api/call` llamada en vivo).
 Corre en Cloud Run, proyecto `ar-mayday-global-site` (carpeta Proyectos Internos), región `us-central1`.
 
 ## Desarrollo
@@ -15,8 +15,8 @@ npm run check    # tipos + self-checks (puntaje QualityIQ, Erlang C, rate limit)
 
 ```
 GEMINI_API_KEY=...      # clave propia del sitio: gcloud secrets versions access latest --secret=gemini-api-key --project=ar-mayday-global-site
-ELEVEN_API_KEY=...      # opcional; sin ella el voicebot muestra "falta la clave"
-ELEVEN_VOICE_ID=EXAVITQu4vr4xnSDxMaL
+LIVEKIT_URL=wss://34-121-141-195.sslip.io   # opcional, para probar la llamada en vivo
+LIVEKIT_API_SECRET=...  # gcloud secrets versions access latest --secret=livekit-api-secret --project=ar-mayday-global-site
 ```
 
 ## Deploy
@@ -25,10 +25,10 @@ ELEVEN_VOICE_ID=EXAVITQu4vr4xnSDxMaL
 scripts/deploy.sh
 ```
 
-Las claves salen de Secret Manager (`gemini-api-key`, `elevenlabs-api-key`). Para cargar o rotar ElevenLabs:
+Cloud Run solo recibe `gemini-api-key` y `livekit-api-secret`. Deepgram y ElevenLabs viven solo en la VM de LiveKit. Para cargar o rotar una clave:
 
 ```bash
-printf '%s' "$CLAVE" | gcloud secrets versions add elevenlabs-api-key --data-file=- --project=ar-mayday-global-site
+printf '%s' "$CLAVE" | gcloud secrets versions add <secreto> --data-file=- --project=ar-mayday-global-site
 ```
 
 ## Llamada en vivo con Maya (LiveKit)
