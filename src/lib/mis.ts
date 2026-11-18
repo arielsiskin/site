@@ -3,7 +3,7 @@
 // read those same numbers so they always match what is on screen.
 
 export const SOURCES = {
-  botmaker: { label: "Botmaker · WhatsApp", conv: [820, 790, 860, 910, 1180, 640, 510, 880, 905, 940, 1010, 1420, 720, 560], costPerConv: 0.031 },
+  whatsapp: { label: "Agentic WhatsApp", conv: [820, 790, 860, 910, 1180, 640, 510, 880, 905, 940, 1010, 1420, 720, 560], costPerConv: 0.031 },
   telefonia: { label: "Telefonía", conv: [410, 395, 430, 440, 520, 210, 150, 425, 430, 450, 470, 560, 230, 160], costPerConv: 0.12 },
   voicebot: { label: "Voicebot", conv: [260, 250, 270, 290, 360, 180, 140, 300, 310, 330, 350, 470, 220, 170], costPerConv: 0.05 },
   qualityiq: { label: "QualityIQ", conv: null, costPerConv: 0 },
@@ -60,14 +60,14 @@ export const QUESTIONS = ["¿Qué pasó estas dos semanas?", "¿Por qué hubo un
 
 /** SAM's answer to a suggested question, written from the numbers on the board. */
 export function samAnswer(q: (typeof QUESTIONS)[number], b: Board, on: SourceId[]): string {
-  if (!b.conversations) return "No tengo datos para analizar: conectá al menos un canal (Botmaker, Telefonía o Voicebot) y te cuento qué pasó.";
+  if (!b.conversations) return "No tengo datos para analizar: conectá al menos un canal (Agentic WhatsApp, Telefonía o Voicebot) y te cuento qué pasó.";
   const names = on.filter((s) => SOURCES[s].conv).map((s) => SOURCES[s].label).join(", ");
   if (q === QUESTIONS[0]) {
     const trend = b.weekChange! >= 0 ? `subieron un ${b.weekChange}%` : `bajaron un ${-b.weekChange!}%`;
     return `Entre ${names} atendiste ${n(b.conversations)} conversaciones. La segunda semana ${trend} contra la primera, con el pico el ${b.peak!.day} (${n(b.peak!.value)}). El costo total fue ${usd(b.cost)}, ${perConv(b.costPerConv!)} USD por conversación.${b.sales !== null ? ` El CRM cerró ${n(b.sales)} ventas por ${usd(b.revenue!)}.` : " Si conectás el CRM te digo cuánto vendiste."}`;
   }
   if (q === QUESTIONS[1]) {
-    return `El viernes 14 se juntaron dos cosas: el envío de la campaña "Fin de mes" por WhatsApp${on.includes("botmaker") ? "" : " (conectá Botmaker para verla)"} y el cierre de facturación, que siempre trae consultas de saldo. Fueron ${n(b.peak!.value)} conversaciones, un ${Math.round((b.peak!.value / (b.conversations / 14) - 1) * 100)}% arriba del promedio diario.${on.includes("voicebot") ? " El voicebot absorbió la mayor parte sin cola." : " Con el voicebot conectado te muestro cuánto absorbió sin cola."}`;
+    return `El viernes 14 se juntaron dos cosas: el envío de la campaña "Fin de mes" por WhatsApp${on.includes("whatsapp") ? "" : " (conectá Agentic WhatsApp para verla)"} y el cierre de facturación, que siempre trae consultas de saldo. Fueron ${n(b.peak!.value)} conversaciones, un ${Math.round((b.peak!.value / (b.conversations / 14) - 1) * 100)}% arriba del promedio diario.${on.includes("voicebot") ? " El voicebot absorbió la mayor parte sin cola." : " Con el voicebot conectado te muestro cuánto absorbió sin cola."}`;
   }
   return [
     `Resumen · 3 al 16 de noviembre`,
