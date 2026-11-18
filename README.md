@@ -58,7 +58,7 @@ El IP fijo, el firewall, la cuenta de servicio `livekit-vm` y los secretos se cr
 | Páginas de texto (Markdown) | `src/pages/*.md` con `layout: ../layouts/Prose.astro` |
 | Demo voicebot / IA Bot | `src/components/VoiceDemo.tsx`, `BotDemo.tsx`, escenarios en `src/lib/voicebot.ts`, API en `src/pages/api/voice.ts` |
 | Demo QualityIQ | `src/components/QualityDemo.tsx`, protocolo y ejemplo en `src/lib/qiq.ts`, API en `src/pages/api/analyze.ts` |
-| Omnichannel / WFM | `src/components/OmniDemo.tsx`, `WfmDemo.tsx` (todo en el navegador; Erlang C en `src/lib/erlang.ts`) |
+| Omnichannel / MIS | `src/components/OmniDemo.tsx`, `MisDemo.tsx` (todo en el navegador; datos ficticios y respuestas de SAM en `src/lib/mis.ts`) |
 | Colores y tipografías | `tailwind.config.ts` (tokens de `quality-iq/apps/web/src/tokens.ts`) |
 | Redirecciones de URLs viejas | `astro.config.mjs` |
 

@@ -50,7 +50,6 @@ const LOGOS = [
   { name: "Neotel", src: "/assets/brands/neotel.svg" },
   { name: "Collaborix", src: "/assets/brands/collaborix.svg" },
   { name: "Vocalcom", src: "/assets/brands/vocalcom.svg" },
-  { name: "WFMOp", src: "/assets/WFMOp.svg" },
 ];
 
 const LIVE = [

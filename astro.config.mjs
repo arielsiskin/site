@@ -12,7 +12,7 @@ export default defineConfig({
     "/omni-channel": "/#omnichannel",
     "/ia-bot": "/#iabot",
     "/voicebot": "/#voicebot",
-    "/synergy-wfm": "/#wfm",
+    "/synergy-wfm": "/", // producto discontinuado
     "/conversational-platform": "/#iabot",
     "/v2": "/",
   },

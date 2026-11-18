@@ -8,7 +8,7 @@ const SOLUTIONS = [
   { title: "IA Bot", body: "Bots inteligentes para WhatsApp, web y redes.", href: "/#iabot", span: "", tone: "light" },
   { title: "Voicebot", body: "Agentes de voz que resuelven y derivan.", href: "/#voicebot", span: "", tone: "light" },
   { title: "QualityIQ", body: "Auditoría con IA del 100% de las llamadas, con coaching para cada agente.", href: "/#quality", span: "md:col-span-2", tone: "glow" },
-  { title: "Synergy WFM", body: "Pronóstico, turnos y productividad de tu equipo.", href: "/#wfm", span: "md:col-span-3", tone: "light" },
+  { title: "MIS", body: "Todos tus datos en un tablero, con SAM como analista.", href: "/#mis", span: "md:col-span-3", tone: "light" },
 ] as const;
 
 export function Solutions() {
@@ -123,7 +123,7 @@ export function Footer() {
           <p className="mt-4 max-w-xs text-sm">Tecnología e inteligencia artificial para contact centers de América Latina.</p>
         </div>
         {[
-          ["Soluciones", [["Omnichannel", "/#omnichannel"], ["IA Bot", "/#iabot"], ["Voicebot", "/#voicebot"], ["QualityIQ", "/#quality"], ["Synergy WFM", "/#wfm"]]],
+          ["Soluciones", [["Omnichannel", "/#omnichannel"], ["IA Bot", "/#iabot"], ["Voicebot", "/#voicebot"], ["QualityIQ", "/#quality"], ["MIS", "/#mis"]]],
           ["Empresa", [["Nosotros", "/about-us"], ["LinkedIn", "https://www.linkedin.com/company/mayday-global/"]]],
           ["Legal", [["Privacidad", "/policy"]]],
         ].map(([h, links]) => (
