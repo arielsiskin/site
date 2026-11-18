@@ -39,6 +39,8 @@ export const MAX_TURNS = 12;
 
 // Llamada en vivo (LiveKit): pruebas por navegador y duración de cada una.
 export const MAX_CALLS = 4;
+// Tope por navegador apagado a pedido (18/11/2026): llamadas sin límite. true lo vuelve a activar (cookie + contador).
+export const LIMIT_CALLS = false;
 export const CALL_SECONDS = 180;
 /** Pruebas ya usadas según la cookie (no firmada: borrarla resetea igual, el límite por IP es el respaldo). */
 export const callsUsed = (cookie: string | undefined) => Math.min(Math.max(Number.parseInt(cookie ?? "", 10) || 0, 0), MAX_CALLS);

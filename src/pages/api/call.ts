@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { AccessToken, RoomAgentDispatch, RoomConfiguration, RoomServiceClient } from "livekit-server-sdk";
 import { allow, clientIp } from "@/lib/ratelimit";
-import { CALL_SECONDS, COUNTRIES, isCountry, isScenario, MAX_CALLS, SCENARIOS, STYLE, callsUsed } from "@/lib/voicebot";
+import { CALL_SECONDS, COUNTRIES, isCountry, isScenario, LIMIT_CALLS, MAX_CALLS, SCENARIOS, STYLE, callsUsed } from "@/lib/voicebot";
 
 export const prerender = false;
 
@@ -19,8 +19,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   if (!lkUrl || !secret) return json({ error: "La llamada en vivo todavía no está configurada." }, 503);
 
   const used = callsUsed(cookies.get(COOKIE)?.value);
-  if (used >= MAX_CALLS) return json({ error: "Ya usaste tus pruebas de la demo. Si querés seguir, escribinos y te mostramos más.", left: 0 }, 429);
-  if (!allow(`call:${clientIp(request)}`, MAX_CALLS * 3, 24 * 3600_000)) return json({ error: "Muchas llamadas desde esta red hoy: probá mañana.", left: 0 }, 429);
+  if (LIMIT_CALLS && used >= MAX_CALLS) return json({ error: "Ya usaste tus pruebas de la demo. Si querés seguir, escribinos y te mostramos más.", left: 0 }, 429);
+  // Sin tope por navegador, el de IP solo frena a un bot: 60 llamadas por hora desde la misma red.
+  if (!allow(`call:${clientIp(request)}`, LIMIT_CALLS ? MAX_CALLS * 3 : 60, LIMIT_CALLS ? 24 * 3600_000 : 3600_000))
+    return json({ error: "Muchas llamadas seguidas desde esta red: probá en un rato." }, 429);
 
   const { scenario, country = "latam" } = (await request.json().catch(() => null)) ?? {};
   if (!isScenario(scenario)) return json({ error: "Escenario inválido" }, 400);
@@ -38,6 +40,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   token.addGrant({ room, roomJoin: true, canPublish: true, canSubscribe: true, canPublishData: true });
   token.roomConfig = new RoomConfiguration({ name: room, agents: [new RoomAgentDispatch({ agentName: AGENT_NAME, metadata: JSON.stringify(config) })] });
 
-  cookies.set(COOKIE, String(used + 1), { path: "/", maxAge: 30 * 86400, sameSite: "lax", secure: import.meta.env.PROD });
-  return json({ url: lkUrl, token: await token.toJwt(), left: MAX_CALLS - used - 1, maxSeconds: CALL_SECONDS });
+  if (LIMIT_CALLS) cookies.set(COOKIE, String(used + 1), { path: "/", maxAge: 30 * 86400, sameSite: "lax", secure: import.meta.env.PROD });
+  return json({ url: lkUrl, token: await token.toJwt(), left: LIMIT_CALLS ? MAX_CALLS - used - 1 : null, maxSeconds: CALL_SECONDS });
 };

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import type { Room } from "livekit-client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { callsUsed, COUNTRIES, MAX_CALLS, SCENARIOS, type CountryId, type ScenarioId, type Turn } from "@/lib/voicebot";
+import { callsUsed, COUNTRIES, LIMIT_CALLS, MAX_CALLS, SCENARIOS, type CountryId, type ScenarioId, type Turn } from "@/lib/voicebot";
 import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 import { Aurora, SectionTitle, Wave } from "./ui";
 
@@ -75,7 +75,7 @@ export function VoiceDemo() {
   const audio = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLDivElement>(null);
 
-  useEffect(() => setLeft(MAX_CALLS - cookieUsed()), []);
+  useEffect(() => setLeft(LIMIT_CALLS ? MAX_CALLS - cookieUsed() : null), []);
   useEffect(() => {
     list.current?.scrollTo({ top: list.current.scrollHeight, behavior: "smooth" });
   }, [turns, partial]);
