@@ -12,6 +12,8 @@ const STATUS: Record<ItemStatus, { label: string; cls: string }> = {
 };
 const EMOTIONS: Record<Emotion, string> = { alegria: "Alegría", tristeza: "Tristeza", ira: "Ira", miedo: "Miedo", sorpresa: "Sorpresa", desprecio: "Desprecio" };
 const ALERTS: Record<string, string> = {
+  insulto_cliente: "Insulto del cliente",
+  insulto_agente: "Insulto del agente",
   maltrato: "Maltrato",
   amenaza_baja: "Amenaza de baja",
   promesa_indebida: "Promesa indebida",

@@ -8,7 +8,7 @@ import { STT as DeepgramSTT } from '@livekit/agents-plugin-deepgram';
 import { LLM as GoogleLLM } from '@livekit/agents-plugin-google';
 import { TTS as ElevenTTS } from './eleven-tts.js';
 import { VAD as SileroVAD } from '@livekit/agents-plugin-silero';
-import { FAREWELL, shouldHangUp } from './farewell.js';
+import { FAREWELL, INSULT, shouldHangUp } from './farewell.js';
 
 export const AGENT_NAME = 'mayday-site-demo';
 
@@ -19,6 +19,7 @@ type CallConfig = { instructions: string; greeting: string; voice?: string; maxS
 type DemoEvent =
   | { type: 'partial'; text: string }
   | { type: 'transcript'; role: 'user' | 'bot'; text: string }
+  | { type: 'alert'; text: string }
   | { type: 'closed'; reason: string };
 
 export default defineAgent({
@@ -67,7 +68,8 @@ export default defineAgent({
     let userSaidBye = false;
     let hangUp = false;
     let agentSpeaking = false;
-    const hangUpSoon = () => setTimeout(() => end('Se despidieron'), 700); // let the last syllable reach the browser
+    let insulted = false;
+    const hangUpSoon = () => setTimeout(() => end(insulted ? 'Llamada finalizada por insultos' : 'Se despidieron'), 700); // let the last syllable reach the browser
     session.on(AgentSessionEventTypes.AgentStateChanged, ev => {
       agentSpeaking = ev.newState === 'speaking';
       if (hangUp && ev.oldState === 'speaking') hangUpSoon();
@@ -77,7 +79,13 @@ export default defineAgent({
     session.on(AgentSessionEventTypes.ConversationItemAdded, ev => {
       if (ev.item.type !== 'message' || !ev.item.textContent) return;
       const text = ev.item.textContent;
-      if (ev.item.role === 'user') userSaidBye = FAREWELL.test(text);
+      if (ev.item.role === 'user') {
+        userSaidBye = FAREWELL.test(text);
+        if (INSULT.test(text)) {
+          insulted = true;
+          send({ type: 'alert', text: 'Insulto detectado' });
+        }
+      }
       else if (ev.item.role === 'assistant' && !hangUp && shouldHangUp(text, userSaidBye)) {
         hangUp = true;
         // The item usually lands when her audio already finished; if she is still talking, AgentStateChanged hangs up.

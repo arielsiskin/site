@@ -1,6 +1,6 @@
 // Run: node --experimental-strip-types voice-agent/src/farewell.check.ts
 import assert from 'node:assert/strict';
-import { CALL_ENDED, FAREWELL, shouldHangUp } from './farewell.ts';
+import { CALL_ENDED, FAREWELL, INSULT, shouldHangUp } from './farewell.ts';
 
 assert.match('Listo, chau', FAREWELL);
 assert.match('Gracias, que tengas un buen día', FAREWELL);
@@ -18,3 +18,10 @@ assert.equal(shouldHangUp('Entiendo, ¿me confirmás tu número de pedido?', fal
 assert.equal(shouldHangUp('Gracias a vos, ¡hasta pronto!', true), true);
 assert.equal(shouldHangUp('Perfecto.', true), true);
 console.log('farewell ok');
+assert.match('Sos una idiota, no me resolvés nada', INSULT);
+assert.match('andate a la mierda', INSULT);
+assert.match('Malparida, no sirve', INSULT);
+assert.doesNotMatch('Hola, perdí mi tarjeta de débito', INSULT);
+assert.doesNotMatch('Che boludo, ¿me ayudás?', INSULT);
+assert.doesNotMatch('Computadora', INSULT); // "puta" inside a word
+console.log('insult ok');

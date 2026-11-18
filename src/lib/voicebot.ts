@@ -27,12 +27,18 @@ export const SCENARIOS = {
 export type ScenarioId = keyof typeof SCENARIOS;
 export const isScenario = (id: unknown): id is ScenarioId => typeof id === "string" && id in SCENARIOS;
 
+// Same rule in the voice call and the chat: warn once, then close the conversation.
+export const INSULT_POLICY =
+  "Si el cliente insulta o agrede, la primera vez respondé con calma y firmeza, sin derivar ni ofrecer nada más, algo como: \"No toleramos insultos. Si no tenés otra consulta, la comunicación se va a cortar. ¿Hay algo más en lo que te pueda ayudar?\" (adaptado a tuteo o voseo según corresponda). Si vuelve a insultar, o dice que no tiene otra consulta, despedite en una sola frase corta y sin preguntas, por ejemplo: \"Como no podemos continuar así, finalizo la comunicación. Hasta luego.\"";
 export const STYLE =
-  "Sos cálida y profesional. Respuestas de voz: máximo dos oraciones cortas, sin listas, emojis ni markdown. Si el audio no se entiende, pedí que lo repita. Cuando el cliente se despida, o la gestión quede resuelta y no necesite nada más, despedite en una sola frase corta y sin preguntas: la llamada se corta ahí.";
+  "Sos cálida y profesional. Respuestas de voz: máximo dos oraciones cortas, sin listas, emojis ni markdown. Si el audio no se entiende, pedí que lo repita. Cuando el cliente se despida, o la gestión quede resuelta y no necesite nada más, despedite en una sola frase corta y sin preguntas: la llamada se corta ahí. " + INSULT_POLICY;
 export const CHAT_STYLE =
-  "El cliente te escribe por WhatsApp. Español latinoamericano neutro, cálido y profesional. Mensajes cortos (máximo 3 oraciones), podés usar algún emoji con moderación, sin markdown.";
+  "El cliente te escribe por WhatsApp. Español latinoamericano neutro, cálido y profesional. Mensajes cortos (máximo 3 oraciones), podés usar algún emoji con moderación, sin markdown. " + INSULT_POLICY;
 export const INTENT_HINT =
   "En intent poné la intención del último mensaje del cliente en snake_case (ej. consulta_saldo, bloqueo_tarjeta, estado_pedido, pedir_demo, saludo, derivar_humano). En entities, los datos que dio el cliente como pares key/value (ej. key dni, value 4471); vacío si no dio ninguno.";
+
+export const END_HINT =
+  "En insult poné true si el último mensaje del cliente tiene insultos, malas palabras dirigidas a alguien o agresiones. En end poné true solo si con tu respuesta la conversación termina: te despediste porque el cliente se fue, o porque volvió a insultar o no tiene otra consulta.";
 
 export type Turn = { role: "user" | "bot"; text: string };
 export const MAX_TURNS = 12;

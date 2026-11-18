@@ -74,7 +74,7 @@ export const ANALYSIS_SCHEMA = obj({
   alerts: {
     type: "array",
     items: obj({
-      type: { type: "string", enum: ["maltrato", "amenaza_baja", "promesa_indebida", "dato_sensible", "escalamiento"] },
+      type: { type: "string", enum: ["insulto_cliente", "insulto_agente", "maltrato", "amenaza_baja", "promesa_indebida", "dato_sensible", "escalamiento"] },
       severity: { type: "string", enum: ["alta", "media"] },
       timestamp: nullableStr,
       quote: str,
@@ -87,7 +87,7 @@ export const ANALYSIS_PROMPT = `Sos auditor de calidad de un contact center. Esc
 - items: una entrada por cada ítem del protocolo (usá su id), con status met, partial, not_met o na, la cita textual como evidence, su timestamp mm:ss y, si no es met, en better qué debió decir el agente.
 - summary (2 o 3 oraciones), contactReason (pocas palabras) y resolution.
 - sentiment del agente y del cliente (-1 a 1, con una etiqueta corta) y las emociones del cliente en porcentaje.
-- alerts sólo si hay maltrato, amenaza de baja, promesas indebidas, datos sensibles dichos en voz alta o pedido de escalamiento.
+- alerts sólo si hay insultos (insulto_cliente o insulto_agente según quién insulta, siempre severidad alta y con la cita textual; una alerta por cada insulto), maltrato, amenaza de baja, promesas indebidas, datos sensibles dichos en voz alta o pedido de escalamiento.
 Si el audio no es una conversación de atención al cliente, evaluable=false y explicá por qué en notEvaluableReason.
 Protocolo:
 ${PROTOCOL.map((p) => `- ${p.id}: ${p.name}. ${p.description}`).join("\n")}`;

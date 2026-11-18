@@ -8,7 +8,7 @@ const QUICK: Record<ScenarioId, string[]> = {
   banco: ["Perdí mi tarjeta", "¿Cuál es mi saldo?", "Quiero hablar con una persona"],
   delivery: ["Mi pedido no llegó", "Es el pedido 48213", "Quiero cambiar la dirección"],
 };
-type Insight = { intent: string | null; entities: { key: string; value: string }[]; ms: number };
+type Insight = { intent: string | null; entities: { key: string; value: string }[]; insult: boolean; ms: number };
 
 export function BotDemo() {
   const [scenario, setScenario] = useState<ScenarioId>("banco");
@@ -17,6 +17,7 @@ export function BotDemo() {
   const [draft, setDraft] = useState("");
   const [typing, setTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [ended, setEnded] = useState(false);
   const list = useRef<HTMLDivElement>(null);
   const started = useRef(false);
   const section = useRef<HTMLElement>(null);
@@ -29,13 +30,14 @@ export function BotDemo() {
     });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(json.error || `Error ${res.status}`);
-    return json as { reply: string; intent: string | null; entities: Insight["entities"]; ms: { think: number } };
+    return json as { reply: string; intent: string | null; entities: Insight["entities"]; insult: boolean; end: boolean; ms: { think: number } };
   }
 
   async function greet() {
     setTurns([]);
     setInsights([]);
     setError(null);
+    setEnded(false);
     setTyping(true);
     try {
       const r = await call([]);
@@ -66,7 +68,7 @@ export function BotDemo() {
   }, [turns, typing]);
 
   async function send(text: string) {
-    if (!text.trim() || typing) return;
+    if (!text.trim() || typing || ended) return;
     const history = turns;
     setTurns([...history, { role: "user", text }]);
     setDraft("");
@@ -75,7 +77,8 @@ export function BotDemo() {
     try {
       const r = await call(history, text);
       setTurns((t) => [...t, { role: "bot", text: r.reply }]);
-      setInsights((i) => [{ intent: r.intent, entities: r.entities, ms: r.ms.think }, ...i].slice(0, 5));
+      setInsights((i) => [{ intent: r.intent, entities: r.entities, insult: r.insult, ms: r.ms.think }, ...i].slice(0, 5));
+      if (r.end) setEnded(true);
     } catch (e) {
       setError((e as Error).message);
       setTurns(history);
@@ -123,16 +126,17 @@ export function BotDemo() {
                     ))}
                   </p>
                 )}
+                {ended && <p className="mx-auto w-fit rounded-lg bg-[#FFF3C4] px-3 py-1.5 text-center text-[11px] text-[#5C4A00] shadow-sm">Maya finalizó la conversación · tocá Reiniciar para empezar otra</p>}
                 {error && <p className="rounded-xl bg-md-err-bg px-3 py-2 text-xs text-md-err-fg">{error}</p>}
               </div>
               <div className="flex gap-1.5 overflow-x-auto px-3 pb-2">
                 {QUICK[scenario].map((q) => (
-                  <button key={q} onClick={() => send(q)} disabled={typing} className="shrink-0 rounded-full border border-[#0B5C4E]/30 bg-white px-3 py-1 text-xs text-[#0B5C4E] disabled:opacity-50">{q}</button>
+                  <button key={q} onClick={() => send(q)} disabled={typing || ended} className="shrink-0 rounded-full border border-[#0B5C4E]/30 bg-white px-3 py-1 text-xs text-[#0B5C4E] disabled:opacity-50">{q}</button>
                 ))}
               </div>
               <form onSubmit={(e) => { e.preventDefault(); send(draft); }} className="flex gap-2 bg-[#F0F2F5] p-2">
-                <input value={draft} onChange={(e) => setDraft(e.target.value)} maxLength={500} placeholder="Escribí un mensaje" aria-label="Mensaje" className="h-10 flex-1 rounded-full bg-white px-4 text-sm text-[#111] outline-none" />
-                <button disabled={typing || !draft.trim()} className="grid h-10 w-10 place-items-center rounded-full bg-[#0B5C4E] text-white disabled:opacity-50" aria-label="Enviar">
+                <input value={draft} onChange={(e) => setDraft(e.target.value)} maxLength={500} placeholder={ended ? "Conversación finalizada" : "Escribí un mensaje"} disabled={ended} aria-label="Mensaje" className="h-10 flex-1 rounded-full bg-white px-4 text-sm text-[#111] outline-none" />
+                <button disabled={typing || ended || !draft.trim()} className="grid h-10 w-10 place-items-center rounded-full bg-[#0B5C4E] text-white disabled:opacity-50" aria-label="Enviar">
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M2 21 23 12 2 3v7l15 2-15 2z" /></svg>
                 </button>
               </form>
@@ -165,6 +169,12 @@ export function BotDemo() {
             ) : (
               <AnimatePresence mode="popLayout">
                 <motion.div key={insights.length} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
+                  {last.insult && (
+                    <p className="mb-3 flex items-center gap-2 rounded-xl border border-[#E7B3B9] bg-[#FBE7E9] px-3 py-2 text-sm text-[#A32634]">
+                      <span className="rounded-full bg-[#C4303F] px-2 py-0.5 text-[10px] font-bold uppercase text-white">Alerta</span>
+                      Insulto detectado{ended ? " · conversación finalizada" : " · Maya advirtió al cliente"}
+                    </p>
+                  )}
                   <p className="text-xs text-md-muted">Intención</p>
                   <p className="mt-1 inline-block rounded-full bg-md-info-bg px-3 py-1 font-data text-sm text-md-blue">{last.intent}</p>
                   <p className="mt-4 text-xs text-md-muted">Datos extraídos</p>
@@ -179,7 +189,7 @@ export function BotDemo() {
             {insights.length > 1 && (
               <ol className="mt-5 flex flex-wrap gap-1.5 border-t border-md-line pt-4" aria-label="Intenciones anteriores">
                 {insights.slice(1).map((i, k) => (
-                  <li key={k} className="rounded-full bg-md-surface2 px-2.5 py-0.5 font-data text-[11px] text-md-muted">{i.intent}</li>
+                  <li key={k} className={`rounded-full px-2.5 py-0.5 font-data text-[11px] ${i.insult ? "bg-[#FBE7E9] text-[#A32634]" : "bg-md-surface2 text-md-muted"}`}>{i.intent}{i.insult && " · insulto"}</li>
                 ))}
               </ol>
             )}

@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { aiError, gemini, type Content } from "@/lib/ai";
 import { allow, clientIp } from "@/lib/ratelimit";
-import { CHAT_STYLE, INTENT_HINT, isScenario, MAX_TURNS, SCENARIOS, type Turn } from "@/lib/voicebot";
+import { CHAT_STYLE, END_HINT, INTENT_HINT, isScenario, MAX_TURNS, SCENARIOS, type Turn } from "@/lib/voicebot";
 
 export const prerender = false;
 
@@ -17,12 +17,14 @@ const SCHEMA = {
       type: "array",
       items: { type: "object", properties: { key: { type: "string" }, value: { type: "string" } }, required: ["key", "value"] },
     },
+    insult: { type: "boolean" },
+    end: { type: "boolean" },
   },
-  required: ["heard", "reply", "intent", "entities"],
-  propertyOrdering: ["heard", "reply", "intent", "entities"],
+  required: ["heard", "reply", "intent", "entities", "insult", "end"],
+  propertyOrdering: ["heard", "reply", "intent", "entities", "insult", "end"],
 };
 
-type Out = { heard: string; reply: string; intent: string; entities: { key: string; value: string }[] };
+type Out = { heard: string; reply: string; intent: string; entities: { key: string; value: string }[]; insult: boolean; end: boolean };
 const json = (body: unknown, status = 200) => Response.json(body, { status });
 
 /** One turn of the IA Bot chat demo (BotDemo): `text` in, reply + intent + entities out. No text: the greeting.
@@ -42,12 +44,12 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const t0 = Date.now();
     // First turn: the bot greets, no model call needed.
-    if (text === undefined) return json({ heard: null, reply: s.greeting, intent: null, entities: [], ms: { think: 0 } });
+    if (text === undefined) return json({ heard: null, reply: s.greeting, intent: null, entities: [], insult: false, end: false, ms: { think: 0 } });
     const contents: Content[] = [
       ...turns.map((t): Content => ({ role: t.role === "user" ? "user" : "model", parts: [{ text: t.text }] })),
       { role: "user", parts: [{ text }] },
     ];
-    const out = await gemini<Out>(MODEL, contents, SCHEMA, `${s.prompt}\n\n${CHAT_STYLE}\n${INTENT_HINT}\nEn heard repetí el mensaje del cliente.`);
+    const out = await gemini<Out>(MODEL, contents, SCHEMA, `${s.prompt}\n\n${CHAT_STYLE}\n${INTENT_HINT}\nEn heard repetí el mensaje del cliente.\n${END_HINT}`);
     return json({ ...out, ms: { think: Date.now() - t0 } });
   } catch (err) {
     const [status, error] = aiError(err);

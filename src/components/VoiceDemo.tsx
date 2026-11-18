@@ -9,7 +9,8 @@ import { Aurora, SectionTitle, Wave } from "./ui";
 // suena hasta que Maya atiende, y en la llamada puede silenciarse o colgar. /api/call abre la sala con la voz del país
 // elegido y el worker (voice-agent/) contesta; se la puede interrumpir hablando encima.
 type Phase = "listo" | "llamando" | "en_curso" | "terminada";
-type DemoEvent = { type: "partial"; text: string } | { type: "transcript"; role: "user" | "bot"; text: string } | { type: "closed"; reason: string };
+type DemoEvent = { type: "partial"; text: string } | { type: "transcript"; role: "user" | "bot"; text: string } | { type: "alert"; text: string } | { type: "closed"; reason: string };
+type Line = Turn | { role: "alert"; text: string };
 
 const cookieUsed = () => callsUsed(document.cookie.match(/(?:^|; )mayday_demo_calls=(\d+)/)?.[1]);
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
@@ -60,7 +61,7 @@ export function VoiceDemo() {
   const [scenario, setScenario] = useState<ScenarioId>("banco");
   const [country, setCountry] = useState<CountryId>("ar");
   const [phase, setPhase] = useState<Phase>("listo");
-  const [turns, setTurns] = useState<Turn[]>([]);
+  const [turns, setTurns] = useState<Line[]>([]);
   const [partial, setPartial] = useState("");
   const [speaker, setSpeaker] = useState<"bot" | "user" | null>(null);
   const [left, setLeft] = useState<number | null>(null);
@@ -122,7 +123,8 @@ export function VoiceDemo() {
         else if (e.type === "transcript") {
           if (e.role === "user") setPartial("");
           setTurns((t) => [...t, { role: e.role, text: e.text }]);
-        } else if (e.type === "closed") { setNote(e.reason); void r.disconnect(); }
+        } else if (e.type === "alert") setTurns((t) => [...t, { role: "alert", text: e.text }]);
+        else if (e.type === "closed") { setNote(e.reason); void r.disconnect(); }
       });
       r.on(RoomEvent.ActiveSpeakersChanged, (ps) => {
         const who = !ps.length ? null : ps.some((p) => p.identity === r.localParticipant.identity) ? "user" : "bot";
@@ -257,7 +259,12 @@ export function VoiceDemo() {
                 </div>
               )}
               <AnimatePresence initial={false}>
-                {turns.map((t, i) => (
+                {turns.map((t, i) => t.role === "alert" ? (
+                  <motion.p key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mx-auto flex w-fit items-center gap-2 rounded-full bg-[#7f1d1d] px-3 py-1 text-[11px] font-semibold text-[#fecaca]">
+                    <span className="rounded-full bg-[#C4303F] px-1.5 text-[9px] uppercase text-white">Alerta</span>
+                    {t.text}
+                  </motion.p>
+                ) : (
                   <motion.p
                     key={i}
                     initial={{ opacity: 0, y: 8 }}
