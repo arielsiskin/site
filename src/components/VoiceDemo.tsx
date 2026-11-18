@@ -1,122 +1,98 @@
 import { AnimatePresence, motion } from "framer-motion";
+import type { Room } from "livekit-client";
 import { useEffect, useRef, useState } from "react";
-import { MAX_TURNS, SCENARIOS, type ScenarioId, type Turn } from "@/lib/voicebot";
-import { toWavBase64 } from "@/lib/wav";
+import { callsUsed, MAX_CALLS, SCENARIOS, type ScenarioId, type Turn } from "@/lib/voicebot";
+import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 import { Aurora, SectionTitle, Wave } from "./ui";
 
-type Phase = "idle" | "connecting" | "speaking" | "ready" | "recording" | "thinking";
-const LABEL: Record<Phase, string> = {
-  idle: "Iniciar llamada",
-  connecting: "Conectando…",
-  speaking: "Maya está hablando · tocá para interrumpir",
-  ready: "Tocá para hablar",
-  recording: "Escuchando · tocá para enviar",
-  thinking: "Maya está pensando…",
-};
+// Llamada en vivo con Maya por LiveKit: /api/call abre la sala y el worker (voice-agent/) contesta. Se la puede
+// interrumpir hablando encima. Los eventos del canal de datos los manda voice-agent/src/worker.ts.
+type Phase = "idle" | "connecting" | "live";
+type DemoEvent = { type: "partial"; text: string } | { type: "transcript"; role: "user" | "bot"; text: string } | { type: "closed"; reason: string };
+
+const cookieUsed = () => callsUsed(document.cookie.match(/(?:^|; )mayday_demo_calls=(\d+)/)?.[1]);
 
 export function VoiceDemo() {
   const [scenario, setScenario] = useState<ScenarioId>("mayday");
   const [phase, setPhase] = useState<Phase>("idle");
   const [turns, setTurns] = useState<Turn[]>([]);
-  const [ms, setMs] = useState<{ think: number; voice: number } | null>(null);
+  const [partial, setPartial] = useState("");
+  const [speaker, setSpeaker] = useState<"bot" | "user" | null>(null);
+  const [left, setLeft] = useState<number | null>(null);
+  const [seconds, setSeconds] = useState(0);
+  const [blocked, setBlocked] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const rec = useRef<MediaRecorder | null>(null);
-  const player = useRef<HTMLAudioElement | null>(null);
+  const room = useRef<Room | null>(null);
+  const audio = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLDivElement>(null);
 
+  useEffect(() => setLeft(MAX_CALLS - cookieUsed()), []);
   useEffect(() => {
     list.current?.scrollTo({ top: list.current.scrollHeight, behavior: "smooth" });
-  }, [turns, phase]);
-  useEffect(() => () => hangUp(), []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  async function ask(history: Turn[], audio?: string) {
-    const res = await fetch("/api/voice", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ scenario, history, audio, mime: audio ? "audio/wav" : undefined }),
-    });
-    const json = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(json.error || `Error ${res.status}`);
-    return json as { heard: string | null; reply: string; audio: string; ms: { think: number; voice: number } };
-  }
-
-  function speak(b64: string) {
-    setPhase("speaking");
-    const a = new Audio(`data:audio/mpeg;base64,${b64}`);
-    player.current = a;
-    a.onended = () => setPhase((p) => (p === "speaking" ? "ready" : p));
-    a.play().catch(() => setPhase("ready"));
-  }
+  }, [turns, partial]);
+  useEffect(() => () => void room.current?.disconnect(), []);
+  useEffect(() => {
+    if (phase !== "live" || seconds <= 0) return;
+    const t = setTimeout(() => setSeconds((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [phase, seconds]);
 
   async function start() {
     setError(null);
+    setNote(null);
     setTurns([]);
+    setPartial("");
     setPhase("connecting");
     try {
-      const r = await ask([]);
-      setTurns([{ role: "bot", text: r.reply }]);
-      setMs(r.ms);
-      speak(r.audio);
+      const res = await fetch("/api/call", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ scenario }) });
+      const s = await res.json().catch(() => ({}));
+      if (typeof s.left === "number") setLeft(s.left);
+      if (!res.ok) throw new Error(s.error || `Error ${res.status}`);
+
+      const { Room, RoomEvent, Track } = await import("livekit-client");
+      const r = new Room();
+      room.current = r;
+      r.on(RoomEvent.TrackSubscribed, (track) => {
+        if (track.kind === Track.Kind.Audio) audio.current?.appendChild(track.attach());
+      });
+      r.on(RoomEvent.DataReceived, (payload) => {
+        let e: DemoEvent;
+        try { e = JSON.parse(new TextDecoder().decode(payload)); } catch { return; }
+        if (e.type === "partial") setPartial(e.text);
+        else if (e.type === "transcript") {
+          if (e.role === "user") setPartial("");
+          setTurns((t) => [...t, { role: e.role, text: e.text }]);
+        } else if (e.type === "closed") { setNote(e.reason); void r.disconnect(); }
+      });
+      r.on(RoomEvent.ActiveSpeakersChanged, (ps) =>
+        setSpeaker(!ps.length ? null : ps.some((p) => p.identity === r.localParticipant.identity) ? "user" : "bot"));
+      r.on(RoomEvent.AudioPlaybackStatusChanged, () => setBlocked(!r.canPlaybackAudio));
+      r.on(RoomEvent.Disconnected, () => {
+        if (audio.current) audio.current.innerHTML = "";
+        setSpeaker(null);
+        setPartial("");
+        setPhase("idle");
+      });
+      await r.connect(s.url, s.token);
+      await r.localParticipant.setMicrophoneEnabled(true).catch(() => {
+        throw new Error("Necesitamos permiso para usar el micrófono.");
+      });
+      setSeconds(s.maxSeconds);
+      setPhase("live");
     } catch (e) {
       setError((e as Error).message);
+      void room.current?.disconnect();
       setPhase("idle");
     }
   }
 
-  async function record() {
-    player.current?.pause(); // barge-in
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-      const chunks: Blob[] = [];
-      const r = new MediaRecorder(stream);
-      r.ondataavailable = (e) => chunks.push(e.data);
-      r.onstop = () => {
-        stream.getTracks().forEach((t) => t.stop());
-        send(new Blob(chunks, { type: r.mimeType }));
-      };
-      rec.current = r;
-      r.start();
-      setPhase("recording");
-    } catch {
-      setError("Necesitamos permiso para usar el micrófono.");
-      setPhase("ready");
-    }
-  }
-
-  async function send(blob: Blob) {
-    setPhase("thinking");
-    try {
-      const { data, seconds } = await toWavBase64(blob, 16000);
-      if (seconds < 0.4) return setPhase("ready");
-      const r = await ask(turns, data);
-      const next: Turn[] = [...turns, { role: "user", text: r.heard || "…" }, { role: "bot", text: r.reply }];
-      setTurns(next);
-      setMs(r.ms);
-      speak(r.audio);
-    } catch (e) {
-      setError((e as Error).message);
-      setPhase("ready");
-    }
-  }
-
-  function hangUp() {
-    player.current?.pause();
-    if (rec.current?.state === "recording") {
-      rec.current.onstop = null;
-      rec.current.stop();
-      rec.current.stream.getTracks().forEach((t) => t.stop());
-    }
-    setPhase("idle");
-  }
-
-  function onMain() {
-    if (phase === "idle") return start();
-    if (phase === "recording") return rec.current?.stop();
-    if (phase === "ready" || phase === "speaking") return record();
-  }
-
+  const hangUp = () => void room.current?.disconnect();
   const live = phase !== "idle";
-  const tooLong = turns.length >= MAX_TURNS * 2;
+  const out = left === 0 && !live;
+  const label = phase === "connecting" ? "Conectando…" : phase === "live"
+    ? speaker === "bot" ? "Maya está hablando · hablale encima para interrumpirla" : speaker === "user" ? "Te escucha…" : "Hablá cuando quieras"
+    : out ? "Usaste tus pruebas" : "Iniciar llamada";
 
   return (
     <section id="voicebot" className="relative bg-white py-24 md:py-32">
@@ -125,7 +101,7 @@ export function VoiceDemo() {
           <SectionTitle
             eyebrow="Voicebot · desarrollado por Mayday"
             title={<>Atiende como una persona. Escala como software.</>}
-            body="Maya entiende lo que dice el cliente, resuelve la gestión y deriva a un agente cuando hace falta. Elegí un escenario y hablale: es la misma tecnología que ponemos en producción."
+            body="Maya entiende lo que dice el cliente, resuelve la gestión y deriva a un agente cuando hace falta. Elegí un escenario y llamala: conversación en tiempo real, la podés interrumpir como a una persona. Es la misma tecnología que ponemos en producción."
           />
           <div className="mt-8 flex flex-wrap gap-2" role="radiogroup" aria-label="Escenario">
             {(Object.keys(SCENARIOS) as ScenarioId[]).map((id) => (
@@ -145,7 +121,7 @@ export function VoiceDemo() {
           </div>
           <ul className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
-              ["< 1,5 s", "de respuesta por turno"],
+              ["< 1 s", "de respuesta por turno"],
               ["24/7", "sin colas de espera"],
               ["100%", "de llamadas auditadas con QualityIQ"],
             ].map(([k, v]) => (
@@ -164,8 +140,9 @@ export function VoiceDemo() {
               <div>
                 <p className="text-sm font-semibold">Maya · {SCENARIOS[scenario].label}</p>
                 <p className="font-data text-[11px] text-md-dark-muted">
-                  {live ? "en llamada" : "lista para atender"}
-                  {ms && live && ` · IA ${(ms.think / 1000).toFixed(1)} s · voz ${(ms.voice / 1000).toFixed(1)} s`}
+                  {phase === "live"
+                    ? `en llamada · ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`
+                    : left === null ? "lista para atender" : `${left} de ${MAX_CALLS} llamadas disponibles`}
                 </p>
               </div>
               {live && (
@@ -176,7 +153,7 @@ export function VoiceDemo() {
             </div>
 
             <div ref={list} className="mt-4 h-72 space-y-2 overflow-y-auto px-1" aria-live="polite">
-              {!turns.length && (
+              {!turns.length && !partial && (
                 <div className="grid h-full place-items-center text-center text-sm text-md-dark-muted">
                   <p>
                     {SCENARIOS[scenario].hint}
@@ -199,34 +176,47 @@ export function VoiceDemo() {
                   </motion.p>
                 ))}
               </AnimatePresence>
+              {partial && <p className="ml-auto max-w-[85%] rounded-2xl bg-md-cyan/50 px-3 py-2 text-[13px] italic leading-snug text-md-navy">{partial}</p>}
             </div>
 
+            {blocked && (
+              <button onClick={() => void room.current?.startAudio().then(() => setBlocked(false))} className="mt-3 w-full rounded-xl bg-[#78350f] px-3 py-2 text-xs text-[#fde68a]">
+                El navegador pausó el audio de Maya · tocá para activarlo
+              </button>
+            )}
+            {note && !error && <p className="mt-3 rounded-xl bg-[#13163F] px-3 py-2 text-xs text-md-dark-muted">{note}</p>}
             {error && <p className="mt-3 rounded-xl bg-[#7f1d1d] px-3 py-2 text-xs text-[#fecaca]">{error}</p>}
 
             <div className="mt-4 flex flex-col items-center gap-3 pb-2">
-              <Wave active={phase === "speaking" || phase === "recording"} bars={24} className={phase === "recording" ? "text-md-cyan" : "text-[#A9B4FF]"} />
+              <Wave active={speaker !== null} bars={24} className={speaker === "user" ? "text-md-cyan" : "text-[#A9B4FF]"} />
               <button
-                onClick={onMain}
-                disabled={phase === "connecting" || phase === "thinking" || (tooLong && live)}
-                aria-label={LABEL[phase]}
+                onClick={phase === "idle" ? start : undefined}
+                disabled={phase === "connecting" || out}
+                aria-label={label}
                 className={`relative grid h-16 w-16 place-items-center rounded-full transition disabled:opacity-60 ${
-                  phase === "recording" ? "bg-md-cyan text-md-navy" : "bg-white text-md-navy hover:scale-105"
+                  phase === "live" ? "bg-md-cyan text-md-navy" : "bg-white text-md-navy hover:scale-105"
                 }`}
               >
-                {phase === "recording" && <span className="absolute inset-0 animate-ping rounded-full bg-md-cyan/40" />}
+                {phase === "live" && speaker === "user" && <span className="absolute inset-0 animate-ping rounded-full bg-md-cyan/40" />}
                 <svg viewBox="0 0 24 24" className="relative h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  {phase === "idle" ? (
-                    <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" />
-                  ) : (
+                  {phase === "live" ? (
                     <>
                       <rect x="9" y="2" width="6" height="12" rx="3" />
                       <path d="M5 10a7 7 0 0 0 14 0M12 19v3" />
                     </>
+                  ) : (
+                    <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" />
                   )}
                 </svg>
               </button>
-              <p className="text-xs text-md-dark-muted">{tooLong && live ? "Fin de la demo: colgá y volvé a empezar." : LABEL[phase]}</p>
+              <p className="text-xs text-md-dark-muted">{label}</p>
+              {out && (
+                <a href={DEMO_WHATSAPP_URL} className="text-xs font-semibold text-md-cyan hover:underline">
+                  Pedí una demo completa por WhatsApp →
+                </a>
+              )}
             </div>
+            <div ref={audio} hidden />
           </div>
         </div>
       </div>

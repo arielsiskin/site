@@ -7,7 +7,7 @@
     "dev": "node --env-file-if-exists=.env.local ./node_modules/astro/bin/astro.mjs dev",
     "build": "astro build",
     "start": "node dist/server/entry.mjs",
-    "check": "tsc --noEmit && node --experimental-strip-types src/lib/qiq.check.ts && node --experimental-strip-types src/lib/erlang.check.ts && node --experimental-strip-types src/lib/ratelimit.check.ts"
+    "check": "tsc --noEmit && node --experimental-strip-types src/lib/qiq.check.ts && node --experimental-strip-types src/lib/erlang.check.ts && node --experimental-strip-types src/lib/ratelimit.check.ts && node --experimental-strip-types src/lib/voicebot.check.ts"
   },
   "dependencies": {
     "@astrojs/node": "11.1.9",
@@ -18,6 +18,8 @@
     "astro": "7.4.5",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",
+    "livekit-client": "2.23.0",
+    "livekit-server-sdk": "2.19.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.6.0"

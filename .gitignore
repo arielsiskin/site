@@ -45,3 +45,6 @@ out/
 # astro
 /dist
 /.astro
+
+# Worker de voz
+voice-agent/dist/

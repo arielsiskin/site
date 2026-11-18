@@ -1,0 +1,22 @@
+{
+  "name": "mayday-site-voice-agent",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc && node --env-file-if-exists=.env dist/worker.js dev",
+    "start": "node dist/worker.js start"
+  },
+  "dependencies": {
+    "@livekit/agents": "1.8.1",
+    "@livekit/agents-plugin-deepgram": "1.8.1",
+    "@livekit/agents-plugin-elevenlabs": "1.8.1",
+    "@livekit/agents-plugin-google": "1.8.1",
+    "@livekit/agents-plugin-silero": "1.8.1",
+    "@livekit/rtc-node": "0.13.35"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.0",
+    "typescript": "5.8.3"
+  }
+}
