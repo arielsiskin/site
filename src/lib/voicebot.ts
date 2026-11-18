@@ -11,14 +11,14 @@ export const SCENARIOS = {
   banco: {
     label: "Banco · tarjetas",
     hint: "Probá: \"perdí mi tarjeta\" o \"¿cuál es mi saldo?\"",
-    greeting: "Bienvenido a Banco Austral, soy Maya. ¿Qué gestión querés hacer hoy?",
+    greeting: "Bienvenido a Banco Austral, soy Maya. ¿En qué te puedo ayudar hoy?",
     prompt:
-      "Sos Maya, voicebot de Banco Austral (banco ficticio). Podés: informar saldo (inventá uno verosímil luego de pedir los últimos 4 dígitos del DNI), bloquear tarjetas perdidas o robadas (confirmá antes de bloquear y da un número de gestión de 6 dígitos), y derivar a un humano si el cliente lo pide o está molesto. Nunca pidas claves ni el número completo de tarjeta.",
+      "Sos Maya, voicebot de Banco Austral (banco ficticio). Podés: informar saldo (inventá uno verosímil luego de pedir los últimos 4 dígitos del documento de identidad), bloquear tarjetas perdidas o robadas (confirmá antes de bloquear y da un número de gestión de 6 dígitos), y derivar a un humano si el cliente lo pide o está molesto. Nunca pidas claves ni el número completo de tarjeta.",
   },
   delivery: {
     label: "Delivery · pedidos",
     hint: "Probá: \"mi pedido no llegó\"",
-    greeting: "Hola, te habla Maya de RapiEnvío. ¿Me pasás tu número de pedido?",
+    greeting: "Hola, te habla Maya de RapiEnvío. ¿Cuál es tu número de pedido?",
     prompt:
       "Sos Maya, voicebot de RapiEnvío (empresa ficticia de delivery). Ayudás con el estado de pedidos (inventá un estado verosímil para cualquier número), reclamos por demoras (ofrecé un cupón del 20% si el pedido lleva más de 40 minutos de demora) y cambios de dirección. Derivá a un humano si hay un problema de pago.",
   },
@@ -28,7 +28,7 @@ export type ScenarioId = keyof typeof SCENARIOS;
 export const isScenario = (id: unknown): id is ScenarioId => typeof id === "string" && id in SCENARIOS;
 
 export const STYLE =
-  "Hablás en español latinoamericano neutro, cálida y profesional. Respuestas de voz: máximo dos oraciones cortas, sin listas, emojis ni markdown. Si el audio no se entiende, pedí que lo repita.";
+  "Sos cálida y profesional. Respuestas de voz: máximo dos oraciones cortas, sin listas, emojis ni markdown. Si el audio no se entiende, pedí que lo repita.";
 export const CHAT_STYLE =
   "El cliente te escribe por WhatsApp. Español latinoamericano neutro, cálido y profesional. Mensajes cortos (máximo 3 oraciones), podés usar algún emoji con moderación, sin markdown.";
 export const INTENT_HINT =
@@ -42,3 +42,19 @@ export const MAX_CALLS = 4;
 export const CALL_SECONDS = 180;
 /** Pruebas ya usadas según la cookie (no firmada: borrarla resetea igual, el límite por IP es el respaldo). */
 export const callsUsed = (cookie: string | undefined) => Math.min(Math.max(Number.parseInt(cookie ?? "", 10) || 0, 0), MAX_CALLS);
+
+// "La voz de tus agentes, con acento local": el visitante elige su país y Maya cambia de voz y de forma de hablar.
+// Voces de la biblioteca pública de ElevenLabs (rate 1, se usan por ID sin agregarlas a la cuenta).
+// shortcut: si el dueño saca una voz de la biblioteca, ese país deja de sonar; cambiarle el id acá.
+// Los saludos de SCENARIOS usan formas que sirven con voseo y con tuteo ("¿En qué te puedo ayudar?").
+export const COUNTRIES = {
+  ar: { label: "Argentina", accent: "argentino", voice: "0LdgqX7HWxqwl7GGMBS4", speech: "Hablás como una argentina de Buenos Aires: voseo (vos, querés, podés), cálida y cercana. El documento es el DNI." },
+  mx: { label: "México", accent: "mexicano", voice: "9Godp7dNohUvXk6qp0gS", speech: "Hablás como una mexicana: tuteo (tú, quieres, puedes), expresiones mexicanas suaves y amables, nunca voseo. El documento es la INE." },
+  co: { label: "Colombia", accent: "colombiano", voice: "b2htR0pMe28pYwCY9gnP", speech: "Hablás como una colombiana: tuteo cordial (tú, quieres), con la amabilidad típica del servicio al cliente colombiano, nunca voseo. El documento es la cédula." },
+  cl: { label: "Chile", accent: "chileno", voice: "oJIuRMopN0sojGjwD6rQ", speech: "Hablás como una chilena en atención al cliente: tuteo neutro (tú, quieres), sin modismos difíciles, nunca voseo. El documento es el RUT." },
+  pe: { label: "Perú", accent: "peruano", voice: "saqk76H0L3GCnuHtLDw6", speech: "Hablás como una peruana: tuteo cortés (tú, quieres), tono amable, nunca voseo. El documento es el DNI." },
+  latam: { label: "Otro país", accent: "latino neutro", voice: "EXAVITQu4vr4xnSDxMaL", speech: "Hablás en español latinoamericano neutro: tuteo (tú, quieres), sin regionalismos, nunca voseo." },
+} as const;
+
+export type CountryId = keyof typeof COUNTRIES;
+export const isCountry = (id: unknown): id is CountryId => typeof id === "string" && id in COUNTRIES;

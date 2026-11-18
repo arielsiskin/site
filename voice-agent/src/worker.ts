@@ -12,7 +12,7 @@ import { VAD as SileroVAD } from '@livekit/agents-plugin-silero';
 export const AGENT_NAME = 'mayday-site-demo';
 
 /** Lo arma el sitio (el visitante solo elige el escenario): el prompt nunca viene del navegador. */
-type CallConfig = { instructions: string; greeting: string; maxSeconds: number };
+type CallConfig = { instructions: string; greeting: string; voice?: string; maxSeconds: number };
 
 /** Eventos para la pantalla de la demo (src/components/VoiceDemo.tsx), por el canal de datos. */
 type DemoEvent =
@@ -44,7 +44,8 @@ export default defineAgent({
       stt: new DeepgramSTT({ model: 'nova-3', language: 'es-419' }),
       llm: new GoogleLLM({ model: process.env.DEMO_MODEL || 'gemini-3.5-flash-lite', apiKey: process.env.GEMINI_API_KEY }),
       // Our own wrapper (eleven-tts.ts): the official ElevenLabs plugin stalls on every reply in agents 1.8.1.
-      tts: new ElevenTTS({ voiceId: process.env.ELEVEN_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL' }),
+      // The voice of the country the visitor chose (src/lib/voicebot.ts COUNTRIES).
+      tts: new ElevenTTS({ voiceId: c.voice || process.env.ELEVEN_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL' }),
       vad: ctx.proc.userData.vad as InstanceType<typeof SileroVAD>,
       // Default 3 s: the visitor could not cut the ~4 s greeting. 1 s is enough for the browser echo canceller to settle.
       aecWarmupDuration: 1000,

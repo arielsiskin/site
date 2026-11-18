@@ -48,3 +48,6 @@ out/
 
 # Worker de voz
 voice-agent/dist/
+
+# gstack browse reports
+/.gstack/
