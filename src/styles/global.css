@@ -43,7 +43,3 @@ body {
   }
 }
 
-/* Hub (src/components/Hub.tsx): dashes travelling from the hub to each product. */
-.hub-flow { stroke-dasharray: 3 14; animation: hub-flow 1.6s linear infinite; opacity: 0.9; }
-@keyframes hub-flow { to { stroke-dashoffset: -34; } }
-@media (prefers-reduced-motion: reduce) { .hub-flow { animation: none; opacity: 0.4; } }

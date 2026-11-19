@@ -1,21 +1,116 @@
-import { useState, type CSSProperties } from "react";
+import { forwardRef, useRef, type ReactNode, type RefObject } from "react";
+import { AnimatedBeam } from "./AnimatedBeam";
 import { Glow, MayaAvatar, PillLink, Reveal, SectionTitle } from "./ui";
 
-// The solutions hub: Mayday in the middle and each product around it. Positions live in the SVG's 1000x560 space so
-// lines and cards line up at any width; below md the cards become a plain list under the hub.
+// The solutions hub, drawn like Magic UI's "animated beam, multiple outputs": customer channels flow into the Mayday
+// hub, and the hub feeds every solution. Beams follow the real element positions, so the layout can be plain flexbox.
+
+/** Lucide-style stroke icons (ISC), inline so the site needs no icon package. */
+const I = ({ children }: { children: ReactNode }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-full w-full" aria-hidden>
+    {children}
+  </svg>
+);
+const ICONS = {
+  phone: <I><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></I>,
+  whatsapp: <img src="/assets/ia-bot/whatsapp.svg" alt="" className="h-full w-full" />,
+  web: <I><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></I>,
+  mail: <I><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></I>,
+  social: <I><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98" /></I>,
+  mic: <I><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3" /></I>,
+  bot: <I><path d="M12 8V4H8" /><rect x="4" y="8" width="16" height="12" rx="2" /><path d="M2 14h2M20 14h2M15 13v2M9 13v2" /></I>,
+  inbox: <I><path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></I>,
+  shield: <I><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></I>,
+  chart: <I><path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3" /></I>,
+};
+
+const CHANNELS = [
+  { label: "Teléfono", icon: ICONS.phone },
+  { label: "WhatsApp", icon: ICONS.whatsapp },
+  { label: "Webchat", icon: ICONS.web },
+  { label: "Email", icon: ICONS.mail },
+  { label: "Redes", icon: ICONS.social },
+];
 const SOLUTIONS = [
-  { title: "Omnichannel", body: "Telefonía, CRM y canales digitales en una sola bandeja.", href: "/#omnichannel", x: 170, y: 130, dot: "#04CCDB" },
-  { title: "Voicebot", body: "Maya atiende y resuelve, con acento local.", href: "/#voicebot", x: 830, y: 130, dot: "#A9B4FF" },
-  { title: "IA Bot", body: "Agentic WhatsApp, web y redes que resuelven solos.", href: "/#iabot", x: 160, y: 420, dot: "#4ade80" },
-  { title: "QualityIQ", body: "Auditoría con IA del 100% de las conversaciones.", href: "/#quality", x: 840, y: 420, dot: "#FBBF24" },
-  { title: "MIS", body: "Todos tus datos en un tablero, con SAM como analista.", href: "/#mis", x: 500, y: 470, dot: "#F472B6" },
-] as const;
-const HUB = { x: 500, y: 230 };
-const CHANNELS = ["Teléfono", "WhatsApp", "Webchat", "Email", "Redes", "CRM", "Tus APIs"];
-const pos = (x: number, y: number) => ({ "--x": `${x / 10}%`, "--y": `${(y / 560) * 100}%` }) as CSSProperties;
+  { title: "Voicebot", body: "Maya atiende con acento local", href: "/#voicebot", icon: ICONS.mic, color: "#7A5CFF" },
+  { title: "IA Bot", body: "Agentic WhatsApp que resuelve", href: "/#iabot", icon: ICONS.bot, color: "#16a34a" },
+  { title: "Omnichannel", body: "Todos los canales, una bandeja", href: "/#omnichannel", icon: ICONS.inbox, color: "#04CCDB" },
+  { title: "QualityIQ", body: "Audita el 100% con IA", href: "/#quality", icon: ICONS.shield, color: "#F59E0B" },
+  { title: "MIS", body: "Tus datos, con SAM como analista", href: "/#mis", icon: ICONS.chart, color: "#E1306C" },
+];
+// Gentle fan: outer rows bend more, so beams don't overlap near the hub.
+const CURVE = [-60, -25, 0, 25, 60];
+
+const Node = forwardRef<HTMLDivElement, { children: ReactNode; className?: string }>(({ children, className = "" }, ref) => (
+  <div ref={ref} className={`z-10 grid size-11 shrink-0 place-items-center rounded-full border border-md-line bg-white p-2.5 text-md-navy shadow-[0_0_20px_-10px_rgba(1,1,54,0.5)] md:size-14 md:p-3.5 ${className}`}>
+    {children}
+  </div>
+));
+
+function useRefs(n: number) {
+  // Fixed-length list of refs; the hooks run in the same order on every render.
+  return Array.from({ length: n }, () => useRef<HTMLDivElement>(null)) as RefObject<HTMLDivElement>[];
+}
+
+function HubDiagram() {
+  const box = useRef<HTMLDivElement>(null);
+  const hub = useRef<HTMLDivElement>(null);
+  const ins = useRefs(CHANNELS.length);
+  const outs = useRefs(SOLUTIONS.length);
+  return (
+    <div
+      ref={box}
+      className="relative flex items-center justify-between gap-3 overflow-hidden rounded-[32px] border border-md-line bg-md-bg px-4 py-8 md:px-14 md:py-12 [background-image:radial-gradient(rgba(42,68,158,0.12)_1px,transparent_1px)] [background-size:18px_18px]"
+    >
+      {/* channels */}
+      <div className="flex flex-col gap-4 md:gap-6">
+        <p className="text-center text-[10px] font-bold uppercase tracking-[1.4px] text-md-muted md:text-[11px]">Tus clientes</p>
+        {CHANNELS.map((c, i) => (
+          <div key={c.label} className="flex flex-col items-center gap-1">
+            <Node ref={ins[i]}>{c.icon}</Node>
+            <span className="text-[10px] font-medium text-md-muted md:text-xs">{c.label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* hub */}
+      <div ref={hub} className="z-10 grid size-24 shrink-0 place-items-center rounded-full border border-md-cyan/40 bg-md-navy text-center shadow-[0_0_50px_-5px_rgba(4,204,219,0.6)] md:size-36">
+        <div>
+          <img src="/assets/logo.svg" alt="" className="mx-auto h-7 w-auto md:h-10" />
+          <p className="mt-1 font-display text-[10px] font-extrabold tracking-[0.18em] text-white md:text-xs">MAYDAY</p>
+          <p className="mx-auto max-w-[90px] text-[8px] font-semibold uppercase leading-tight tracking-[0.12em] text-md-cyan md:text-[10px]">Hub de soluciones</p>
+        </div>
+      </div>
+
+      {/* solutions */}
+      <ul className="flex flex-col gap-4 md:gap-5">
+        <li className="text-center text-[10px] font-bold uppercase tracking-[1.4px] text-md-muted md:text-left md:text-[11px]">Tus soluciones</li>
+        {SOLUTIONS.map((s, i) => (
+          <li key={s.title}>
+            <a href={s.href} className="group flex flex-col items-center gap-1 md:flex-row md:gap-3">
+              <Node ref={outs[i]} className="transition group-hover:scale-110">
+                <span style={{ color: s.color }} className="h-full w-full">{s.icon}</span>
+              </Node>
+              <span className="text-center md:text-left">
+                <span className="block text-[10px] font-semibold text-md-ink md:font-display md:text-base md:font-extrabold">{s.title}</span>
+                <span className="hidden text-xs text-md-muted md:block md:w-48">{s.body}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      {ins.map((r, i) => (
+        <AnimatedBeam key={`in${i}`} containerRef={box} fromRef={r} toRef={hub} curvature={CURVE[i]} duration={3.5} delay={i * 0.25} />
+      ))}
+      {outs.map((r, i) => (
+        <AnimatedBeam key={`out${i}`} containerRef={box} fromRef={hub} toRef={r} curvature={-CURVE[i]} duration={3.5} delay={1.2 + i * 0.25} gradientStartColor="#04CCDB" gradientStopColor={SOLUTIONS[i].color} />
+      ))}
+    </div>
+  );
+}
 
 export function Solutions() {
-  const [active, setActive] = useState<number | null>(null);
   return (
     <section id="soluciones" className="bg-white py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-4">
@@ -26,64 +121,8 @@ export function Solutions() {
         />
 
         <Reveal className="mt-12">
-          <div className="relative overflow-hidden rounded-[32px] bg-md-navy p-5 md:aspect-[1000/560] md:p-0">
-            <div aria-hidden className="absolute left-1/2 top-[42%] h-[70%] w-[50%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-md-cyan/20 blur-3xl" />
-
-            <svg aria-hidden viewBox="0 0 1000 560" className="absolute inset-0 hidden h-full w-full md:block">
-              {[110, 190, 280].map((r) => (
-                <ellipse key={r} cx={HUB.x} cy={HUB.y} rx={r * 1.6} ry={r} fill="none" stroke="rgba(169,180,255,0.12)" />
-              ))}
-              {SOLUTIONS.map((p, i) => (
-                <g key={p.title}>
-                  <line x1={HUB.x} y1={HUB.y} x2={p.x} y2={p.y} stroke={active === i ? p.dot : "rgba(169,180,255,0.25)"} strokeWidth={active === i ? 2 : 1.2} />
-                  {/* data travelling from the hub to each product */}
-                  <line x1={HUB.x} y1={HUB.y} x2={p.x} y2={p.y} stroke={p.dot} strokeWidth="2.5" strokeLinecap="round" className="hub-flow" style={{ animationDelay: `${i * -0.4}s` }} />
-                </g>
-              ))}
-            </svg>
-
-            <div
-              className="relative mx-auto mb-5 grid h-32 w-32 place-items-center rounded-full border border-md-cyan/40 bg-[#0A0D3F] text-center shadow-[0_0_60px_rgba(4,204,219,0.35)] md:absolute md:left-[var(--x)] md:top-[var(--y)] md:mb-0 md:h-36 md:w-36 md:-translate-x-1/2 md:-translate-y-1/2"
-              style={pos(HUB.x, HUB.y)}
-            >
-              <span aria-hidden className="absolute inset-0 animate-ping rounded-full border border-md-cyan/40 [animation-duration:3s] motion-reduce:animate-none" />
-              <div>
-                <img src="/assets/logo.svg" alt="" className="mx-auto h-8 w-auto" />
-                <p className="mt-1 font-display text-xs font-extrabold tracking-[0.18em] text-white">MAYDAY</p>
-                <p className="mx-auto max-w-[90px] text-[10px] font-semibold uppercase leading-tight tracking-[0.12em] text-md-cyan">Hub de soluciones</p>
-              </div>
-            </div>
-
-            <ul className="relative grid gap-3 md:static">
-              {SOLUTIONS.map((p, i) => (
-                <li key={p.title} className="md:absolute md:left-[var(--x)] md:top-[var(--y)] md:w-[23%] md:-translate-x-1/2 md:-translate-y-1/2" style={pos(p.x, p.y)}>
-                  <a
-                    href={p.href}
-                    onMouseEnter={() => setActive(i)}
-                    onMouseLeave={() => setActive(null)}
-                    onFocus={() => setActive(i)}
-                    onBlur={() => setActive(null)}
-                    className="group flex flex-col rounded-2xl border border-md-dark-line bg-[#0A0D3F]/90 p-4 text-white backdrop-blur transition hover:-translate-y-1 hover:border-md-cyan/60"
-                  >
-                    <span className="flex items-center gap-2 font-display text-lg font-extrabold">
-                      <span className="h-2.5 w-2.5 rounded-full" style={{ background: p.dot }} aria-hidden />
-                      {p.title}
-                    </span>
-                    <span className="mt-1 text-[13px] leading-snug text-md-dark-muted">{p.body}</span>
-                    <span className="mt-2 text-xs font-semibold text-md-cyan transition group-hover:translate-x-1">Probalo en vivo →</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <HubDiagram />
         </Reveal>
-
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-          <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-md-muted">Se conecta con</span>
-          {CHANNELS.map((c) => (
-            <span key={c} className="rounded-full border border-md-line bg-md-bg px-3 py-1 text-xs font-medium text-md-ink">{c}</span>
-          ))}
-        </div>
 
         {/* people + AI */}
         <Reveal className="mt-16 grid items-center gap-8 md:grid-cols-[1.25fr_1fr] md:gap-12">
