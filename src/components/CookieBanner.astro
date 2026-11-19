@@ -1,0 +1,79 @@
+---
+// Cookie consent for ads (Google Ads remarketing via GTM). Layout.astro sets Google Consent Mode v2 to "denied" before
+// GTM loads; this banner stores the choice in localStorage "md_consent" and sends the consent update. Any element with
+// data-cookie-settings (the footer link) reopens it.
+---
+
+<div
+  id="cookie-banner"
+  hidden
+  role="dialog"
+  aria-labelledby="cookie-title"
+  class="fixed inset-x-4 bottom-4 z-[60] rounded-2xl border border-md-line bg-white p-4 text-sm text-md-ink shadow-[0_18px_50px_rgba(1,1,54,0.18)] sm:right-auto sm:max-w-sm"
+>
+  <p id="cookie-title" class="font-semibold">Usamos cookies</p>
+  <p class="mt-1 text-[13px] leading-snug text-md-muted">
+    Para medir cómo se usa el sitio y mostrarte anuncios de Mayday en otras plataformas. <a href="/policy" class="underline hover:text-md-ink">Más info</a>
+  </p>
+  <fieldset id="cookie-prefs" hidden class="mt-3 space-y-2 border-t border-md-line pt-3 text-[13px]">
+    <legend class="sr-only">Tipos de cookies</legend>
+    <label class="flex items-center justify-between gap-3 text-md-muted">Necesarias <input type="checkbox" checked disabled class="accent-md-navy" /></label>
+    <label class="flex items-center justify-between gap-3">Analítica <input type="checkbox" name="analytics" class="accent-md-navy" /></label>
+    <label class="flex items-center justify-between gap-3">Publicidad <input type="checkbox" name="ads" class="accent-md-navy" /></label>
+  </fieldset>
+  <div class="mt-3 flex flex-wrap items-center justify-end gap-2">
+    <button type="button" data-act="config" class="mr-auto text-[13px] font-medium text-md-muted underline hover:text-md-ink">Configurar</button>
+    <button type="button" data-act="reject" class="rounded-full border border-md-line px-3 py-1.5 text-[13px] font-semibold hover:bg-md-bg">Rechazar</button>
+    <button type="button" data-act="save" hidden class="rounded-full border border-md-line px-3 py-1.5 text-[13px] font-semibold hover:bg-md-bg">Guardar</button>
+    <button type="button" data-act="accept" class="rounded-full bg-md-navy px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-md-indigo">Aceptar todas</button>
+  </div>
+</div>
+
+<script>
+  type Consent = { analytics: boolean; ads: boolean };
+  const box = document.getElementById("cookie-banner")!;
+  const prefs = document.getElementById("cookie-prefs")!;
+  const field = (n: string) => box.querySelector<HTMLInputElement>(`input[name=${n}]`)!;
+  const btn = (a: string) => box.querySelector<HTMLButtonElement>(`[data-act=${a}]`)!;
+
+  const read = (): Consent | null => {
+    try {
+      return JSON.parse(localStorage.getItem("md_consent") || "null");
+    } catch {
+      return null;
+    }
+  };
+
+  function save(c: Consent) {
+    try {
+      localStorage.setItem("md_consent", JSON.stringify({ ...c, at: new Date().toISOString() }));
+    } catch {}
+    const g = (v: boolean) => (v ? "granted" : "denied");
+    const w = window as any;
+    w.gtag?.("consent", "update", { ad_storage: g(c.ads), ad_user_data: g(c.ads), ad_personalization: g(c.ads), analytics_storage: g(c.analytics) });
+    w.gtag?.("set", "ads_data_redaction", !c.ads);
+    w.dataLayer?.push({ event: "consent_update", consent_analytics: c.analytics, consent_ads: c.ads });
+    box.hidden = true;
+  }
+
+  function open(detailed: boolean) {
+    const c = read();
+    field("analytics").checked = c?.analytics ?? true;
+    field("ads").checked = c?.ads ?? true;
+    prefs.hidden = !detailed;
+    btn("save").hidden = !detailed;
+    btn("config").hidden = detailed;
+    box.hidden = false;
+  }
+
+  btn("accept").onclick = () => save({ analytics: true, ads: true });
+  btn("reject").onclick = () => save({ analytics: false, ads: false });
+  btn("save").onclick = () => save({ analytics: field("analytics").checked, ads: field("ads").checked });
+  btn("config").onclick = () => open(true);
+  document.addEventListener("click", (e) => {
+    if (!(e.target as Element).closest?.("[data-cookie-settings]")) return;
+    e.preventDefault();
+    open(true);
+  });
+  if (!read()) open(false);
+</script>

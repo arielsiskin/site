@@ -2,6 +2,7 @@
 import "@/styles/global.css";
 import { Nav } from "@/components/Hero";
 import { Footer } from "@/components/Sections";
+import CookieBanner from "@/components/CookieBanner.astro";
 
 interface Props {
   title: string;
@@ -29,11 +30,21 @@ const url = new URL(Astro.url.pathname, "https://mayday.global");
     <meta property="og:locale" content="es_AR" />
     <meta name="twitter:card" content="summary_large_image" />
     <noscript><style>[data-reveal]{opacity:1;transform:none}</style></noscript>
-    <!-- Google Analytics + Tag Manager, only on the real domain so test URLs (Cloud Run, localhost) stay out of the stats -->
+    <!-- Google Consent Mode v2: everything denied until the visitor accepts in CookieBanner (choice kept in localStorage).
+         GA + Tag Manager load only on the real domain so test URLs (Cloud Run, localhost) stay out of the stats. -->
     <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      var mdc = null;
+      try { mdc = JSON.parse(localStorage.getItem("md_consent")); } catch (e) {}
+      var mdg = function (v) { return v ? "granted" : "denied"; };
+      gtag("consent", "default", {
+        ad_storage: mdg(mdc && mdc.ads), ad_user_data: mdg(mdc && mdc.ads), ad_personalization: mdg(mdc && mdc.ads),
+        analytics_storage: mdg(mdc && mdc.analytics), functionality_storage: "granted", security_storage: "granted", wait_for_update: 500,
+      });
+      gtag("set", "ads_data_redaction", !(mdc && mdc.ads));
+      gtag("set", "url_passthrough", true);
       if (location.hostname.endsWith("mayday.global")) {
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
         gtag("js", new Date());
         gtag("config", "G-B9175NWQJS");
         dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
@@ -52,6 +63,7 @@ const url = new URL(Astro.url.pathname, "https://mayday.global");
       <slot />
     </main>
     <Footer />
+    <CookieBanner />
     <script>
       const io = new IntersectionObserver(
         (entries) => {

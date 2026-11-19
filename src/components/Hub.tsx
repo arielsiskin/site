@@ -1,6 +1,7 @@
-import { forwardRef, useRef, type ReactNode, type RefObject } from "react";
+import { forwardRef, useEffect, useRef, type ReactNode, type RefObject } from "react";
 import { AnimatedBeam } from "./AnimatedBeam";
 import { Glow, MayaAvatar, PillLink, Reveal, SectionTitle } from "./ui";
+
 
 // The solutions hub, drawn like Magic UI's "animated beam, multiple outputs": customer channels flow into the Mayday
 // hub, and the hub feeds every solution. Beams follow the real element positions, so the layout can be plain flexbox.
@@ -124,32 +125,49 @@ export function Solutions() {
           <HubDiagram />
         </Reveal>
 
-        {/* people + AI */}
-        <Reveal className="mt-16 grid items-center gap-8 md:grid-cols-[1.25fr_1fr] md:gap-12">
-          <div className="relative overflow-hidden rounded-[28px] shadow-[0_24px_60px_rgba(1,1,54,0.15)]">
-            <img
-              src="/assets/personas-ia.webp"
-              alt="Una mujer habla por teléfono con una asistente de inteligencia artificial"
-              width={1600}
-              height={761}
-              loading="lazy"
-              className="aspect-[4/3] w-full object-cover object-[30%_center] md:aspect-[16/10]"
-            />
-            <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-md-navy/50 via-transparent to-transparent" />
-            <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-white/90 py-1.5 pl-1.5 pr-3 shadow backdrop-blur">
-              <MayaAvatar className="h-7 w-7" />
-              <span className="text-xs font-semibold text-md-ink">Maya está atendiendo · 00:42</span>
-            </div>
+      </div>
+    </section>
+  );
+}
+
+/** Full-bleed looping video (Veo-generated, public/assets/equipo-ia.mp4) with the headline on top, Preymaker style. */
+export function TeamVideo() {
+  const video = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    // Respect reduced motion: keep the poster frame instead of the loop.
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) video.current?.pause();
+  }, []);
+  return (
+    <section className="relative isolate flex min-h-[560px] items-end overflow-hidden bg-md-navy md:min-h-[88vh]">
+      <video
+        ref={video}
+        className="absolute inset-0 -z-10 h-full w-full object-cover"
+        poster="/assets/equipo-ia.jpg"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-hidden
+      >
+        <source src="/assets/equipo-ia-sm.mp4" type="video/mp4" media="(max-width: 767px)" />
+        <source src="/assets/equipo-ia.mp4" type="video/mp4" />
+      </video>
+      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-md-navy via-md-navy/40 to-md-navy/10" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-md-navy/70 to-transparent" />
+      <div className="mx-auto w-full max-w-6xl px-4 pb-16 md:pb-24">
+        <Reveal className="max-w-2xl">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 py-1.5 pl-1.5 pr-3 backdrop-blur">
+            <MayaAvatar className="h-7 w-7" />
+            <span className="text-xs font-semibold text-white">Maya y tu equipo, atendiendo juntos</span>
           </div>
-          <div>
-            <h3 className="font-display text-3xl font-extrabold leading-tight tracking-tight text-md-ink md:text-4xl">Personas e IA, en el mismo equipo.</h3>
-            <p className="mt-4 leading-relaxed text-md-muted">
-              La IA atiende lo repetitivo a cualquier hora y tus agentes se quedan con lo que necesita una persona. En cada derivación, el hub
-              les pasa la conversación completa: nadie le vuelve a preguntar nada al cliente.
-            </p>
-            <div className="mt-6">
-              <PillLink href="/#voicebot">Hablar con Maya</PillLink>
-            </div>
+          <h2 className="font-display text-4xl font-extrabold leading-[1.02] tracking-tight text-white md:text-7xl">Personas e IA, en el mismo equipo.</h2>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-white/80 md:text-lg">
+            La IA atiende lo repetitivo a cualquier hora y tus agentes se quedan con lo que necesita una persona. En cada derivación, el hub les
+            pasa la conversación completa: nadie le vuelve a preguntar nada al cliente.
+          </p>
+          <div className="mt-8">
+            <PillLink href="/#voicebot" variant="light">Hablar con Maya</PillLink>
           </div>
         </Reveal>
       </div>

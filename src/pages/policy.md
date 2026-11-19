@@ -35,6 +35,16 @@ En **Mayday Global** entendemos la importancia de proteger la información de nu
 
 Los audios y mensajes que envíes en las demos de este sitio (voicebot, IA Bot y QualityIQ) se procesan en el momento para generar la respuesta y **no se guardan**.
 
+## Cookies
+
+Usamos cookies y tecnologías similares de tres tipos:
+
+- **Necesarias**: hacen funcionar el sitio y las demos (por ejemplo, recordar tu elección de cookies). No se pueden desactivar.
+- **Analítica**: Google Analytics nos dice cómo se usa el sitio, de forma agregada.
+- **Publicidad**: Google Ads nos permite mostrarte anuncios de Mayday en otros sitios y medir si funcionan.
+
+Las de analítica y publicidad solo se activan si las aceptás en el aviso de cookies. Podés cambiar tu elección cuando quieras desde **Configurar cookies**, al pie de cada página.
+
 ## Contacto
 
 En Mayday Global nos comprometemos a garantizar la seguridad y el uso adecuado de la información, promoviendo una cultura de protección de datos en todos nuestros procesos.

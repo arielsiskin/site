@@ -87,13 +87,13 @@ export function Footer() {
         {[
           ["Soluciones", [["Omnichannel", "/#omnichannel"], ["IA Bot", "/#iabot"], ["Voicebot", "/#voicebot"], ["QualityIQ", "/#quality"], ["MIS", "/#mis"]]],
           ["Empresa", [["Nosotros", "/about-us"], ["LinkedIn", "https://www.linkedin.com/company/mayday-global/"]]],
-          ["Legal", [["Privacidad", "/policy"]]],
+          ["Legal", [["Privacidad", "/policy"], ["Configurar cookies", "#cookies"]]],
         ].map(([h, links]) => (
           <div key={h as string}>
             <p className="text-sm font-semibold text-white">{h as string}</p>
             <ul className="mt-3 space-y-2 text-sm">
               {(links as string[][]).map(([l, href]) => (
-                <li key={l}><a href={href} className="hover:text-white">{l}</a></li>
+                <li key={l}><a href={href} data-cookie-settings={href === "#cookies" ? "" : undefined} className="hover:text-white">{l}</a></li>
               ))}
             </ul>
           </div>
