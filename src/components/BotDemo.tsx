@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { SCENARIOS, type ScenarioId, type Turn } from "@/lib/voicebot";
-import { SectionTitle } from "./ui";
+import { MayaAvatar, SectionTitle } from "./ui";
 
 const QUICK: Record<ScenarioId, string[]> = {
   mayday: ["¿Qué hace Mayday?", "¿Tienen voicebot?", "Quiero una demo"],
@@ -99,7 +99,7 @@ export function BotDemo() {
             <div aria-hidden className="absolute -inset-10 rounded-full bg-[radial-gradient(circle,rgba(4,204,219,0.35),transparent_65%)] blur-2xl" />
             <div className="relative overflow-hidden rounded-[40px] border-[10px] border-md-navy bg-[#EFEAE2] shadow-[0_24px_60px_rgba(1,1,54,0.3)]">
               <div className="flex items-center gap-3 bg-[#0B5C4E] px-4 py-3 text-white">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-white/20 text-sm font-bold">M</span>
+                <MayaAvatar className="h-9 w-9" />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold">Maya · {SCENARIOS[scenario].label}</p>
                   <p className="text-[11px] text-white/70">{typing ? "escribiendo…" : "en línea"}</p>

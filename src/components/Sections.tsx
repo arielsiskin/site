@@ -3,44 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 import { Aurora, Glow, PillLink, Reveal, SectionTitle } from "./ui";
 
-const SOLUTIONS = [
-  { title: "Omnichannel", body: "Telefonía, CRM y canales digitales en una sola plataforma.", href: "/#omnichannel", span: "md:col-span-2", tone: "dark" },
-  { title: "IA Bot", body: "Bots inteligentes para WhatsApp, web y redes.", href: "/#iabot", span: "", tone: "light" },
-  { title: "Voicebot", body: "Agentes de voz que resuelven y derivan.", href: "/#voicebot", span: "", tone: "light" },
-  { title: "QualityIQ", body: "Auditoría con IA del 100% de las llamadas, con coaching para cada agente.", href: "/#quality", span: "md:col-span-2", tone: "glow" },
-  { title: "MIS", body: "Todos tus datos en un tablero, con SAM como analista.", href: "/#mis", span: "md:col-span-3", tone: "light" },
-] as const;
-
-export function Solutions() {
-  return (
-    <section id="soluciones" className="bg-white py-24 md:py-32">
-      <div className="mx-auto max-w-6xl px-4">
-        <SectionTitle eyebrow="Soluciones" title={<>Todo tu contact center, <Glow>conectado</Glow>.</>} />
-        <div className="mt-12 grid gap-4 md:grid-cols-3">
-          {SOLUTIONS.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.06} className={s.span}>
-              <a
-                href={s.href}
-                className={`group relative flex h-full min-h-[200px] flex-col justify-end overflow-hidden rounded-[24px] p-6 transition hover:-translate-y-1 ${
-                  s.tone === "dark" ? "bg-md-navy text-white" : s.tone === "glow" ? "bg-md-sky text-md-ink" : "bg-md-bg text-md-ink"
-                }`}
-              >
-                {s.tone === "glow" && <Aurora className="opacity-70" />}
-                {s.tone === "dark" && <div aria-hidden className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-md-cyan/30 blur-3xl" />}
-                <div className="relative">
-                  <h3 className="font-display text-2xl font-extrabold">{s.title}</h3>
-                  <p className={`mt-2 max-w-md text-sm ${s.tone === "dark" ? "text-md-dark-muted" : "text-md-muted"}`}>{s.body}</p>
-                  <span className="mt-4 inline-block text-sm font-semibold transition group-hover:translate-x-1">Probalo →</span>
-                </div>
-              </a>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Count({ to, suffix = "" }: { to: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
@@ -120,7 +82,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 md:grid-cols-[2fr_1fr_1fr_1fr]">
         <div>
           <img src="/logo.svg" alt="Mayday Global" className="h-8 w-auto" />
-          <p className="mt-4 max-w-xs text-sm">Tecnología e inteligencia artificial para contact centers de América Latina.</p>
+          <p className="mt-4 max-w-xs text-sm">Hub de soluciones con IA para contact centers de América Latina.</p>
         </div>
         {[
           ["Soluciones", [["Omnichannel", "/#omnichannel"], ["IA Bot", "/#iabot"], ["Voicebot", "/#voicebot"], ["QualityIQ", "/#quality"], ["MIS", "/#mis"]]],

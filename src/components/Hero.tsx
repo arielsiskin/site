@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Aurora, Eyebrow, Glow, PillLink, Wave } from "./ui";
+import { Aurora, Eyebrow, Glow, MayaAvatar, PillLink, Wave } from "./ui";
 
 const NAV = [
   { name: "Voicebot", href: "/#voicebot" },
@@ -76,7 +76,7 @@ function LiveCall() {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-md-blue to-md-indigo text-sm font-bold text-white">M</div>
+          <MayaAvatar className="h-10 w-10 ring-2 ring-white" />
           <div>
             <p className="text-sm font-semibold text-md-ink">Maya · Voicebot</p>
             <p className="font-data text-[11px] text-md-muted">Llamada en curso · 00:{String(12 + n * 7).padStart(2, "0")}</p>
@@ -118,13 +118,13 @@ export function Hero() {
 
       <div className="relative mx-auto max-w-5xl px-4 text-center">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <Eyebrow>Contact center con inteligencia artificial</Eyebrow>
+          <Eyebrow>Hub de soluciones con IA para contact centers</Eyebrow>
           <h1 className="mx-auto mt-4 max-w-4xl font-display text-[44px] font-extrabold leading-[1.02] tracking-tight text-md-ink md:text-[84px]">
             Cada llamada, <Glow>atendida</Glow> y entendida.
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-md-muted md:text-lg">
-            Voicebots que atienden como personas, QualityIQ que audita el 100% de las conversaciones y una plataforma
-            omnicanal para operar todo en un solo lugar.
+            Un solo hub con todo lo que tu contact center necesita: voicebots que atienden como personas, QualityIQ que
+            audita el 100% de las conversaciones, omnicanalidad y MIS para ver todos tus datos, conectados entre sí.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <PillLink href="/#voicebot">Hablar con Maya</PillLink>

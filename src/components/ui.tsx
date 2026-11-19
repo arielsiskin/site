@@ -78,3 +78,8 @@ export const Wave = ({ active, bars = 20, className }: { active: boolean; bars?:
     ))}
   </div>
 );
+
+/** Maya's face (AI-generated photo, public/assets/maya.webp); the name always sits next to it, so alt stays empty. */
+export const MayaAvatar = ({ className }: { className?: string }) => (
+  <img src="/assets/maya.webp" alt="" width={256} height={256} className={cn("shrink-0 rounded-full object-cover", className)} />
+);

@@ -3,7 +3,7 @@ import type { Room } from "livekit-client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { callsUsed, COUNTRIES, LIMIT_CALLS, MAX_CALLS, SCENARIOS, type CountryId, type ScenarioId, type Turn } from "@/lib/voicebot";
 import { DEMO_WHATSAPP_URL } from "@/lib/utils";
-import { Aurora, SectionTitle, Wave } from "./ui";
+import { Aurora, MayaAvatar, SectionTitle, Wave } from "./ui";
 
 // Llamada en vivo con Maya por LiveKit, como un softphone (igual que el coaching de QualityIQ): el visitante llama,
 // suena hasta que Maya atiende, y en la llamada puede silenciarse o colgar. /api/call abre la sala con la voz del país
@@ -236,7 +236,7 @@ export function VoiceDemo() {
               <div className="relative grid h-20 w-20 place-items-center rounded-full bg-[#13163F]">
                 {phase === "llamando" && <span className="absolute inset-0 animate-ping rounded-full bg-md-cyan/30 motion-reduce:animate-none" />}
                 {phase === "en_curso" && speaker === "bot" && <span className="absolute -inset-1 rounded-full ring-2 ring-md-cyan" />}
-                <span className="relative font-display text-2xl font-extrabold text-white">M</span>
+                <MayaAvatar className="relative h-20 w-20" />
               </div>
               <p className="mt-3 font-display text-lg font-bold">Maya</p>
               <p className="text-xs text-md-dark-muted">{SCENARIOS[scenario].label} · acento {COUNTRIES[country].accent}</p>
