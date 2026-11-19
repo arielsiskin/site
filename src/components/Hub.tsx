@@ -1,10 +1,8 @@
-import { forwardRef, useEffect, useRef, type CSSProperties, type ReactNode, type RefObject } from "react";
-import { AnimatedBeam } from "./AnimatedBeam";
-import { Glow, MayaAvatar, PillLink, Reveal, SectionTitle } from "./ui";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
-
-// The solutions hub (Magic UI patterns: Ripple, Orbiting Circles, Magic Card, Animated Beam): customer channels orbit the
-// Mayday hub and beams feed each solution card. Beams follow real element positions, so the layout is plain CSS grid.
+// The technology hub, after puture.co.kr: glossy 3D tiles (one per Mayday vertical) over a perspective grid. While the
+// section is pinned, scrolling turns the spinning carousel into tiles floating around the headline. Pure CSS 3D driven by
+// one rAF loop (no WebGL); with reduced motion it renders the final layout, still and unpinned.
 
 /** Lucide-style stroke icons (ISC), inline so the site needs no icon package. */
 const I = ({ children }: { children: ReactNode }) => (
@@ -12,199 +10,218 @@ const I = ({ children }: { children: ReactNode }) => (
     {children}
   </svg>
 );
-const ICONS = {
-  phone: <I><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></I>,
-  whatsapp: <img src="/assets/ia-bot/whatsapp.svg" alt="" className="h-full w-full" />,
-  web: <I><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></I>,
-  mail: <I><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></I>,
-  social: <I><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98" /></I>,
-  mic: <I><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3" /></I>,
-  bot: <I><path d="M12 8V4H8" /><rect x="4" y="8" width="16" height="12" rx="2" /><path d="M2 14h2M20 14h2M15 13v2M9 13v2" /></I>,
-  inbox: <I><path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></I>,
-  shield: <I><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></I>,
-  chart: <I><path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3" /></I>,
+
+const TILES = [
+  { label: "Voicebot", href: "/#voicebot", icon: <I><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3" /></I> },
+  { label: "Agentic WhatsApp", href: "/#iabot", icon: <I><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /><path d="M8 12h.01M12 12h.01M16 12h.01" /></I> },
+  { label: "QualityIQ", href: "/#quality", icon: <I><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></I> },
+  { label: "MIS", href: "/#mis", icon: <I><path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3" /></I> },
+  { label: "Omnichannel", href: "/#omnichannel", icon: <I><path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></I> },
+  { label: "SAM · analista IA", href: "/#mis", icon: <I><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z" /></I> },
+  { label: "IA Bot", href: "/#iabot", icon: <I><path d="M12 8V4H8" /><rect x="4" y="8" width="16" height="12" rx="2" /><path d="M2 14h2M20 14h2M15 13v2M9 13v2" /></I> },
+  { label: "Coaching", href: "/#quality", icon: <I><path d="M22 10 12 5 2 10l10 5 10-5Z" /><path d="M6 12v5c3 3 9 3 12 0v-5M22 10v6" /></I> },
+  { label: "Telefonía", href: "/#omnichannel", icon: <I><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></I> },
+  { label: "Webchat", href: "/#iabot", icon: <I><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></I> },
+  { label: "CRM", href: "/#omnichannel", icon: <I><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14a9 3 0 0 0 18 0V5M3 12a9 3 0 0 0 18 0" /></I> },
+  { label: "Email", href: "/#omnichannel", icon: <I><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></I> },
+];
+const N = TILES.length;
+
+type Dims = { w: number; h: number };
+const clamp = (x: number) => Math.min(1, Math.max(0, x));
+const smooth = (x: number) => x * x * (3 - 2 * x);
+const mix = (a: number, b: number, t: number) => a + (b - a) * t;
+const r = (x: number) => Math.round(x * 100) / 100;
+const tileSize = (d: Dims) => (d.w < 768 ? 60 : 104);
+
+/** Where tile i sits for scroll progress p (0..1) at time s (seconds). */
+function place(i: number, p: number, s: number, d: Dims) {
+  const mobile = d.w < 768;
+  const t = smooth(clamp((p - 0.22) / 0.45));
+  // Carousel: a ring spinning around the vertical axis, above the headline.
+  const R = mobile ? d.w * 0.62 : Math.min(d.w * 0.4, 600);
+  const a = (i / N) * Math.PI * 2 + s * 0.12 + p * 1.6;
+  const ring = { x: R * Math.sin(a), y: d.h * (mobile ? -0.16 : -0.13) + Math.sin(i * 1.7) * 14, z: R * Math.cos(a) - R * 0.55, ry: Math.sin(a) * 0.7, rx: -0.12 }; // tiles keep facing the camera, tilted toward the sides
+  // Scatter: around the centred headline (desktop: an ellipse; mobile: bands above and below the text).
+  let sx: number, sy: number;
+  if (mobile) {
+    const row = Math.floor(i / 3), col = i % 3;
+    sx = (col - 1) * d.w * 0.28 + Math.sin(i * 2.3) * 8;
+    sy = [-0.34, -0.215, 0.25, 0.375][row] * d.h;
+  } else {
+    const f = (i / N) * Math.PI * 2 + 0.26;
+    sx = Math.cos(f) * d.w * 0.4;
+    sy = Math.sin(f) * d.h * 0.36;
+  }
+  const scatter = {
+    x: sx,
+    y: sy + Math.sin(s * 0.9 + i) * 8,
+    z: (((i * 37) % 3) - 1) * 80,
+    ry: Math.sin(i * 2.1) * 0.32 + Math.sin(s * 0.5 + i) * 0.1,
+    rx: Math.cos(i * 1.3) * 0.3,
+  };
+  const facing = (Math.cos(a) + 1) / 2; // 1 when the ring tile faces the camera
+  return {
+    // Rounded so server and browser print the same numbers (no hydration mismatch).
+    transform: `translate3d(${r(mix(ring.x, scatter.x, t))}px, ${r(mix(ring.y, scatter.y, t))}px, ${r(mix(ring.z, scatter.z, t))}px) rotateY(${r(mix(ring.ry, scatter.ry, t))}rad) rotateX(${r(mix(ring.rx, scatter.rx, t))}rad)`,
+    shade: r(mix(0.7 * (1 - facing), 0, t)),
+    t,
+  };
+}
+
+const FACE = "absolute inset-0 rounded-[22%] [backface-visibility:hidden]";
+const FRONT: CSSProperties = {
+  background: "linear-gradient(150deg, #9BDCFF 0%, #4C8DFF 42%, #2448D8 100%)",
+  boxShadow: "inset 0 2px 1px rgba(255,255,255,0.75), inset 0 -12px 24px rgba(8,18,90,0.35), 0 20px 40px rgba(20,60,200,0.35)",
 };
 
-const CHANNELS = [
-  { label: "Teléfono", icon: ICONS.phone },
-  { label: "WhatsApp", icon: ICONS.whatsapp },
-  { label: "Webchat", icon: ICONS.web },
-  { label: "Email", icon: ICONS.mail },
-  { label: "Redes", icon: ICONS.social },
-];
-const SOLUTIONS = [
-  { title: "Voicebot", body: "Maya atiende y resuelve por teléfono, con acento local.", stat: "< 1 s por turno", href: "/#voicebot", icon: ICONS.mic, color: "#A78BFA" },
-  { title: "IA Bot", body: "Agentic WhatsApp, webchat y redes que entienden y resuelven.", stat: "24/7", href: "/#iabot", icon: ICONS.bot, color: "#4ADE80" },
-  { title: "Omnichannel", body: "Todos los canales y el CRM en una sola bandeja para tus agentes.", stat: "1 bandeja", href: "/#omnichannel", icon: ICONS.inbox, color: "#04CCDB" },
-  { title: "QualityIQ", body: "Audita cada conversación con IA y arma el coaching de cada agente.", stat: "100% auditado", href: "/#quality", icon: ICONS.shield, color: "#FBBF24" },
-  { title: "MIS", body: "Todos tus datos en un tablero, con SAM como analista.", stat: "SAM analista IA", href: "/#mis", icon: ICONS.chart, color: "#F472B6" },
-];
-
-function useRefs(n: number) {
-  // Fixed-length list of refs; the hooks run in the same order on every render.
-  return Array.from({ length: n }, () => useRef<HTMLAnchorElement>(null)) as RefObject<HTMLAnchorElement>[];
-}
-
-/** Magic UI "Magic Card": a glass card whose border and surface light up where the pointer is. */
-const SolutionCard = forwardRef<HTMLAnchorElement, (typeof SOLUTIONS)[number]>(({ title, body, stat, href, icon, color }, ref) => (
-  <a
-    ref={ref}
-    href={href}
-    onPointerMove={(e) => {
-      const r = e.currentTarget.getBoundingClientRect();
-      e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
-      e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
-    }}
-    style={{ "--c": color } as CSSProperties}
-    className="magic-card group relative z-10 block rounded-2xl p-px transition duration-300 hover:-translate-y-1"
-  >
-    <div className="relative h-full overflow-hidden rounded-[15px] bg-[#0A0D3F] p-5">
-      <div aria-hidden className="magic-card-glow pointer-events-none absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100" />
-      <div className="relative flex items-start gap-4">
-        <span className="grid size-11 shrink-0 place-items-center rounded-xl p-2.5" style={{ background: `${color}22`, color }}>
-          {icon}
-        </span>
-        <div className="min-w-0">
-          <p className="font-display text-lg font-extrabold text-white">{title}</p>
-          <p className="mt-1 text-[13px] leading-snug text-md-dark-muted">{body}</p>
-          <p className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 font-data text-[11px] text-white/80">
-            <span className="size-1.5 rounded-full" style={{ background: color }} aria-hidden />
-            {stat}
-          </p>
-        </div>
-      </div>
-      <span aria-hidden className="absolute right-4 top-4 text-white/30 transition group-hover:translate-x-0.5 group-hover:text-white">→</span>
-    </div>
-  </a>
-));
-
-/** The hub: ripple rings, a spinning light border, and the customer channels orbiting it (Magic UI Ripple + Orbiting Circles). */
-const Hub = forwardRef<HTMLDivElement>((_, ref) => (
-  <div className="relative mx-auto grid size-[300px] place-items-center md:size-[340px]">
-    {[0, 1, 2].map((i) => (
-      <span key={i} aria-hidden className="hub-ripple absolute rounded-full border border-md-cyan/20 bg-md-cyan/[0.03]" style={{ width: 150 + i * 75, height: 150 + i * 75, animationDelay: `${i * 0.4}s` }} />
-    ))}
-    <svg aria-hidden className="pointer-events-none absolute inset-0 size-full">
-      <circle cx="50%" cy="50%" r="120" fill="none" stroke="rgba(169,180,255,0.18)" strokeDasharray="2 6" />
-    </svg>
-    {CHANNELS.map((c, i) => (
-      <div
-        key={c.label}
-        title={c.label}
-        className="hub-orbit absolute grid size-10 place-items-center rounded-full border border-white/15 bg-[#13163F] p-2.5 text-white shadow-[0_0_20px_rgba(4,204,219,0.25)]"
-        style={{ "--angle": (360 / CHANNELS.length) * i, "--radius": 120 } as CSSProperties}
-      >
-        {c.icon}
-        <span className="sr-only">{c.label}</span>
-      </div>
-    ))}
-    <div ref={ref} className="hub-core relative z-10 grid size-32 place-items-center rounded-full p-[2px]">
-      <div className="grid size-full place-items-center rounded-full bg-md-navy text-center">
-        <div>
-          <img src="/assets/logo.svg" alt="" className="mx-auto h-9 w-auto" />
-          <p className="mt-1 font-display text-[11px] font-extrabold tracking-[0.18em] text-white">MAYDAY</p>
-          <p className="mx-auto max-w-[90px] text-[9px] font-semibold uppercase leading-tight tracking-[0.12em] text-md-cyan">Hub de soluciones</p>
-        </div>
-      </div>
-    </div>
-  </div>
-));
-
-function HubDiagram() {
-  const box = useRef<HTMLDivElement>(null);
-  const hub = useRef<HTMLDivElement>(null);
-  const outs = useRefs(SOLUTIONS.length);
-  const card = (i: number) => <SolutionCard key={SOLUTIONS[i].title} ref={outs[i]} {...SOLUTIONS[i]} />;
+/** A glossy block: front, back and four sides, `d` px deep. */
+function Tile({ s, d, tile, refCb, initial }: { s: number; d: number; tile: (typeof TILES)[number]; refCb: (el: HTMLAnchorElement | null) => void; initial: ReturnType<typeof place> }) {
+  const side = (w: number, h: number, tf: string, bg: string): CSSProperties => ({ width: w, height: h, left: (s - w) / 2, top: (s - h) / 2, transform: tf, background: bg });
   return (
-    <div ref={box} className="hub-panel relative overflow-hidden rounded-[32px] bg-md-navy px-4 py-10 md:px-10 md:py-14">
-      <div className="relative grid items-center gap-4 md:grid-cols-[1fr_auto_1fr] md:gap-x-10 md:gap-y-8">
-        <div className="order-2 grid gap-4 md:order-none md:gap-8">{[0, 1].map(card)}</div>
-        <div className="order-1 md:order-none">
-          <Hub ref={hub} />
-          <p className="mt-1 text-center text-xs text-md-dark-muted">Teléfono · WhatsApp · Webchat · Email · Redes</p>
-        </div>
-        <div className="order-3 grid gap-4 md:order-none md:gap-8">{[2, 3].map(card)}</div>
-        <div className="order-4 md:col-span-3 md:mx-auto md:w-[380px]">{card(4)}</div>
+    <a
+      ref={refCb}
+      href={tile.href}
+      aria-label={`${tile.label}: ver la demo`}
+      className="group absolute left-1/2 top-1/2 [transform-style:preserve-3d]"
+      style={{ width: s, height: s, marginLeft: -s / 2, marginTop: -s / 2, transform: initial.transform, "--shade": initial.shade } as CSSProperties}
+    >
+      <div className="absolute rounded-[6px]" style={side(d, s * 0.9, `rotateY(90deg) translateZ(${s / 2 - 1}px)`, "#1D3BB5")} />
+      <div className="absolute rounded-[6px]" style={side(d, s * 0.9, `rotateY(-90deg) translateZ(${s / 2 - 1}px)`, "#2F5BE6")} />
+      <div className="absolute rounded-[6px]" style={side(s * 0.9, d, `rotateX(90deg) translateZ(${s / 2 - 1}px)`, "#7FB6FF")} />
+      <div className="absolute rounded-[6px]" style={side(s * 0.9, d, `rotateX(-90deg) translateZ(${s / 2 - 1}px)`, "#172F99")} />
+      <div className={FACE} style={{ transform: `rotateY(180deg) translateZ(${d / 2}px)`, background: "linear-gradient(150deg, #3B6EF0, #1A35A8)" }} />
+      <div className={`${FACE} grid place-items-center text-white transition group-hover:brightness-110`} style={{ ...FRONT, transform: `translateZ(${d / 2}px)` }}>
+        <div className="h-[42%] w-[42%] drop-shadow-[0_2px_4px_rgba(10,20,90,0.35)]">{tile.icon}</div>
+        <div aria-hidden className="absolute inset-0 rounded-[22%] bg-[#020318]" style={{ opacity: "var(--shade)" }} />
+        <span className="absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/35 px-2 py-0.5 text-[10px] font-semibold text-white/90 backdrop-blur md:text-xs">
+          {tile.label}
+        </span>
       </div>
-      {outs.map((r, i) => (
-        <AnimatedBeam
-          key={i}
-          className="hidden md:block"
-          containerRef={box}
-          fromRef={hub}
-          toRef={r}
-          curvature={[40, -40, 40, -40, 0][i]}
-          duration={3}
-          delay={i * 0.35}
-          pathColor="#A9B4FF"
-          pathOpacity={0.15}
-          gradientStartColor="#04CCDB"
-          gradientStopColor={SOLUTIONS[i].color}
-        />
-      ))}
-    </div>
+    </a>
   );
 }
+
+// Fixed star field (deterministic, so server and client render the same).
+const STARS = Array.from({ length: 46 }, (_, i) => ({ l: (i * 47.3) % 100, t: (i * 29.7) % 100, o: 0.25 + ((i * 13) % 6) / 10 }));
 
 export function Solutions() {
-  return (
-    <section id="soluciones" className="bg-white py-24 md:py-32">
-      <div className="mx-auto max-w-6xl px-4">
-        <SectionTitle
-          eyebrow="Hub de soluciones"
-          title={<>Un hub de soluciones, todo tu contact center <Glow>conectado</Glow>.</>}
-          body="Mayday reúne voz, chats, calidad y datos en un solo lugar. Cada solución funciona sola y, conectadas, comparten el contexto: lo que pasa en un canal lo audita QualityIQ, lo mide MIS y lo resuelve la IA o tu agente."
-        />
+  const [dims, setDims] = useState<Dims>({ w: 1366, h: 800 });
+  const [still, setStill] = useState(false);
+  const section = useRef<HTMLElement>(null);
+  const tiles = useRef<(HTMLAnchorElement | null)[]>([]);
+  const grid = useRef<HTMLDivElement>(null);
+  const intro = useRef<HTMLDivElement>(null);
+  const outro = useRef<HTMLDivElement>(null);
 
-        <Reveal className="mt-12">
-          <HubDiagram />
-        </Reveal>
-
-      </div>
-    </section>
-  );
-}
-
-/** Full-bleed looping video (Veo-generated, public/assets/equipo-ia.mp4) with the headline on top, Preymaker style. */
-export function TeamVideo() {
-  const video = useRef<HTMLVideoElement>(null);
   useEffect(() => {
-    // Respect reduced motion: keep the poster frame instead of the loop.
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) video.current?.pause();
+    const read = () => setDims({ w: innerWidth, h: innerHeight });
+    read();
+    setStill(matchMedia("(prefers-reduced-motion: reduce)").matches);
+    addEventListener("resize", read);
+    return () => removeEventListener("resize", read);
   }, []);
+
+  useEffect(() => {
+    const frame = (p: number, s: number) => {
+      let t = 0;
+      tiles.current.forEach((el, i) => {
+        if (!el) return;
+        const r = place(i, p, s, dims);
+        el.style.transform = r.transform;
+        el.style.setProperty("--shade", String(r.shade));
+        t = r.t;
+      });
+      if (grid.current) grid.current.style.backgroundPosition = `center ${p * 900}px`;
+      if (intro.current) {
+        intro.current.style.opacity = String(clamp(1 - t * 2.2));
+        intro.current.style.transform = `translateY(${-t * 60}px)`;
+        intro.current.style.pointerEvents = t < 0.4 ? "auto" : "none";
+      }
+      if (outro.current) {
+        outro.current.style.opacity = String(clamp((t - 0.55) * 2.4));
+        outro.current.style.transform = `translateY(${(1 - t) * 40}px)`;
+        outro.current.style.pointerEvents = t > 0.6 ? "auto" : "none";
+      }
+    };
+    if (still) return frame(1, 0);
+
+    let raf = 0;
+    let visible = false;
+    const t0 = performance.now();
+    const loop = () => {
+      const el = section.current;
+      if (el) {
+        const r = el.getBoundingClientRect();
+        frame(clamp(-r.top / Math.max(1, r.height - innerHeight)), (performance.now() - t0) / 1000);
+      }
+      if (visible) raf = requestAnimationFrame(loop);
+    };
+    // Only animate while the section is on screen.
+    const io = new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      cancelAnimationFrame(raf);
+      if (visible) raf = requestAnimationFrame(loop);
+    });
+    if (section.current) io.observe(section.current);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [dims, still]);
+
+  const s = tileSize(dims);
   return (
-    <section className="relative isolate flex min-h-[560px] items-end overflow-hidden bg-md-navy md:min-h-[88vh]">
-      <video
-        ref={video}
-        className="absolute inset-0 -z-10 h-full w-full object-cover"
-        poster="/assets/equipo-ia.jpg"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-hidden
-      >
-        <source src="/assets/equipo-ia-sm.mp4" type="video/mp4" media="(max-width: 767px)" />
-        <source src="/assets/equipo-ia.mp4" type="video/mp4" />
-      </video>
-      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-md-navy via-md-navy/40 to-md-navy/10" />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-md-navy/70 to-transparent" />
-      <div className="mx-auto w-full max-w-6xl px-4 pb-16 md:pb-24">
-        <Reveal className="max-w-2xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 py-1.5 pl-1.5 pr-3 backdrop-blur">
-            <MayaAvatar className="h-7 w-7" />
-            <span className="text-xs font-semibold text-white">Maya y tu equipo, atendiendo juntos</span>
+    <section id="soluciones" ref={section} className={`relative bg-[#02031A] ${still ? "" : "h-[320vh]"}`}>
+      <div className={`${still ? "relative" : "sticky top-0"} h-[100svh] min-h-[620px] overflow-hidden`}>
+        {/* light beam + grid + stars */}
+        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(70%_90%_at_100%_0%,rgba(47,107,255,0.75),transparent_60%)]" />
+        <div aria-hidden className="absolute -right-1/4 -top-1/4 h-[150%] w-[60%] rotate-[25deg] bg-[linear-gradient(90deg,transparent,rgba(64,120,255,0.28),transparent)] blur-2xl" />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-[75%] [perspective:700px] [mask-image:linear-gradient(to_top,black_30%,transparent)]">
+          <div ref={grid} className="hub-grid absolute left-1/2 top-0 h-[220%] w-[320%] origin-top [transform:translateX(-50%)_rotateX(62deg)]" />
+        </div>
+        {STARS.map((st, i) => (
+          <span key={i} aria-hidden className="absolute size-[2px] rounded-full bg-white" style={{ left: `${st.l}%`, top: `${st.t}%`, opacity: st.o }} />
+        ))}
+
+        {/* tiles */}
+        <div className="absolute inset-0 [perspective:1100px]">
+          <div className="absolute inset-0 [transform-style:preserve-3d]">
+            {TILES.map((tile, i) => (
+              <Tile key={tile.label} s={s} d={s * 0.26} tile={tile} refCb={(el) => (tiles.current[i] = el)} initial={place(i, still ? 1 : 0, 0, dims)} />
+            ))}
           </div>
-          <h2 className="font-display text-4xl font-extrabold leading-[1.02] tracking-tight text-white md:text-7xl">Personas e IA, en el mismo equipo.</h2>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-white/80 md:text-lg">
-            La IA atiende lo repetitivo a cualquier hora y tus agentes se quedan con lo que necesita una persona. En cada derivación, el hub les
-            pasa la conversación completa: nadie le vuelve a preguntar nada al cliente.
-          </p>
-          <div className="mt-8">
-            <PillLink href="/#voicebot" variant="light">Hablar con Maya</PillLink>
+        </div>
+
+        {/* phase 1: headline under the carousel */}
+        <div ref={intro} className="absolute inset-x-0 bottom-0 mx-auto max-w-6xl px-4 pb-14 md:pb-20" style={{ opacity: still ? 0 : 1 }}>
+          <p className="text-[13px] font-medium text-white/70">Hub de soluciones con IA</p>
+          <div className="mt-3 grid items-end gap-6 md:grid-cols-[1.3fr_1fr]">
+            <h2 className="font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-white md:text-7xl">
+              Un hub.
+              <br />
+              Todo tu contact center.
+            </h2>
+            <p className="max-w-sm text-sm leading-relaxed text-white/70 md:text-base">
+              Voz, chats, calidad y datos en un solo lugar. Cada solución funciona sola y, conectadas, comparten el contexto de cada cliente.
+            </p>
           </div>
-        </Reveal>
+        </div>
+
+        {/* phase 2: centred, tiles around it */}
+        <div ref={outro} className="absolute inset-0 grid place-items-center px-6 text-center" style={{ opacity: still ? 1 : 0 }}>
+          <div className="max-w-[250px] md:max-w-xl">
+            <p className="inline-block rounded-full border border-white/20 px-3 py-1 font-data text-[11px] uppercase tracking-wider text-white/80">{N} soluciones · 1 hub</p>
+            <h3 className="mt-4 font-display text-3xl font-extrabold leading-[1.02] tracking-tight text-white md:text-6xl">
+              Conectadas.
+              <br />
+              Probalas en vivo.
+            </h3>
+            <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/70 md:text-base">
+              Lo que pasa en un canal lo audita QualityIQ, lo mide MIS y lo resuelve la IA o tu agente. Tocá una solución para ver su demo.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
