@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useId, useState, type RefObject } from "react";
 
 interface Props {
+  className?: string;
   containerRef: RefObject<HTMLElement | null>;
   fromRef: RefObject<HTMLElement | null>;
   toRef: RefObject<HTMLElement | null>;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export function AnimatedBeam({
+  className = "",
   containerRef,
   fromRef,
   toRef,
@@ -64,7 +66,7 @@ export function AnimatedBeam({
       width={size.width}
       height={size.height}
       viewBox={`0 0 ${size.width} ${size.height}`}
-      className="pointer-events-none absolute left-0 top-0 transform-gpu"
+      className={`pointer-events-none absolute left-0 top-0 transform-gpu ${className}`}
     >
       <path d={d} stroke={pathColor} strokeWidth={pathWidth} strokeOpacity={pathOpacity} strokeLinecap="round" />
       {!still && (

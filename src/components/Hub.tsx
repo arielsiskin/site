@@ -1,10 +1,10 @@
-import { forwardRef, useEffect, useRef, type ReactNode, type RefObject } from "react";
+import { forwardRef, useEffect, useRef, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { AnimatedBeam } from "./AnimatedBeam";
 import { Glow, MayaAvatar, PillLink, Reveal, SectionTitle } from "./ui";
 
 
-// The solutions hub, drawn like Magic UI's "animated beam, multiple outputs": customer channels flow into the Mayday
-// hub, and the hub feeds every solution. Beams follow the real element positions, so the layout can be plain flexbox.
+// The solutions hub (Magic UI patterns: Ripple, Orbiting Circles, Magic Card, Animated Beam): customer channels orbit the
+// Mayday hub and beams feed each solution card. Beams follow real element positions, so the layout is plain CSS grid.
 
 /** Lucide-style stroke icons (ISC), inline so the site needs no icon package. */
 const I = ({ children }: { children: ReactNode }) => (
@@ -33,79 +33,114 @@ const CHANNELS = [
   { label: "Redes", icon: ICONS.social },
 ];
 const SOLUTIONS = [
-  { title: "Voicebot", body: "Maya atiende con acento local", href: "/#voicebot", icon: ICONS.mic, color: "#7A5CFF" },
-  { title: "IA Bot", body: "Agentic WhatsApp que resuelve", href: "/#iabot", icon: ICONS.bot, color: "#16a34a" },
-  { title: "Omnichannel", body: "Todos los canales, una bandeja", href: "/#omnichannel", icon: ICONS.inbox, color: "#04CCDB" },
-  { title: "QualityIQ", body: "Audita el 100% con IA", href: "/#quality", icon: ICONS.shield, color: "#F59E0B" },
-  { title: "MIS", body: "Tus datos, con SAM como analista", href: "/#mis", icon: ICONS.chart, color: "#E1306C" },
+  { title: "Voicebot", body: "Maya atiende y resuelve por teléfono, con acento local.", stat: "< 1 s por turno", href: "/#voicebot", icon: ICONS.mic, color: "#A78BFA" },
+  { title: "IA Bot", body: "Agentic WhatsApp, webchat y redes que entienden y resuelven.", stat: "24/7", href: "/#iabot", icon: ICONS.bot, color: "#4ADE80" },
+  { title: "Omnichannel", body: "Todos los canales y el CRM en una sola bandeja para tus agentes.", stat: "1 bandeja", href: "/#omnichannel", icon: ICONS.inbox, color: "#04CCDB" },
+  { title: "QualityIQ", body: "Audita cada conversación con IA y arma el coaching de cada agente.", stat: "100% auditado", href: "/#quality", icon: ICONS.shield, color: "#FBBF24" },
+  { title: "MIS", body: "Todos tus datos en un tablero, con SAM como analista.", stat: "SAM analista IA", href: "/#mis", icon: ICONS.chart, color: "#F472B6" },
 ];
-// Gentle fan: outer rows bend more, so beams don't overlap near the hub.
-const CURVE = [-60, -25, 0, 25, 60];
-
-const Node = forwardRef<HTMLDivElement, { children: ReactNode; className?: string }>(({ children, className = "" }, ref) => (
-  <div ref={ref} className={`z-10 grid size-11 shrink-0 place-items-center rounded-full border border-md-line bg-white p-2.5 text-md-navy shadow-[0_0_20px_-10px_rgba(1,1,54,0.5)] md:size-14 md:p-3.5 ${className}`}>
-    {children}
-  </div>
-));
 
 function useRefs(n: number) {
   // Fixed-length list of refs; the hooks run in the same order on every render.
-  return Array.from({ length: n }, () => useRef<HTMLDivElement>(null)) as RefObject<HTMLDivElement>[];
+  return Array.from({ length: n }, () => useRef<HTMLAnchorElement>(null)) as RefObject<HTMLAnchorElement>[];
 }
+
+/** Magic UI "Magic Card": a glass card whose border and surface light up where the pointer is. */
+const SolutionCard = forwardRef<HTMLAnchorElement, (typeof SOLUTIONS)[number]>(({ title, body, stat, href, icon, color }, ref) => (
+  <a
+    ref={ref}
+    href={href}
+    onPointerMove={(e) => {
+      const r = e.currentTarget.getBoundingClientRect();
+      e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+    }}
+    style={{ "--c": color } as CSSProperties}
+    className="magic-card group relative z-10 block rounded-2xl p-px transition duration-300 hover:-translate-y-1"
+  >
+    <div className="relative h-full overflow-hidden rounded-[15px] bg-[#0A0D3F] p-5">
+      <div aria-hidden className="magic-card-glow pointer-events-none absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100" />
+      <div className="relative flex items-start gap-4">
+        <span className="grid size-11 shrink-0 place-items-center rounded-xl p-2.5" style={{ background: `${color}22`, color }}>
+          {icon}
+        </span>
+        <div className="min-w-0">
+          <p className="font-display text-lg font-extrabold text-white">{title}</p>
+          <p className="mt-1 text-[13px] leading-snug text-md-dark-muted">{body}</p>
+          <p className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 font-data text-[11px] text-white/80">
+            <span className="size-1.5 rounded-full" style={{ background: color }} aria-hidden />
+            {stat}
+          </p>
+        </div>
+      </div>
+      <span aria-hidden className="absolute right-4 top-4 text-white/30 transition group-hover:translate-x-0.5 group-hover:text-white">→</span>
+    </div>
+  </a>
+));
+
+/** The hub: ripple rings, a spinning light border, and the customer channels orbiting it (Magic UI Ripple + Orbiting Circles). */
+const Hub = forwardRef<HTMLDivElement>((_, ref) => (
+  <div className="relative mx-auto grid size-[300px] place-items-center md:size-[340px]">
+    {[0, 1, 2].map((i) => (
+      <span key={i} aria-hidden className="hub-ripple absolute rounded-full border border-md-cyan/20 bg-md-cyan/[0.03]" style={{ width: 150 + i * 75, height: 150 + i * 75, animationDelay: `${i * 0.4}s` }} />
+    ))}
+    <svg aria-hidden className="pointer-events-none absolute inset-0 size-full">
+      <circle cx="50%" cy="50%" r="120" fill="none" stroke="rgba(169,180,255,0.18)" strokeDasharray="2 6" />
+    </svg>
+    {CHANNELS.map((c, i) => (
+      <div
+        key={c.label}
+        title={c.label}
+        className="hub-orbit absolute grid size-10 place-items-center rounded-full border border-white/15 bg-[#13163F] p-2.5 text-white shadow-[0_0_20px_rgba(4,204,219,0.25)]"
+        style={{ "--angle": (360 / CHANNELS.length) * i, "--radius": 120 } as CSSProperties}
+      >
+        {c.icon}
+        <span className="sr-only">{c.label}</span>
+      </div>
+    ))}
+    <div ref={ref} className="hub-core relative z-10 grid size-32 place-items-center rounded-full p-[2px]">
+      <div className="grid size-full place-items-center rounded-full bg-md-navy text-center">
+        <div>
+          <img src="/assets/logo.svg" alt="" className="mx-auto h-9 w-auto" />
+          <p className="mt-1 font-display text-[11px] font-extrabold tracking-[0.18em] text-white">MAYDAY</p>
+          <p className="mx-auto max-w-[90px] text-[9px] font-semibold uppercase leading-tight tracking-[0.12em] text-md-cyan">Hub de soluciones</p>
+        </div>
+      </div>
+    </div>
+  </div>
+));
 
 function HubDiagram() {
   const box = useRef<HTMLDivElement>(null);
   const hub = useRef<HTMLDivElement>(null);
-  const ins = useRefs(CHANNELS.length);
   const outs = useRefs(SOLUTIONS.length);
+  const card = (i: number) => <SolutionCard key={SOLUTIONS[i].title} ref={outs[i]} {...SOLUTIONS[i]} />;
   return (
-    <div
-      ref={box}
-      className="relative flex items-center justify-between gap-3 overflow-hidden rounded-[32px] border border-md-line bg-md-bg px-4 py-8 md:px-14 md:py-12 [background-image:radial-gradient(rgba(42,68,158,0.12)_1px,transparent_1px)] [background-size:18px_18px]"
-    >
-      {/* channels */}
-      <div className="flex flex-col gap-4 md:gap-6">
-        <p className="text-center text-[10px] font-bold uppercase tracking-[1.4px] text-md-muted md:text-[11px]">Tus clientes</p>
-        {CHANNELS.map((c, i) => (
-          <div key={c.label} className="flex flex-col items-center gap-1">
-            <Node ref={ins[i]}>{c.icon}</Node>
-            <span className="text-[10px] font-medium text-md-muted md:text-xs">{c.label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* hub */}
-      <div ref={hub} className="z-10 grid size-24 shrink-0 place-items-center rounded-full border border-md-cyan/40 bg-md-navy text-center shadow-[0_0_50px_-5px_rgba(4,204,219,0.6)] md:size-36">
-        <div>
-          <img src="/assets/logo.svg" alt="" className="mx-auto h-7 w-auto md:h-10" />
-          <p className="mt-1 font-display text-[10px] font-extrabold tracking-[0.18em] text-white md:text-xs">MAYDAY</p>
-          <p className="mx-auto max-w-[90px] text-[8px] font-semibold uppercase leading-tight tracking-[0.12em] text-md-cyan md:text-[10px]">Hub de soluciones</p>
+    <div ref={box} className="hub-panel relative overflow-hidden rounded-[32px] bg-md-navy px-4 py-10 md:px-10 md:py-14">
+      <div className="relative grid items-center gap-4 md:grid-cols-[1fr_auto_1fr] md:gap-x-10 md:gap-y-8">
+        <div className="order-2 grid gap-4 md:order-none md:gap-8">{[0, 1].map(card)}</div>
+        <div className="order-1 md:order-none">
+          <Hub ref={hub} />
+          <p className="mt-1 text-center text-xs text-md-dark-muted">Teléfono · WhatsApp · Webchat · Email · Redes</p>
         </div>
+        <div className="order-3 grid gap-4 md:order-none md:gap-8">{[2, 3].map(card)}</div>
+        <div className="order-4 md:col-span-3 md:mx-auto md:w-[380px]">{card(4)}</div>
       </div>
-
-      {/* solutions */}
-      <ul className="flex flex-col gap-4 md:gap-5">
-        <li className="text-center text-[10px] font-bold uppercase tracking-[1.4px] text-md-muted md:text-left md:text-[11px]">Tus soluciones</li>
-        {SOLUTIONS.map((s, i) => (
-          <li key={s.title}>
-            <a href={s.href} className="group flex flex-col items-center gap-1 md:flex-row md:gap-3">
-              <Node ref={outs[i]} className="transition group-hover:scale-110">
-                <span style={{ color: s.color }} className="h-full w-full">{s.icon}</span>
-              </Node>
-              <span className="text-center md:text-left">
-                <span className="block text-[10px] font-semibold text-md-ink md:font-display md:text-base md:font-extrabold">{s.title}</span>
-                <span className="hidden text-xs text-md-muted md:block md:w-48">{s.body}</span>
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
-
-      {ins.map((r, i) => (
-        <AnimatedBeam key={`in${i}`} containerRef={box} fromRef={r} toRef={hub} curvature={CURVE[i]} duration={3.5} delay={i * 0.25} />
-      ))}
       {outs.map((r, i) => (
-        <AnimatedBeam key={`out${i}`} containerRef={box} fromRef={hub} toRef={r} curvature={-CURVE[i]} duration={3.5} delay={1.2 + i * 0.25} gradientStartColor="#04CCDB" gradientStopColor={SOLUTIONS[i].color} />
+        <AnimatedBeam
+          key={i}
+          className="hidden md:block"
+          containerRef={box}
+          fromRef={hub}
+          toRef={r}
+          curvature={[40, -40, 40, -40, 0][i]}
+          duration={3}
+          delay={i * 0.35}
+          pathColor="#A9B4FF"
+          pathOpacity={0.15}
+          gradientStartColor="#04CCDB"
+          gradientStopColor={SOLUTIONS[i].color}
+        />
       ))}
     </div>
   );
