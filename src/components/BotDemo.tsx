@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { SCENARIOS, type ScenarioId, type Turn } from "@/lib/voicebot";
 import { route } from "@/lib/flows";
 import { AgentFlow } from "./AgentFlow";
-import { MayaAvatar, SectionTitle } from "./ui";
+import { MayaAvatar } from "./ui";
 
 const QUICK: Record<ScenarioId, string[]> = {
   mayday: ["¿Qué hace Mayday?", "¿Tienen voicebot?", "Quiero una demo"],
@@ -12,8 +12,8 @@ const QUICK: Record<ScenarioId, string[]> = {
 };
 type Insight = { intent: string | null; entities: { key: string; value: string }[]; insult: boolean; ms: number };
 
-export function BotDemo() {
-  const [scenario, setScenario] = useState<ScenarioId>("banco");
+/** The WhatsApp side of the Agentic IA demo: the agent workflow next to a WhatsApp chat with Maya. */
+export function ChatAgent({ scenario }: { scenario: ScenarioId }) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
   const [draft, setDraft] = useState("");
@@ -23,7 +23,7 @@ export function BotDemo() {
   const [branch, setBranch] = useState<string | null>(null);
   const list = useRef<HTMLDivElement>(null);
   const started = useRef(false);
-  const section = useRef<HTMLElement>(null);
+  const section = useRef<HTMLDivElement>(null);
 
   async function call(history: Turn[], text?: string) {
     const res = await fetch("/api/voice", {
@@ -97,24 +97,7 @@ export function BotDemo() {
   const last = insights[0];
 
   return (
-    <section id="iabot" ref={section} className="relative overflow-hidden bg-md-bg py-24 md:py-32">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="grid items-end gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
-          <SectionTitle
-            eyebrow="Agentic WhatsApp · WhatsApp Solution Provider oficial"
-            title="El mismo equipo de agentes, por WhatsApp."
-            body="Los agentes que atienden el teléfono también responden en WhatsApp, Instagram, webchat y mail: entienden la intención, extraen los datos, usan tus sistemas y derivan con todo el contexto. Escribile como le escribirías a una persona."
-          />
-          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Escenario">
-            {(Object.keys(SCENARIOS) as ScenarioId[]).map((id) => (
-              <button key={id} role="radio" aria-checked={scenario === id} onClick={() => setScenario(id)} className={`rounded-full border px-4 py-2 text-sm font-medium transition ${scenario === id ? "border-md-navy bg-md-navy text-white" : "border-md-line bg-white text-md-ink hover:bg-md-surface2"}`}>
-                {SCENARIOS[id].label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-10 grid items-start gap-5 lg:grid-cols-[1.35fr_1fr]">
+    <div ref={section} className="grid items-start gap-5 lg:grid-cols-[1.35fr_1fr]">
           <div className="order-2 lg:order-1">
             <AgentFlow
               channel="whatsapp"
@@ -208,8 +191,6 @@ export function BotDemo() {
               </form>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
+    </div>
   );
 }

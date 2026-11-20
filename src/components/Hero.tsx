@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Aurora, Eyebrow, Glow, MayaAvatar, PillLink, Wave } from "./ui";
 
 const NAV = [
-  { name: "Voicebot", href: "/#voicebot" },
+  { name: "Agentic IA", href: "/#agentic" },
   { name: "QualityIQ", href: "/#quality" },
   { name: "Soluciones", href: "/#soluciones" },
   { name: "Nosotros", href: "/about-us" },
@@ -127,7 +127,7 @@ export function Hero() {
             audita el 100% de las conversaciones, omnicanalidad y MIS para ver todos tus datos, conectados entre sí.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <PillLink href="/#voicebot">Hablar con Maya</PillLink>
+            <PillLink href="/#agentic">Hablar con Maya</PillLink>
             <PillLink href="/#quality" variant="light">
               Analizar una llamada
             </PillLink>

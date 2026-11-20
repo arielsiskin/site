@@ -5,7 +5,7 @@ import { callsUsed, COUNTRIES, LIMIT_CALLS, MAX_CALLS, SCENARIOS, type CountryId
 import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 import { route } from "@/lib/flows";
 import { AgentFlow } from "./AgentFlow";
-import { Aurora, MayaAvatar, SectionTitle, Wave } from "./ui";
+import { MayaAvatar, Wave } from "./ui";
 
 // Llamada en vivo con Maya por LiveKit, como un softphone (igual que el coaching de QualityIQ): el visitante llama,
 // suena hasta que Maya atiende, y en la llamada puede silenciarse o colgar. /api/call abre la sala con la voz del país
@@ -59,8 +59,8 @@ function PhoneButton({ label, onClick, tone, disabled, children }: { label: stri
   );
 }
 
-export function VoiceDemo() {
-  const [scenario, setScenario] = useState<ScenarioId>("banco");
+/** The voice side of the Agentic IA demo: the agent workflow next to a live call with Maya. */
+export function CallAgent({ scenario }: { scenario: ScenarioId }) {
   const [country, setCountry] = useState<CountryId>("ar");
   const [phase, setPhase] = useState<Phase>("listo");
   const [turns, setTurns] = useState<Line[]>([]);
@@ -85,6 +85,11 @@ export function VoiceDemo() {
     list.current?.scrollTo({ top: list.current.scrollHeight, behavior: "smooth" });
   }, [turns, partial]);
   useEffect(() => () => { stopRing.current?.(); void room.current?.disconnect(); }, []);
+  // A new scenario is a new call.
+  useEffect(() => {
+    void room.current?.disconnect();
+    setBranch(null);
+  }, [scenario]);
   useEffect(() => {
     if (phase !== "en_curso") return;
     const t = setInterval(() => setElapsed((s) => s + 1), 1000);
@@ -183,17 +188,12 @@ export function VoiceDemo() {
   }[phase];
 
   return (
-    <section id="voicebot" className="relative bg-white py-24 md:py-32">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="grid items-end gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
-          <SectionTitle
-            eyebrow="Agentic Voicebot · desarrollado por Mayday"
-            title={<>Agentes de IA que atienden, deciden y resuelven.</>}
-            body="No es un menú ni un bot de respuestas: es un equipo de agentes. Maya atiende con el acento de tu país, entiende qué necesita el cliente y lo pasa al agente especialista, que usa las herramientas de tu sistema o deriva a una persona con todo el contexto. Llamala y mirá el flujo en vivo."
-          />
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-md-muted">¿Desde dónde llamás?</p>
-            <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="País">
+    <div className="grid items-start gap-5 lg:grid-cols-[1.35fr_1fr]">
+          <div className="order-2 lg:order-1">
+            <AgentFlow channel="voice" scenario={scenario} started={phase !== "listo"} active={branch} busy={phase === "en_curso" && waiting} />
+          </div>
+          <div className="order-1 mx-auto w-full max-w-sm rounded-[28px] border border-md-dark-line bg-[#060834] p-5 lg:order-2 text-md-dark-text shadow-[0_24px_60px_rgba(1,1,54,0.35)]">
+                        <div className="flex flex-wrap justify-center gap-1.5" role="radiogroup" aria-label="País">
               {(Object.keys(COUNTRIES) as CountryId[]).map((id) => (
                 <button
                   key={id}
@@ -201,42 +201,14 @@ export function VoiceDemo() {
                   aria-checked={country === id}
                   disabled={busy}
                   onClick={() => setCountry(id)}
-                  className={`rounded-full border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                    country === id ? "border-md-navy bg-md-navy text-white" : "border-md-line bg-white text-md-ink hover:bg-md-surface2"
-                  }`}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${country === id ? "bg-white text-md-navy" : "bg-[#13163F] text-md-dark-muted hover:text-white"}`}
                 >
                   {COUNTRIES[id].label}
                 </button>
               ))}
             </div>
-            <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-md-muted">¿A quién llamás?</p>
-            <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Escenario">
-              {(Object.keys(SCENARIOS) as ScenarioId[]).map((id) => (
-                <button
-                  key={id}
-                  role="radio"
-                  aria-checked={scenario === id}
-                  disabled={busy}
-                  onClick={() => { setScenario(id); setBranch(null); }}
-                  className={`rounded-full border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                    scenario === id ? "border-md-cyan-dark bg-md-cyan-dark text-white" : "border-md-line bg-white text-md-ink hover:bg-md-surface2"
-                  }`}
-                >
-                  {SCENARIOS[id].label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="relative mt-10 grid items-start gap-3 overflow-hidden rounded-[32px] bg-md-sky p-3 md:gap-5 md:p-5 lg:grid-cols-[1.35fr_1fr]">
-          <Aurora />
-          <div className="relative order-2 lg:order-1">
-            <AgentFlow channel="voice" scenario={scenario} started={phase !== "listo"} active={branch} busy={phase === "en_curso" && waiting} />
-          </div>
-          <div className="relative order-1 rounded-[28px] border border-md-dark-line bg-[#060834] p-5 lg:order-2 text-md-dark-text shadow-[0_24px_60px_rgba(1,1,54,0.35)]">
             {/* El teléfono */}
-            <div className="flex flex-col items-center pt-2 text-center">
+            <div className="mt-4 flex flex-col items-center text-center">
               <div className="relative grid h-20 w-20 place-items-center rounded-full bg-[#13163F]">
                 {phase === "llamando" && <span className="absolute inset-0 animate-ping rounded-full bg-md-cyan/30 motion-reduce:animate-none" />}
                 {phase === "en_curso" && speaker === "bot" && <span className="absolute -inset-1 rounded-full ring-2 ring-md-cyan" />}
@@ -323,8 +295,6 @@ export function VoiceDemo() {
             )}
             <div ref={audio} hidden />
           </div>
-        </div>
-      </div>
-    </section>
+    </div>
   );
 }

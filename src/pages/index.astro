@@ -1,11 +1,9 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { Hero } from "@/components/Hero";
-import { VoiceDemo } from "@/components/VoiceDemo";
-import { VoiceScreens } from "@/components/VoiceScreens";
+import { AgenticDemo } from "@/components/AgenticDemo";
 import { QualityDemo } from "@/components/QualityDemo";
 import { OmniDemo } from "@/components/OmniDemo";
-import { BotDemo } from "@/components/BotDemo";
 import { MisDemo } from "@/components/MisDemo";
 import { Closing, Faq, Numbers } from "@/components/Sections";
 import { Solutions } from "@/components/Hub";
@@ -13,15 +11,13 @@ import { Solutions } from "@/components/Hub";
 
 <Layout
   title="Mayday Global | Hub de soluciones con IA para contact centers"
-  description="Hub de soluciones para contact centers de América Latina: voicebots, QualityIQ, IA Bot, Omnichannel y MIS conectados. Probá cada solución en vivo."
+  description="Hub de soluciones para contact centers de América Latina: agentes de IA por voz y WhatsApp, QualityIQ, Omnichannel y MIS conectados. Probá cada solución en vivo."
 >
   <Hero client:load />
   <Solutions client:visible />
-  <VoiceDemo client:visible />
-  <VoiceScreens client:visible />
+  <AgenticDemo client:visible />
   <QualityDemo client:visible />
   <OmniDemo client:visible />
-  <BotDemo client:visible />
   <MisDemo client:visible />
   <Numbers client:visible />
   <Faq />

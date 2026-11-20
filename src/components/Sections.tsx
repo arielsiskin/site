@@ -85,7 +85,7 @@ export function Footer() {
           <p className="mt-4 max-w-xs text-sm">Hub de soluciones con IA para contact centers de América Latina.</p>
         </div>
         {[
-          ["Soluciones", [["Omnichannel", "/#omnichannel"], ["IA Bot", "/#iabot"], ["Voicebot", "/#voicebot"], ["QualityIQ", "/#quality"], ["MIS", "/#mis"]]],
+          ["Soluciones", [["Omnichannel", "/#omnichannel"], ["Agentic IA", "/#agentic"], ["QualityIQ", "/#quality"], ["MIS", "/#mis"]]],
           ["Empresa", [["Nosotros", "/about-us"], ["LinkedIn", "https://www.linkedin.com/company/mayday-global/"]]],
           ["Legal", [["Privacidad", "/policy"], ["Configurar cookies", "#cookies"]]],
         ].map(([h, links]) => (
