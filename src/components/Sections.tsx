@@ -65,9 +65,9 @@ export function Closing() {
       <Aurora className="top-1/3" />
       <Reveal className="relative mx-auto max-w-3xl px-4">
         <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-md-ink md:text-6xl">
-          ¿Listo para que cada llamada <Glow>sume</Glow>?
+          ¿Listo para que cada interacción <Glow>sume</Glow>?
         </h2>
-        <p className="mx-auto mt-5 max-w-lg text-md-muted md:text-lg">Te mostramos el voicebot y QualityIQ con tus propias llamadas en 30 minutos.</p>
+        <p className="mx-auto mt-5 max-w-lg text-md-muted md:text-lg">Te mostramos todas nuestras aplicaciones en 30 minutos.</p>
         <div className="mt-8 flex justify-center">
           <PillLink href={DEMO_WHATSAPP_URL}>Agendar una demo</PillLink>
         </div>
