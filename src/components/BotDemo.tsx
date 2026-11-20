@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { SCENARIOS, type ScenarioId, type Turn } from "@/lib/voicebot";
+import { route } from "@/lib/flows";
+import { AgentFlow } from "./AgentFlow";
 import { MayaAvatar, SectionTitle } from "./ui";
 
 const QUICK: Record<ScenarioId, string[]> = {
@@ -18,6 +20,7 @@ export function BotDemo() {
   const [typing, setTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ended, setEnded] = useState(false);
+  const [branch, setBranch] = useState<string | null>(null);
   const list = useRef<HTMLDivElement>(null);
   const started = useRef(false);
   const section = useRef<HTMLElement>(null);
@@ -38,6 +41,7 @@ export function BotDemo() {
     setInsights([]);
     setError(null);
     setEnded(false);
+    setBranch(null);
     setTyping(true);
     try {
       const r = await call([]);
@@ -71,6 +75,8 @@ export function BotDemo() {
     if (!text.trim() || typing || ended) return;
     const history = turns;
     setTurns([...history, { role: "user", text }]);
+    const b = route(scenario, text);
+    if (b) setBranch(b);
     setDraft("");
     setError(null);
     setTyping(true);
@@ -92,10 +98,70 @@ export function BotDemo() {
 
   return (
     <section id="iabot" ref={section} className="relative overflow-hidden bg-md-bg py-24 md:py-32">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-        {/* phone */}
-        <div className="order-2 lg:order-1">
-          <div className="relative mx-auto max-w-sm">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="grid items-end gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+          <SectionTitle
+            eyebrow="Agentic WhatsApp · WhatsApp Solution Provider oficial"
+            title="El mismo equipo de agentes, por WhatsApp."
+            body="Los agentes que atienden el teléfono también responden en WhatsApp, Instagram, webchat y mail: entienden la intención, extraen los datos, usan tus sistemas y derivan con todo el contexto. Escribile como le escribirías a una persona."
+          />
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Escenario">
+            {(Object.keys(SCENARIOS) as ScenarioId[]).map((id) => (
+              <button key={id} role="radio" aria-checked={scenario === id} onClick={() => setScenario(id)} className={`rounded-full border px-4 py-2 text-sm font-medium transition ${scenario === id ? "border-md-navy bg-md-navy text-white" : "border-md-line bg-white text-md-ink hover:bg-md-surface2"}`}>
+                {SCENARIOS[id].label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-10 grid items-start gap-5 lg:grid-cols-[1.35fr_1fr]">
+          <div className="order-2 lg:order-1">
+            <AgentFlow
+              channel="whatsapp"
+              scenario={scenario}
+              started={turns.length > 0}
+              active={branch}
+              busy={typing}
+              footer={
+                <>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] font-bold uppercase tracking-[1.4px] text-md-muted">Lo que entiende el bot</p>
+                    {last && <span className="font-data text-[11px] text-md-muted">{(last.ms / 1000).toFixed(1)} s</span>}
+                  </div>
+                  {!last ? (
+                    <p className="mt-3 text-sm text-md-muted">Mandá un mensaje y acá vas a ver la intención y los datos que detecta en cada turno.</p>
+                  ) : (
+                    <AnimatePresence mode="popLayout">
+                      <motion.div key={insights.length} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
+                        {last.insult && (
+                          <p className="mb-3 flex items-center gap-2 rounded-xl border border-[#E7B3B9] bg-[#FBE7E9] px-3 py-2 text-sm text-[#A32634]">
+                            <span className="rounded-full bg-[#C4303F] px-2 py-0.5 text-[10px] font-bold uppercase text-white">Alerta</span>
+                            Insulto detectado{ended ? " · conversación finalizada" : " · Maya advirtió al cliente"}
+                          </p>
+                        )}
+                        <p className="text-xs text-md-muted">Intención</p>
+                        <p className="mt-1 inline-block rounded-full bg-md-info-bg px-3 py-1 font-data text-sm text-md-blue">{last.intent}</p>
+                        <p className="mt-4 text-xs text-md-muted">Datos extraídos</p>
+                        <div className="mt-1 flex flex-wrap gap-2">
+                          {last.entities.length ? last.entities.map((e) => (
+                            <span key={e.key} className="rounded-lg bg-md-chip px-2.5 py-1 font-data text-xs text-md-ink">{e.key}: <b>{e.value}</b></span>
+                          )) : <span className="text-sm text-md-muted">—</span>}
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  )}
+                  {insights.length > 1 && (
+                    <ol className="mt-5 flex flex-wrap gap-1.5 border-t border-md-line pt-4" aria-label="Intenciones anteriores">
+                      {insights.slice(1).map((i, k) => (
+                        <li key={k} className={`rounded-full px-2.5 py-0.5 font-data text-[11px] ${i.insult ? "bg-[#FBE7E9] text-[#A32634]" : "bg-md-surface2 text-md-muted"}`}>{i.intent}{i.insult && " · insulto"}</li>
+                      ))}
+                    </ol>
+                  )}
+                </>
+              }
+            />
+          </div>
+          <div className="relative order-1 mx-auto w-full max-w-sm lg:order-2">
             <div aria-hidden className="absolute -inset-10 rounded-full bg-[radial-gradient(circle,rgba(4,204,219,0.35),transparent_65%)] blur-2xl" />
             <div className="relative overflow-hidden rounded-[40px] border-[10px] border-md-navy bg-[#EFEAE2] shadow-[0_24px_60px_rgba(1,1,54,0.3)]">
               <div className="flex items-center gap-3 bg-[#0B5C4E] px-4 py-3 text-white">
@@ -141,58 +207,6 @@ export function BotDemo() {
                 </button>
               </form>
             </div>
-          </div>
-        </div>
-
-        <div className="order-1 lg:order-2">
-          <SectionTitle
-            eyebrow="IA Bot · WhatsApp Solution Provider oficial"
-            title="Un bot que entiende, no un menú de opciones."
-            body="Procesamiento de lenguaje natural sobre WhatsApp, Instagram, webchat y mail. Entiende la intención, extrae los datos y resuelve, o deriva con todo el contexto. Escribile como le escribirías a una persona."
-          />
-          <div className="mt-6 flex flex-wrap gap-2" role="radiogroup" aria-label="Escenario">
-            {(Object.keys(SCENARIOS) as ScenarioId[]).map((id) => (
-              <button key={id} role="radio" aria-checked={scenario === id} onClick={() => setScenario(id)} className={`rounded-full border px-4 py-2 text-sm font-medium transition ${scenario === id ? "border-md-navy bg-md-navy text-white" : "border-md-line bg-white text-md-ink hover:bg-md-surface2"}`}>
-                {SCENARIOS[id].label}
-              </button>
-            ))}
-          </div>
-
-          {/* what the bot understood */}
-          <div className="mt-8 rounded-[24px] border border-md-line bg-white p-5">
-            <div className="flex items-center justify-between">
-              <p className="text-[11px] font-bold uppercase tracking-[1.4px] text-md-muted">Lo que entiende el bot</p>
-              {last && <span className="font-data text-[11px] text-md-muted">{(last.ms / 1000).toFixed(1)} s</span>}
-            </div>
-            {!last ? (
-              <p className="mt-3 text-sm text-md-muted">Mandá un mensaje y acá vas a ver la intención y los datos que detecta en cada turno.</p>
-            ) : (
-              <AnimatePresence mode="popLayout">
-                <motion.div key={insights.length} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
-                  {last.insult && (
-                    <p className="mb-3 flex items-center gap-2 rounded-xl border border-[#E7B3B9] bg-[#FBE7E9] px-3 py-2 text-sm text-[#A32634]">
-                      <span className="rounded-full bg-[#C4303F] px-2 py-0.5 text-[10px] font-bold uppercase text-white">Alerta</span>
-                      Insulto detectado{ended ? " · conversación finalizada" : " · Maya advirtió al cliente"}
-                    </p>
-                  )}
-                  <p className="text-xs text-md-muted">Intención</p>
-                  <p className="mt-1 inline-block rounded-full bg-md-info-bg px-3 py-1 font-data text-sm text-md-blue">{last.intent}</p>
-                  <p className="mt-4 text-xs text-md-muted">Datos extraídos</p>
-                  <div className="mt-1 flex flex-wrap gap-2">
-                    {last.entities.length ? last.entities.map((e) => (
-                      <span key={e.key} className="rounded-lg bg-md-chip px-2.5 py-1 font-data text-xs text-md-ink">{e.key}: <b>{e.value}</b></span>
-                    )) : <span className="text-sm text-md-muted">—</span>}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            )}
-            {insights.length > 1 && (
-              <ol className="mt-5 flex flex-wrap gap-1.5 border-t border-md-line pt-4" aria-label="Intenciones anteriores">
-                {insights.slice(1).map((i, k) => (
-                  <li key={k} className={`rounded-full px-2.5 py-0.5 font-data text-[11px] ${i.insult ? "bg-[#FBE7E9] text-[#A32634]" : "bg-md-surface2 text-md-muted"}`}>{i.intent}{i.insult && " · insulto"}</li>
-                ))}
-              </ol>
-            )}
           </div>
         </div>
       </div>

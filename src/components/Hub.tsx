@@ -1,8 +1,18 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
-// The technology hub, after puture.co.kr: glossy 3D tiles (one per Mayday vertical) over a perspective grid. While the
-// section is pinned, scrolling turns the spinning carousel into tiles floating around the headline. Pure CSS 3D driven by
-// one rAF loop (no WebGL); with reduced motion it renders the final layout, still and unpinned.
+// The technology hub, after bestwebsitetemplate.com: real screens of each demo on a curved carousel, then (pinned) the
+// screens and one round sticker per vertical float up past the centred headline as you scroll. Screens are 2x webp shown
+// at or below native size, full bleed (no frame), so they stay sharp. One rAF loop, only while on screen; with reduced
+// motion everything renders still.
+
+const SCREENS = [
+  { label: "Voicebot", href: "/#voicebot", src: "/assets/hub/voice.webp" },
+  { label: "QualityIQ", href: "/#quality", src: "/assets/hub/quality.webp" },
+  { label: "Agentic WhatsApp", href: "/#iabot", src: "/assets/hub/whatsapp.webp", tall: true },
+  { label: "MIS + SAM", href: "/#mis", src: "/assets/hub/mis.webp" },
+  { label: "Omnichannel", href: "/#omnichannel", src: "/assets/hub/omni.webp" },
+  { label: "Coaching", href: "/#quality", src: "/assets/hub/coaching.webp" },
+];
 
 /** Lucide-style stroke icons (ISC), inline so the site needs no icon package. */
 const I = ({ children }: { children: ReactNode }) => (
@@ -11,108 +21,97 @@ const I = ({ children }: { children: ReactNode }) => (
   </svg>
 );
 
-const TILES = [
-  { label: "Voicebot", href: "/#voicebot", icon: <I><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3" /></I> },
-  { label: "Agentic WhatsApp", href: "/#iabot", icon: <I><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /><path d="M8 12h.01M12 12h.01M16 12h.01" /></I> },
-  { label: "QualityIQ", href: "/#quality", icon: <I><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></I> },
-  { label: "MIS", href: "/#mis", icon: <I><path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3" /></I> },
-  { label: "Omnichannel", href: "/#omnichannel", icon: <I><path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></I> },
-  { label: "SAM · analista IA", href: "/#mis", icon: <I><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z" /></I> },
-  { label: "IA Bot", href: "/#iabot", icon: <I><path d="M12 8V4H8" /><rect x="4" y="8" width="16" height="12" rx="2" /><path d="M2 14h2M20 14h2M15 13v2M9 13v2" /></I> },
-  { label: "Coaching", href: "/#quality", icon: <I><path d="M22 10 12 5 2 10l10 5 10-5Z" /><path d="M6 12v5c3 3 9 3 12 0v-5M22 10v6" /></I> },
-  { label: "Telefonía", href: "/#omnichannel", icon: <I><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></I> },
-  { label: "Webchat", href: "/#iabot", icon: <I><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></I> },
-  { label: "CRM", href: "/#omnichannel", icon: <I><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14a9 3 0 0 0 18 0V5M3 12a9 3 0 0 0 18 0" /></I> },
-  { label: "Email", href: "/#omnichannel", icon: <I><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></I> },
+const STICKERS = [
+  { label: "Telefonía", href: "/#omnichannel", bg: "#04CCDB", fg: "#010136", icon: <I><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></I> },
+  { label: "IA Bot", href: "/#iabot", bg: "#010136", fg: "#FFFFFF", icon: <I><path d="M12 8V4H8" /><rect x="4" y="8" width="16" height="12" rx="2" /><path d="M2 14h2M20 14h2M15 13v2M9 13v2" /></I> },
+  { label: "SAM analista IA", href: "/#mis", bg: "#FBBF24", fg: "#010136", icon: <I><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z" /></I> },
+  { label: "Webchat", href: "/#iabot", bg: "#2E4BB0", fg: "#FFFFFF", icon: <I><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></I> },
+  { label: "CRM", href: "/#omnichannel", bg: "#F472B6", fg: "#010136", icon: <I><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14a9 3 0 0 0 18 0V5M3 12a9 3 0 0 0 18 0" /></I> },
+  { label: "Email", href: "/#omnichannel", bg: "#4ADE80", fg: "#010136", icon: <I><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></I> },
 ];
-const N = TILES.length;
 
 type Dims = { w: number; h: number };
 const clamp = (x: number) => Math.min(1, Math.max(0, x));
-const smooth = (x: number) => x * x * (3 - 2 * x);
-const mix = (a: number, b: number, t: number) => a + (b - a) * t;
-const r = (x: number) => Math.round(x * 100) / 100;
-const tileSize = (d: Dims) => (d.w < 768 ? 60 : 104);
+const r = (x: number) => Math.round(x * 100) / 100; // same numbers on server and client (no hydration mismatch)
+const screenW = (d: Dims, tall?: boolean) => (d.w < 768 ? (tall ? 120 : 200) : tall ? 210 : 360);
 
-/** Where tile i sits for scroll progress p (0..1) at time s (seconds). */
-function place(i: number, p: number, s: number, d: Dims) {
-  const mobile = d.w < 768;
-  const t = smooth(clamp((p - 0.22) / 0.45));
-  // Carousel: a ring spinning around the vertical axis, above the headline.
-  const R = mobile ? d.w * 0.62 : Math.min(d.w * 0.4, 600);
-  const a = (i / N) * Math.PI * 2 + s * 0.12 + p * 1.6;
-  const ring = { x: R * Math.sin(a), y: d.h * (mobile ? -0.16 : -0.13) + Math.sin(i * 1.7) * 14, z: R * Math.cos(a) - R * 0.55, ry: Math.sin(a) * 0.7, rx: -0.12 }; // tiles keep facing the camera, tilted toward the sides
-  // Scatter: around the centred headline (desktop: an ellipse; mobile: bands above and below the text).
-  let sx: number, sy: number;
-  if (mobile) {
-    const row = Math.floor(i / 3), col = i % 3;
-    sx = (col - 1) * d.w * 0.28 + Math.sin(i * 2.3) * 8;
-    sy = [-0.34, -0.215, 0.25, 0.375][row] * d.h;
-  } else {
-    const f = (i / N) * Math.PI * 2 + 0.26;
-    sx = Math.cos(f) * d.w * 0.4;
-    sy = Math.sin(f) * d.h * 0.36;
-  }
-  const scatter = {
-    x: sx,
-    y: sy + Math.sin(s * 0.9 + i) * 8,
-    z: (((i * 37) % 3) - 1) * 80,
-    ry: Math.sin(i * 2.1) * 0.32 + Math.sin(s * 0.5 + i) * 0.1,
-    rx: Math.cos(i * 1.3) * 0.3,
-  };
-  const facing = (Math.cos(a) + 1) / 2; // 1 when the ring tile faces the camera
-  return {
-    // Rounded so server and browser print the same numbers (no hydration mismatch).
-    transform: `translate3d(${r(mix(ring.x, scatter.x, t))}px, ${r(mix(ring.y, scatter.y, t))}px, ${r(mix(ring.z, scatter.z, t))}px) rotateY(${r(mix(ring.ry, scatter.ry, t))}rad) rotateX(${r(mix(ring.rx, scatter.rx, t))}rad)`,
-    shade: r(mix(0.7 * (1 - facing), 0, t)),
-    t,
-  };
-}
-
-const FACE = "absolute inset-0 rounded-[22%] [backface-visibility:hidden]";
-const FRONT: CSSProperties = {
-  background: "linear-gradient(150deg, #9BDCFF 0%, #4C8DFF 42%, #2448D8 100%)",
-  boxShadow: "inset 0 2px 1px rgba(255,255,255,0.75), inset 0 -12px 24px rgba(8,18,90,0.35), 0 20px 40px rgba(20,60,200,0.35)",
-};
-
-/** A glossy block: front, back and four sides, `d` px deep. */
-function Tile({ s, d, tile, refCb, initial }: { s: number; d: number; tile: (typeof TILES)[number]; refCb: (el: HTMLAnchorElement | null) => void; initial: ReturnType<typeof place> }) {
-  const side = (w: number, h: number, tf: string, bg: string): CSSProperties => ({ width: w, height: h, left: (s - w) / 2, top: (s - h) / 2, transform: tf, background: bg });
+/** A real screen of a demo: full bleed, rounded, with its name. */
+function Screen({ s, w, refCb, style }: { s: (typeof SCREENS)[number]; w: number; refCb?: (el: HTMLAnchorElement | null) => void; style?: CSSProperties }) {
   return (
-    <a
-      ref={refCb}
-      href={tile.href}
-      aria-label={`${tile.label}: ver la demo`}
-      className="group absolute left-1/2 top-1/2 [transform-style:preserve-3d]"
-      style={{ width: s, height: s, marginLeft: -s / 2, marginTop: -s / 2, transform: initial.transform, "--shade": initial.shade } as CSSProperties}
-    >
-      <div className="absolute rounded-[6px]" style={side(d, s * 0.9, `rotateY(90deg) translateZ(${s / 2 - 1}px)`, "#1D3BB5")} />
-      <div className="absolute rounded-[6px]" style={side(d, s * 0.9, `rotateY(-90deg) translateZ(${s / 2 - 1}px)`, "#2F5BE6")} />
-      <div className="absolute rounded-[6px]" style={side(s * 0.9, d, `rotateX(90deg) translateZ(${s / 2 - 1}px)`, "#7FB6FF")} />
-      <div className="absolute rounded-[6px]" style={side(s * 0.9, d, `rotateX(-90deg) translateZ(${s / 2 - 1}px)`, "#172F99")} />
-      <div className={FACE} style={{ transform: `rotateY(180deg) translateZ(${d / 2}px)`, background: "linear-gradient(150deg, #3B6EF0, #1A35A8)" }} />
-      <div className={`${FACE} grid place-items-center text-white transition group-hover:brightness-110`} style={{ ...FRONT, transform: `translateZ(${d / 2}px)` }}>
-        <div className="h-[42%] w-[42%] drop-shadow-[0_2px_4px_rgba(10,20,90,0.35)]">{tile.icon}</div>
-        <div aria-hidden className="absolute inset-0 rounded-[22%] bg-[#020318]" style={{ opacity: "var(--shade)" }} />
-        <span className="absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/35 px-2 py-0.5 text-[10px] font-semibold text-white/90 backdrop-blur md:text-xs">
-          {tile.label}
-        </span>
-      </div>
+    <a ref={refCb} href={s.href} aria-label={`${s.label}: ver la demo`} className="group absolute left-1/2 top-1/2 block" style={{ width: w, marginLeft: -w / 2, ...style }}>
+      <img
+        src={s.src}
+        alt=""
+        draggable={false}
+        className={`block w-full rounded-2xl object-cover object-top shadow-[0_28px_60px_-18px_rgba(1,1,54,0.45)] transition group-hover:-translate-y-1 ${s.tall ? "aspect-[2/3]" : "aspect-[16/10]"}`}
+      />
+      <span className="mt-2 inline-block rounded-full bg-md-navy px-2.5 py-0.5 text-[11px] font-semibold text-white">{s.label}</span>
     </a>
   );
 }
 
-// Fixed star field (deterministic, so server and client render the same).
-const STARS = Array.from({ length: 46 }, (_, i) => ({ l: (i * 47.3) % 100, t: (i * 29.7) % 100, o: 0.25 + ((i * 13) % 6) / 10 }));
+/** Round sticker: the vertical's name running around the edge (slowly spinning), its icon in the middle. */
+function Sticker({ k, size, refCb, style }: { k: (typeof STICKERS)[number]; size: number; refCb: (el: HTMLAnchorElement | null) => void; style?: CSSProperties }) {
+  const text = `${k.label} • ${k.label} • `.toUpperCase();
+  return (
+    <a ref={refCb} href={k.href} aria-label={`${k.label}: ver la demo`} className="absolute left-1/2 top-1/2 block" style={{ width: size, height: size, marginLeft: -size / 2, marginTop: -size / 2, ...style }}>
+      <span className="relative grid h-full w-full place-items-center rounded-full shadow-[0_20px_40px_-14px_rgba(1,1,54,0.45)]" style={{ background: k.bg, color: k.fg }}>
+        <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full animate-[spin_14s_linear_infinite] motion-reduce:animate-none" aria-hidden>
+          <defs>
+            <path id={`ring-${k.label}`} d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0" />
+          </defs>
+          <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeOpacity="0.35" strokeWidth="0.8" />
+          <text fill="currentColor" fontSize="9.5" fontWeight="700" letterSpacing="2.2" className="font-data">
+            <textPath href={`#ring-${k.label}`} textLength="228">{text}</textPath>
+          </text>
+        </svg>
+        <span className="h-[30%] w-[30%]">{k.icon}</span>
+      </span>
+    </a>
+  );
+}
+
+// Curved carousel: 12 slots on a cylinder (each screen twice), turning with time and scroll.
+const RING = [...SCREENS, ...SCREENS];
+function ringPlace(i: number, turn: number, d: Dims) {
+  const step = (Math.PI * 2) / RING.length;
+  const w = screenW(d);
+  const R = (w + (d.w < 768 ? 18 : 30)) / step;
+  let a = i * step - turn;
+  a = Math.atan2(Math.sin(a), Math.cos(a)); // wrap to -π..π
+  const front = Math.cos(a);
+  return {
+    transform: `translate3d(${r(R * Math.sin(a))}px, -50%, ${r(R * front - R)}px) rotateY(${r(a)}rad)`,
+    opacity: r(clamp(front * 2.2 - 0.3)),
+  };
+}
+
+// Floating phase: every item rises from below the screen to above it, staggered, in lanes beside the headline.
+// Listed in the order they rise; sides alternate so there is always something on both sides of the text.
+const ITEMS = (
+  [
+    ["screen", 0, -0.32], ["sticker", 0, 0.38], ["screen", 3, 0.32], ["sticker", 1, -0.4],
+    ["screen", 1, -0.3], ["sticker", 2, 0.26], ["screen", 2, 0.36], ["sticker", 3, -0.26],
+    ["screen", 4, -0.34], ["sticker", 4, 0.4], ["screen", 5, 0.31], ["sticker", 5, -0.42],
+  ] as const
+).map(([kind, i, lane], n) => ({ kind, i, lane, start: -0.4 + n * 0.115 }));
+function floatPlace(n: number, q: number, s: number, d: Dims) {
+  const it = ITEMS[n];
+  const mobile = d.w < 768;
+  const u = (q - it.start) / 0.56; // 0 = just below the screen, 1 = just above it
+  const y = (0.5 - u) * (d.h + 420);
+  const x = it.lane * d.w * (mobile ? 0.95 : 1) + Math.sin(s * 0.6 + n) * 6;
+  const tilt = Math.sin(n * 2.7) * 5 + Math.sin(s * 0.5 + n) * 1.5;
+  return `translate3d(${r(x)}px, ${r(y)}px, 0) rotate(${r(tilt)}deg)`;
+}
 
 export function Solutions() {
   const [dims, setDims] = useState<Dims>({ w: 1366, h: 800 });
   const [still, setStill] = useState(false);
-  const section = useRef<HTMLElement>(null);
-  const tiles = useRef<(HTMLAnchorElement | null)[]>([]);
-  const grid = useRef<HTMLDivElement>(null);
   const intro = useRef<HTMLDivElement>(null);
-  const outro = useRef<HTMLDivElement>(null);
+  const pin = useRef<HTMLDivElement>(null);
+  const ring = useRef<(HTMLAnchorElement | null)[]>([]);
+  const floats = useRef<(HTMLAnchorElement | null)[]>([]);
 
   useEffect(() => {
     const read = () => setDims({ w: innerWidth, h: innerHeight });
@@ -123,103 +122,91 @@ export function Solutions() {
   }, []);
 
   useEffect(() => {
-    const frame = (p: number, s: number) => {
-      let t = 0;
-      tiles.current.forEach((el, i) => {
+    const frame = (turn: number, q: number, s: number) => {
+      ring.current.forEach((el, i) => {
         if (!el) return;
-        const r = place(i, p, s, dims);
-        el.style.transform = r.transform;
-        el.style.setProperty("--shade", String(r.shade));
-        t = r.t;
+        const p = ringPlace(i, turn, dims);
+        el.style.transform = p.transform;
+        el.style.opacity = String(p.opacity);
+        el.style.pointerEvents = p.opacity > 0.6 ? "auto" : "none";
       });
-      if (grid.current) grid.current.style.backgroundPosition = `center ${p * 900}px`;
-      if (intro.current) {
-        intro.current.style.opacity = String(clamp(1 - t * 2.2));
-        intro.current.style.transform = `translateY(${-t * 60}px)`;
-        intro.current.style.pointerEvents = t < 0.4 ? "auto" : "none";
-      }
-      if (outro.current) {
-        outro.current.style.opacity = String(clamp((t - 0.55) * 2.4));
-        outro.current.style.transform = `translateY(${(1 - t) * 40}px)`;
-        outro.current.style.pointerEvents = t > 0.6 ? "auto" : "none";
-      }
+      floats.current.forEach((el, n) => {
+        if (el) el.style.transform = floatPlace(n, q, s, dims);
+      });
     };
-    if (still) return frame(1, 0);
+    if (still) return frame(0, 0.35, 0);
 
     let raf = 0;
-    let visible = false;
+    let visible = 0;
     const t0 = performance.now();
     const loop = () => {
-      const el = section.current;
-      if (el) {
-        const r = el.getBoundingClientRect();
-        frame(clamp(-r.top / Math.max(1, r.height - innerHeight)), (performance.now() - t0) / 1000);
-      }
-      if (visible) raf = requestAnimationFrame(loop);
+      const s = (performance.now() - t0) / 1000;
+      const a = intro.current?.getBoundingClientRect();
+      const b = pin.current?.getBoundingClientRect();
+      const turn = s * 0.08 + (a ? -a.top / 900 : 0);
+      const q = b ? -b.top / Math.max(1, b.height - innerHeight) : 0;
+      frame(turn, q, s);
+      if (visible > 0) raf = requestAnimationFrame(loop);
     };
-    // Only animate while the section is on screen.
-    const io = new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting;
+    // Only animate while some part of the hub is on screen.
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => (visible += e.isIntersecting ? 1 : -1));
+      visible = Math.max(0, visible);
       cancelAnimationFrame(raf);
-      if (visible) raf = requestAnimationFrame(loop);
+      if (visible > 0) raf = requestAnimationFrame(loop);
     });
-    if (section.current) io.observe(section.current);
+    [intro.current, pin.current].forEach((el) => el && io.observe(el));
     return () => {
       io.disconnect();
       cancelAnimationFrame(raf);
     };
   }, [dims, still]);
 
-  const s = tileSize(dims);
+  const mobile = dims.w < 768;
+  const sticker = mobile ? 92 : 150;
   return (
-    <section id="soluciones" ref={section} className={`relative bg-[#02031A] ${still ? "" : "h-[320vh]"}`}>
-      <div className={`${still ? "relative" : "sticky top-0"} h-[100svh] min-h-[620px] overflow-hidden`}>
-        {/* light beam + grid + stars */}
-        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(70%_90%_at_100%_0%,rgba(47,107,255,0.75),transparent_60%)]" />
-        <div aria-hidden className="absolute -right-1/4 -top-1/4 h-[150%] w-[60%] rotate-[25deg] bg-[linear-gradient(90deg,transparent,rgba(64,120,255,0.28),transparent)] blur-2xl" />
-        <div aria-hidden className="absolute inset-x-0 bottom-0 h-[75%] [perspective:700px] [mask-image:linear-gradient(to_top,black_30%,transparent)]">
-          <div ref={grid} className="hub-grid absolute left-1/2 top-0 h-[220%] w-[320%] origin-top [transform:translateX(-50%)_rotateX(62deg)]" />
+    <section id="soluciones" className="relative overflow-x-clip bg-white">
+      {/* part 1: headline + curved carousel of real screens */}
+      <div ref={intro} className="mx-auto max-w-6xl px-4 pt-24 text-center md:pt-32">
+        <p className="text-[13px] font-medium text-md-muted">Hub de soluciones con IA</p>
+        <h2 className="mx-auto mt-3 max-w-3xl font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-md-ink md:text-7xl">
+          Un hub. Todo tu contact center.
+        </h2>
+        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-md-muted md:text-lg">
+          Voz, chats, calidad y datos en un solo lugar. Cada solución funciona sola y, conectadas, comparten el contexto de cada cliente.
+        </p>
+      </div>
+      <div className="relative mt-10 [perspective:1400px] md:mt-12" style={{ height: screenW(dims) * 0.62 + 90 }}>
+        <div className="absolute inset-0 [transform-style:preserve-3d] [transform:rotateX(-6deg)]">
+          {RING.map((s, i) => (
+            <Screen key={i} s={{ ...s, tall: false }} w={screenW(dims)} refCb={(el) => (ring.current[i] = el)} style={ringPlace(i, 0, dims)} />
+          ))}
         </div>
-        {STARS.map((st, i) => (
-          <span key={i} aria-hidden className="absolute size-[2px] rounded-full bg-white" style={{ left: `${st.l}%`, top: `${st.t}%`, opacity: st.o }} />
-        ))}
+      </div>
 
-        {/* tiles */}
-        <div className="absolute inset-0 [perspective:1100px]">
-          <div className="absolute inset-0 [transform-style:preserve-3d]">
-            {TILES.map((tile, i) => (
-              <Tile key={tile.label} s={s} d={s * 0.26} tile={tile} refCb={(el) => (tiles.current[i] = el)} initial={place(i, still ? 1 : 0, 0, dims)} />
-            ))}
-          </div>
-        </div>
-
-        {/* phase 1: headline under the carousel */}
-        <div ref={intro} className="absolute inset-x-0 bottom-0 mx-auto max-w-6xl px-4 pb-14 md:pb-20" style={{ opacity: still ? 0 : 1 }}>
-          <p className="text-[13px] font-medium text-white/70">Hub de soluciones con IA</p>
-          <div className="mt-3 grid items-end gap-6 md:grid-cols-[1.3fr_1fr]">
-            <h2 className="font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-white md:text-7xl">
-              Un hub.
-              <br />
-              Todo tu contact center.
-            </h2>
-            <p className="max-w-sm text-sm leading-relaxed text-white/70 md:text-base">
-              Voz, chats, calidad y datos en un solo lugar. Cada solución funciona sola y, conectadas, comparten el contexto de cada cliente.
-            </p>
-          </div>
-        </div>
-
-        {/* phase 2: centred, tiles around it */}
-        <div ref={outro} className="absolute inset-0 grid place-items-center px-6 text-center" style={{ opacity: still ? 1 : 0 }}>
-          <div className="max-w-[250px] md:max-w-xl">
-            <p className="inline-block rounded-full border border-white/20 px-3 py-1 font-data text-[11px] uppercase tracking-wider text-white/80">{N} soluciones · 1 hub</p>
-            <h3 className="mt-4 font-display text-3xl font-extrabold leading-[1.02] tracking-tight text-white md:text-6xl">
-              Conectadas.
-              <br />
-              Probalas en vivo.
-            </h3>
-            <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/70 md:text-base">
-              Lo que pasa en un canal lo audita QualityIQ, lo mide MIS y lo resuelve la IA o tu agente. Tocá una solución para ver su demo.
-            </p>
+      {/* part 2 (pinned): screens and stickers float up past the headline */}
+      <div ref={pin} className={still ? "relative" : "relative h-[270vh]"}>
+        <div className={`${still ? "relative" : "sticky top-0"} h-[100svh] min-h-[600px] overflow-hidden [mask-image:linear-gradient(transparent,#000_7%,#000_93%,transparent)]`}>
+          {ITEMS.map((it, n) =>
+            it.kind === "screen" ? (
+              <Screen key={n} s={SCREENS[it.i]} w={screenW(dims, SCREENS[it.i].tall)} refCb={(el) => (floats.current[n] = el)} style={{ transform: floatPlace(n, still ? 0.35 : 0, 0, dims) }} />
+            ) : (
+              <Sticker key={n} k={STICKERS[it.i]} size={sticker} refCb={(el) => (floats.current[n] = el)} style={{ transform: floatPlace(n, still ? 0.35 : 0, 0, dims) }} />
+            ),
+          )}
+          <div className="pointer-events-none absolute inset-0 grid place-items-center px-6 text-center">
+            {/* soft white halo so the text stays readable when something floats behind it (mostly on mobile) */}
+            <div className="pointer-events-auto relative max-w-[320px] px-6 py-12 [background:radial-gradient(closest-side,#fff_72%,rgba(255,255,255,0))] md:max-w-[440px] md:[background:none]">
+              <p className="inline-block rounded-full border border-md-line px-3 py-1 font-data text-[11px] uppercase tracking-wider text-md-muted">12 soluciones · 1 hub</p>
+              <h3 className="mt-4 font-display text-3xl font-extrabold leading-[1.02] tracking-tight text-md-ink md:text-5xl">
+                Conectadas.
+                <br />
+                Probalas en vivo.
+              </h3>
+              <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-md-muted md:text-base">
+                Lo que pasa en un canal lo audita QualityIQ, lo mide MIS y lo resuelve la IA o tu agente. Tocá una pantalla para ver su demo.
+              </p>
+            </div>
           </div>
         </div>
       </div>

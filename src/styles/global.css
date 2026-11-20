@@ -50,3 +50,8 @@ body {
     linear-gradient(90deg, rgba(150, 180, 255, 0.22) 1px, transparent 1px);
   background-size: 120px 120px;
 }
+
+/* Agent workflow edges (AgentFlow): the dash runs downstream once the conversation has passed. */
+.flow-dash { stroke-dasharray: 5 4; animation: flow-dash 0.8s linear infinite; }
+@keyframes flow-dash { to { stroke-dashoffset: -9; } }
+@media (prefers-reduced-motion: reduce) { .flow-dash { animation: none; } }

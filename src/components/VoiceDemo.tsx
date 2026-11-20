@@ -3,6 +3,8 @@ import type { Room } from "livekit-client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { callsUsed, COUNTRIES, LIMIT_CALLS, MAX_CALLS, SCENARIOS, type CountryId, type ScenarioId, type Turn } from "@/lib/voicebot";
 import { DEMO_WHATSAPP_URL } from "@/lib/utils";
+import { route } from "@/lib/flows";
+import { AgentFlow } from "./AgentFlow";
 import { Aurora, MayaAvatar, SectionTitle, Wave } from "./ui";
 
 // Llamada en vivo con Maya por LiveKit, como un softphone (igual que el coaching de QualityIQ): el visitante llama,
@@ -71,6 +73,8 @@ export function VoiceDemo() {
   const [blocked, setBlocked] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [branch, setBranch] = useState<string | null>(null);
+  const [waiting, setWaiting] = useState(false); // the customer spoke and Maya has not answered yet
   const room = useRef<Room | null>(null);
   const stopRing = useRef<(() => void) | null>(null);
   const audio = useRef<HTMLDivElement>(null);
@@ -99,6 +103,8 @@ export function VoiceDemo() {
     setNote(null);
     setTurns([]);
     setPartial("");
+    setBranch(null);
+    setWaiting(false);
     setElapsed(0);
     setMuted(false);
     setPhase("llamando");
@@ -121,7 +127,12 @@ export function VoiceDemo() {
         try { e = JSON.parse(new TextDecoder().decode(payload)); } catch { return; }
         if (e.type === "partial") setPartial(e.text);
         else if (e.type === "transcript") {
-          if (e.role === "user") setPartial("");
+          if (e.role === "user") {
+            setPartial("");
+            const b = route(scenario, e.text);
+            if (b) setBranch(b);
+          }
+          setWaiting(e.role === "user");
           setTurns((t) => [...t, { role: e.role, text: e.text }]);
         } else if (e.type === "alert") setTurns((t) => [...t, { role: "alert", text: e.text }]);
         else if (e.type === "closed") { setNote(e.reason); void r.disconnect(); }
@@ -173,64 +184,57 @@ export function VoiceDemo() {
 
   return (
     <section id="voicebot" className="relative bg-white py-24 md:py-32">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-        <div>
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="grid items-end gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <SectionTitle
-            eyebrow="Voicebot · desarrollado por Mayday"
-            title={<>La voz de tus agentes, con acento local.</>}
-            body="Maya atiende como una persona de tu país: con su acento, sus modismos y sus documentos. Entiende, resuelve la gestión y deriva a un agente cuando hace falta. Elegí tu país, llamala y probá interrumpirla: es la misma tecnología que ponemos en producción."
+            eyebrow="Agentic Voicebot · desarrollado por Mayday"
+            title={<>Agentes de IA que atienden, deciden y resuelven.</>}
+            body="No es un menú ni un bot de respuestas: es un equipo de agentes. Maya atiende con el acento de tu país, entiende qué necesita el cliente y lo pasa al agente especialista, que usa las herramientas de tu sistema o deriva a una persona con todo el contexto. Llamala y mirá el flujo en vivo."
           />
-          <p className="mt-8 text-xs font-semibold uppercase tracking-wider text-md-muted">¿Desde dónde llamás?</p>
-          <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="País">
-            {(Object.keys(COUNTRIES) as CountryId[]).map((id) => (
-              <button
-                key={id}
-                role="radio"
-                aria-checked={country === id}
-                disabled={busy}
-                onClick={() => setCountry(id)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                  country === id ? "border-md-navy bg-md-navy text-white" : "border-md-line bg-white text-md-ink hover:bg-md-surface2"
-                }`}
-              >
-                {COUNTRIES[id].label}
-              </button>
-            ))}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-md-muted">¿Desde dónde llamás?</p>
+            <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="País">
+              {(Object.keys(COUNTRIES) as CountryId[]).map((id) => (
+                <button
+                  key={id}
+                  role="radio"
+                  aria-checked={country === id}
+                  disabled={busy}
+                  onClick={() => setCountry(id)}
+                  className={`rounded-full border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                    country === id ? "border-md-navy bg-md-navy text-white" : "border-md-line bg-white text-md-ink hover:bg-md-surface2"
+                  }`}
+                >
+                  {COUNTRIES[id].label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-md-muted">¿A quién llamás?</p>
+            <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Escenario">
+              {(Object.keys(SCENARIOS) as ScenarioId[]).map((id) => (
+                <button
+                  key={id}
+                  role="radio"
+                  aria-checked={scenario === id}
+                  disabled={busy}
+                  onClick={() => { setScenario(id); setBranch(null); }}
+                  className={`rounded-full border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                    scenario === id ? "border-md-cyan-dark bg-md-cyan-dark text-white" : "border-md-line bg-white text-md-ink hover:bg-md-surface2"
+                  }`}
+                >
+                  {SCENARIOS[id].label}
+                </button>
+              ))}
+            </div>
           </div>
-          <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-md-muted">¿A quién llamás?</p>
-          <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Escenario">
-            {(Object.keys(SCENARIOS) as ScenarioId[]).map((id) => (
-              <button
-                key={id}
-                role="radio"
-                aria-checked={scenario === id}
-                disabled={busy}
-                onClick={() => setScenario(id)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                  scenario === id ? "border-md-cyan-dark bg-md-cyan-dark text-white" : "border-md-line bg-white text-md-ink hover:bg-md-surface2"
-                }`}
-              >
-                {SCENARIOS[id].label}
-              </button>
-            ))}
-          </div>
-          <ul className="mt-8 grid gap-4 sm:grid-cols-3">
-            {[
-              ["< 1 s", "de respuesta por turno"],
-              ["6 acentos", "y modismos de cada país"],
-              ["100%", "de llamadas auditadas con QualityIQ"],
-            ].map(([k, v]) => (
-              <li key={k} className="rounded-2xl bg-md-bg p-4">
-                <p className="font-display text-2xl font-extrabold text-md-ink">{k}</p>
-                <p className="mt-1 text-sm text-md-muted">{v}</p>
-              </li>
-            ))}
-          </ul>
         </div>
 
-        <div className="relative overflow-hidden rounded-[32px] bg-md-sky p-5 md:p-8">
+        <div className="relative mt-10 grid items-start gap-3 overflow-hidden rounded-[32px] bg-md-sky p-3 md:gap-5 md:p-5 lg:grid-cols-[1.35fr_1fr]">
           <Aurora />
-          <div className="relative mx-auto max-w-md rounded-[28px] border border-md-dark-line bg-[#060834] p-5 text-md-dark-text shadow-[0_24px_60px_rgba(1,1,54,0.35)]">
+          <div className="relative order-2 lg:order-1">
+            <AgentFlow channel="voice" scenario={scenario} started={phase !== "listo"} active={branch} busy={phase === "en_curso" && waiting} />
+          </div>
+          <div className="relative order-1 rounded-[28px] border border-md-dark-line bg-[#060834] p-5 lg:order-2 text-md-dark-text shadow-[0_24px_60px_rgba(1,1,54,0.35)]">
             {/* El teléfono */}
             <div className="flex flex-col items-center pt-2 text-center">
               <div className="relative grid h-20 w-20 place-items-center rounded-full bg-[#13163F]">
