@@ -4,12 +4,20 @@ export const FAREWELL = /\b(chau|chao|adi[oó]s|nos vemos|hasta luego|hasta pron
 /** The model sometimes writes a stage direction instead of hanging up ("(Llamada finalizada)", "[cuelga]"). */
 export const CALL_ENDED = /^\s*[([*]?\s*(llamada (finalizada|terminada)|fin de la llamada|cuelga|colg[oó])\b/i;
 
-/** Maya's last line closes the call: a goodbye that does not ask anything ("¡Gracias por llamar! ¿Algo más?" keeps
- *  going), a stage direction, or any reply right after the visitor said goodbye. */
-export function shouldHangUp(bot: string, userSaidBye: boolean) {
+/** Maya's closing question ("¿Te puedo ayudar en algo más?"), and a visitor's short "no" to it. */
+export const ASKS_MORE = /algo m[aá]s\s*\?\s*$/i;
+// A "no" that goes on to ask for something else ("no, pero quería...") is not a goodbye.
+export const NO_MORE = /^[^\p{L}]*(no|nada( m[aá]s)?|eso (es )?todo|es todo|est[aá] bien|listo|ya est[aá]|todo bien|perfecto)(?!\p{L})(?!.*\b(quer[ií]a|quiero|necesito|pero|tambi[eé]n|otra)\b)/iu;
+
+/** The visitor is closing: they said goodbye, or answered no to Maya's "¿algo más?". */
+export const userCloses = (user: string, lastBot: string) => FAREWELL.test(user) || (ASKS_MORE.test(lastBot) && NO_MORE.test(user));
+
+/** Maya's last line closes the call: a stage direction, a goodbye that does not ask anything, or any reply that is
+ *  not a question once the visitor is closing ("¿algo más?" keeps the call open). */
+export function shouldHangUp(bot: string, userClosing: boolean) {
   if (CALL_ENDED.test(bot)) return true;
-  if (userSaidBye) return true;
-  return FAREWELL.test(bot) && !bot.trim().endsWith('?');
+  if (bot.trim().endsWith('?')) return false;
+  return userClosing || FAREWELL.test(bot);
 }
 
 /** Same list as src/lib/insults.ts (the site keeps a copy: change both). Insults common across LatAm, for the softphone alert (Maya's reaction comes from the prompt, the model understands

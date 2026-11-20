@@ -175,6 +175,26 @@ export function MisDemo() {
             </div>
           </div>
         </div>
+
+        {/* bring your own agent: MIS data over MCP */}
+        <div className="mt-8 grid items-center gap-8 rounded-[28px] bg-md-sky p-6 md:p-10 lg:grid-cols-[1fr_1.1fr]">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-md-cyan-dark">MCP · Model Context Protocol</p>
+            <h3 className="mt-3 font-display text-3xl font-extrabold leading-tight tracking-tight text-md-ink md:text-4xl">¿Tenés tu propio agente? No importa.</h3>
+            <p className="mt-4 text-base leading-relaxed text-md-muted">
+              Conectalo a nuestro servidor MCP y tu agente de IA (Claude, ChatGPT, Copilot o uno propio) consulta los datos de MIS directamente: conversaciones, costos, ventas y calidad, con los mismos permisos que tu usuario. Sin exportar planillas ni armar integraciones.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-[#060834] p-5 font-data text-[12px] leading-relaxed text-md-dark-text shadow-[0_24px_60px_rgba(1,1,54,0.25)] md:text-[13px]">
+            <p className="text-md-dark-muted">Tu agente</p>
+            <p className="mt-1 rounded-lg bg-[#13163F] px-3 py-2">¿Qué canal tuvo el mayor costo por conversación este mes?</p>
+            <p className="mt-4 text-md-dark-muted">
+              → MCP Mayday · <span className="text-md-cyan">mis.costos_por_canal</span>
+            </p>
+            <p className="mt-4 text-md-dark-muted">Respuesta</p>
+            <p className="mt-1 rounded-lg bg-[#0A0D3F] px-3 py-2">Telefonía, con 0,12 USD por conversación. El voicebot atendió consultas parecidas a 0,05 USD: menos de la mitad.</p>
+          </div>
+        </div>
       </div>
     </section>
   );

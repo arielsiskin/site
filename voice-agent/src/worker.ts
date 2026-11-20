@@ -8,7 +8,7 @@ import { STT as DeepgramSTT } from '@livekit/agents-plugin-deepgram';
 import { LLM as GoogleLLM } from '@livekit/agents-plugin-google';
 import { TTS as ElevenTTS } from './eleven-tts.js';
 import { VAD as SileroVAD } from '@livekit/agents-plugin-silero';
-import { FAREWELL, INSULT, shouldHangUp } from './farewell.js';
+import { INSULT, shouldHangUp, userCloses } from './farewell.js';
 
 export const AGENT_NAME = 'mayday-site-demo';
 
@@ -64,8 +64,9 @@ export default defineAgent({
     session.on(AgentSessionEventTypes.UserInputTranscribed, ev => {
       if (!ev.isFinal && ev.transcript.trim()) send({ type: 'partial', text: ev.transcript.trim() });
     });
-    // Someone said goodbye: hang up once Maya finishes her last line (farewell.ts has the rule).
+    // The visitor said goodbye or "no" to "¿algo más?": hang up once Maya finishes her last line (farewell.ts has the rule).
     let userSaidBye = false;
+    let lastBot = '';
     let hangUp = false;
     let agentSpeaking = false;
     let insulted = false;
@@ -80,16 +81,19 @@ export default defineAgent({
       if (ev.item.type !== 'message' || !ev.item.textContent) return;
       const text = ev.item.textContent;
       if (ev.item.role === 'user') {
-        userSaidBye = FAREWELL.test(text);
+        userSaidBye = userCloses(text, lastBot);
         if (INSULT.test(text)) {
           insulted = true;
           send({ type: 'alert', text: 'Insulto detectado' });
         }
       }
-      else if (ev.item.role === 'assistant' && !hangUp && shouldHangUp(text, userSaidBye)) {
-        hangUp = true;
-        // The item usually lands when her audio already finished; if she is still talking, AgentStateChanged hangs up.
-        if (!agentSpeaking) hangUpSoon();
+      else if (ev.item.role === 'assistant') {
+        lastBot = text;
+        if (!hangUp && shouldHangUp(text, userSaidBye)) {
+          hangUp = true;
+          // The item usually lands when her audio already finished; if she is still talking, AgentStateChanged hangs up.
+          if (!agentSpeaking) hangUpSoon();
+        }
       }
       // The sentence tokenizer glues sentences ("Maya.¿Qué"): put the space back for the screen.
       send({ type: 'transcript', role: ev.item.role === 'assistant' ? 'bot' : 'user', text: ev.item.textContent.replace(/([.?!])(?=[¿¡A-ZÁÉÍÓÚÑ])/g, '$1 ') });
