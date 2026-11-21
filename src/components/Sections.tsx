@@ -53,12 +53,7 @@ export function Method() {
     <section id="metodo" className="relative overflow-hidden bg-md-navy py-24 text-white md:py-32">
       <Aurora className="top-0 opacity-40" />
       <div className="relative mx-auto max-w-6xl px-4">
-        <SectionTitle
-          dark
-          eyebrow="Nuestro método · Mayday GO"
-          title={<>Éxito técnico atado al <span className="text-md-cyan">éxito comercial</span>.</>}
-          body="No instalamos software: resolvemos problemas de negocio. Mayday GO es como implementamos cada solución, con un equipo de Customer Success que acompaña desde el primer día, mide el uso y asegura la adopción."
-        />
+        <SectionTitle dark eyebrow="Mayday GO · paso a paso" title="De la primera reunión al ROI medido." />
         <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {GO.map(([when, title, body], i) => (
             <Reveal key={title} delay={i * 0.05} className="rounded-[24px] border border-white/10 bg-white/[0.04] p-6">
@@ -129,7 +124,7 @@ export function Footer() {
         </div>
         {[
           ["Soluciones", [["Omnichannel", "/#omnichannel"], ["Agentic IA", "/#agentic"], ["QualityIQ", "/#quality"], ["MIS", "/#mis"]]],
-          ["Empresa", [["Nosotros", "/about-us"], ["LinkedIn", "https://www.linkedin.com/company/mayday-global/"]]],
+          ["Empresa", [["Nuestro método", "/metodo"], ["Nosotros", "/about-us"], ["LinkedIn", "https://www.linkedin.com/company/mayday-global/"]]],
           ["Legal", [["Privacidad", "/policy"], ["Configurar cookies", "#cookies"]]],
         ].map(([h, links]) => (
           <div key={h as string}>

@@ -1,0 +1,26 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { Aurora, Eyebrow, Glow } from "@/components/ui";
+import { Closing, Method } from "@/components/Sections";
+---
+
+<Layout
+  title="Nuestro método | Mayday Global"
+  description="Mayday GO: cómo implementamos cada solución, con objetivos de negocio definidos juntos y un equipo de Customer Success que mide el uso y asegura la adopción."
+>
+  <section class="relative overflow-hidden bg-md-sky pb-24 pt-40 text-center md:pt-48">
+    <Aurora className="top-1/2" />
+    <div class="relative mx-auto max-w-4xl px-4">
+      <Eyebrow>Nuestro método · Mayday GO</Eyebrow>
+      <h1 class="mt-4 font-display text-[44px] font-extrabold leading-[1.02] tracking-tight text-md-ink md:text-[72px]">
+        Éxito técnico atado al <Glow>éxito comercial</Glow>.
+      </h1>
+      <p class="mx-auto mt-6 max-w-xl text-md-muted md:text-lg">
+        No instalamos software: resolvemos problemas de negocio. Mayday GO es como implementamos cada solución, con un equipo de Customer
+        Success que acompaña desde el primer día, mide el uso y asegura la adopción.
+      </p>
+    </div>
+  </section>
+  <Method client:visible />
+  <Closing />
+</Layout>
