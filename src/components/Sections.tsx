@@ -38,6 +38,49 @@ const FAQS = [
   ["¿En cuánto tiempo lo tengo funcionando?", "Un piloto de voicebot o de QualityIQ suele estar operativo en dos a cuatro semanas, según las integraciones."],
 ];
 
+// Mayday GO, the implementation method (from the commercial proposals): co-design 3 business goals, MVP, CSM follow-up.
+const GO = [
+  ["Fase 0", "Co-diseño", "Mapeamos los dolores de tu operación y congelamos juntos 3 objetivos de negocio."],
+  ["Semana 1", "Discovery", "Relevamos procesos, canales, integraciones y datos."],
+  ["Semanas 2 a 4", "Construcción", "Configuramos la solución y la conectamos con tus sistemas."],
+  ["Semana 5", "Testing y capacitación", "Probamos con casos reales, ajustamos y capacitamos a tu equipo."],
+  ["Semana 6", "Go Live", "Salimos a producción con acompañamiento del equipo."],
+  ["Después", "Customer Success", "Validación a los 5 días, revisión de los objetivos a las 2 semanas y medición de ROI."],
+];
+
+export function Method() {
+  return (
+    <section id="metodo" className="relative overflow-hidden bg-md-navy py-24 text-white md:py-32">
+      <Aurora className="top-0 opacity-40" />
+      <div className="relative mx-auto max-w-6xl px-4">
+        <SectionTitle
+          dark
+          eyebrow="Nuestro método · Mayday GO"
+          title={<>Éxito técnico atado al <span className="text-md-cyan">éxito comercial</span>.</>}
+          body="No instalamos software: resolvemos problemas de negocio. Mayday GO es como implementamos cada solución, con un equipo de Customer Success que acompaña desde el primer día, mide el uso y asegura la adopción."
+        />
+        <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {GO.map(([when, title, body], i) => (
+            <Reveal key={title} delay={i * 0.05} className="rounded-[24px] border border-white/10 bg-white/[0.04] p-6">
+              <div>
+                <p className="flex items-center gap-3 font-data text-xs uppercase tracking-wider text-md-cyan">
+                  <span className="grid size-7 place-items-center rounded-full bg-md-cyan font-bold text-md-navy">{i}</span>
+                  {when}
+                </p>
+                <p className="mt-4 font-display text-2xl font-extrabold">{title}</p>
+                <p className="mt-2 text-md-dark-muted">{body}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+        <p className="mt-10 max-w-3xl font-display text-xl font-bold leading-snug text-md-dark-text md:text-2xl">
+          “Si no se cumplen los objetivos de negocio que definimos juntos, no damos por exitosa la implementación.”
+        </p>
+      </div>
+    </section>
+  );
+}
+
 export function Faq() {
   return (
     <section className="bg-md-bg py-24 md:py-32">
