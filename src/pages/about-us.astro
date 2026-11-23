@@ -18,10 +18,10 @@ const reasons = [
 const values = ["Innovación constante", "Compromiso con la excelencia", "Trabajo en equipo", "Orientación al cliente", "Integridad y transparencia"];
 // Heights tuned by eye so the logos weigh the same (their aspect ratios go from 3.5:1 to 6.3:1).
 const partners = [
-  ["Botmaker", "/assets/brands/botmaker.svg", 30],
-  ["Neotel", "/assets/brands/neotel.svg", 34],
-  ["Collaborix", "/assets/brands/collaborix.svg", 34],
-  ["Vocalcom", "/assets/brands/vocalcom.svg", 24],
+  ["Botmaker", "/assets/brands/botmaker.svg", 26],
+  ["Neotel", "/assets/brands/neotel.svg", 30],
+  ["Collaborix", "/assets/brands/collaborix.svg", 30],
+  ["Vocalcom", "/assets/brands/vocalcom.svg", 21],
 ] as const;
 // x/y: % position on /assets/map/americas.svg (lon -128..-30, lat 52..-56, equirectangular).
 const offices = [
@@ -109,7 +109,7 @@ const offices = [
       <div class="grid gap-14 md:grid-cols-[1.6fr_1fr]">
         <div>
           <Eyebrow>Partners y tecnología</Eyebrow>
-          <div class="mt-8 flex flex-wrap items-center gap-x-12 gap-y-8">
+          <div class="mt-8 flex flex-wrap items-center gap-x-10 gap-y-8">
             {partners.map(([name, src, h]) => <img src={src} alt={name} loading="lazy" style={`height:${h}px`} class="w-auto opacity-70 brightness-0" />)}
           </div>
         </div>
@@ -124,7 +124,7 @@ const offices = [
 
       <div class="mt-24 grid items-center gap-12 md:grid-cols-[1.2fr_1fr]">
         <div class="relative mx-auto aspect-[980/1080] w-full max-w-md">
-          <img src="/assets/map/americas.svg" alt="Mapa de América con las oficinas de Mayday Global" class="absolute inset-0 h-full w-full" />
+          <img src="/assets/map/americas.svg" alt="Mapa de América con las oficinas de Mayday Global" class="absolute inset-0 h-full w-full [mask-image:linear-gradient(to_bottom,transparent,black_30%)]" />
           {
             offices.map(([city, , , x, y]) => (
               <span class="absolute -translate-x-1/2 -translate-y-1/2" style={`left:${x}%;top:${y}%`}>
