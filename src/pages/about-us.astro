@@ -1,102 +1,131 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { Aurora, Eyebrow, Glow, PillLink, Reveal } from "@/components/ui";
-import { DEMO_WHATSAPP_URL } from "@/lib/utils";
+import { Aurora, Eyebrow, Glow, Reveal } from "@/components/ui";
+import { Closing } from "@/components/Sections";
 
+// Editorial layout (no stock photos): facts up front, what sets us apart, mission/vision/values, partners, offices.
+const facts = [
+  ["+50", "clientes en la región"],
+  ["10", "países"],
+  ["+4.100", "usuarios en la plataforma"],
+  ["4", "oficinas"],
+];
 const reasons = [
-  {
-    title: "Soluciones integrales y a medida",
-    body: "No solo ofrecemos tecnología: diseñamos soluciones estratégicas para resolver los desafíos de tu operación y acelerar tu crecimiento.",
-    img: "/assets/about-us/image-1.png",
-  },
-  {
-    title: "Equipo experto y cercano",
-    body: "Somos más que proveedores: somos socios que trabajan codo a codo con tu equipo para co-crear soluciones que realmente impacten.",
-    img: "/assets/about-us/image-2.png",
-  },
-  {
-    title: "Calidad de punta a punta",
-    body: "La excelencia de nuestras herramientas se acompaña de una implementación ágil y un servicio postventa personalizado y eficiente.",
-    img: "/assets/about-us/image-3.png",
-  },
+  ["Soluciones integrales y a medida", "No solo ofrecemos tecnología: diseñamos soluciones estratégicas para resolver los desafíos de tu operación y acelerar tu crecimiento."],
+  ["Equipo experto y cercano", "Somos más que proveedores: somos socios que trabajan codo a codo con tu equipo para co-crear soluciones que realmente impacten."],
+  ["Calidad de punta a punta", "La excelencia de nuestras herramientas se acompaña de una implementación ágil y un servicio postventa personalizado y eficiente."],
 ];
 const values = ["Innovación constante", "Compromiso con la excelencia", "Trabajo en equipo", "Orientación al cliente", "Integridad y transparencia"];
+const partners = [
+  ["Botmaker", "/assets/brands/botmaker.svg"],
+  ["Neotel", "/assets/brands/neotel.svg"],
+  ["Collaborix", "/assets/brands/collaborix.svg"],
+  ["Vocalcom", "/assets/brands/vocalcom.svg"],
+];
 const offices = [
-  ["Buenos Aires", "Gorostiaga 2355 Of. 802, CABA"],
-  ["Ciudad de México", "Calle Avellano 12, Santa María la Ribera, Cuauhtémoc"],
-  ["Asunción", "Av. Aviadores del Chaco 2050"],
-  ["Miami", "201 Collins Av. Apt 1226, Miami Beach 33139"],
+  ["Buenos Aires", "Argentina", "Gorostiaga 2355 Of. 802, CABA"],
+  ["Ciudad de México", "México", "Calle Avellano 12, Santa María la Ribera, Cuauhtémoc"],
+  ["Asunción", "Paraguay", "Av. Aviadores del Chaco 2050"],
+  ["Miami", "Estados Unidos", "201 Collins Av. Apt 1226, Miami Beach 33139"],
 ];
 ---
 
 <Layout title="Nosotros | Mayday Global" description="Somos un equipo apasionado por crear soluciones tecnológicas que transforman la experiencia del cliente en América Latina.">
-  <section class="relative overflow-hidden bg-md-sky pb-24 pt-40 text-center md:pt-48">
+  <section class="relative overflow-hidden bg-md-sky pb-16 pt-36 md:pt-44">
     <Aurora className="top-1/2" />
-    <div class="relative mx-auto max-w-4xl px-4">
-      <Eyebrow>Nosotros</Eyebrow>
-      <h1 class="mt-4 font-display text-[44px] font-extrabold leading-[1.02] tracking-tight text-md-ink md:text-[72px]">
-        Tecnología que <Glow>transforma</Glow> la atención al cliente.
-      </h1>
-      <p class="mx-auto mt-6 max-w-xl text-md-muted md:text-lg">
-        Somos un equipo apasionado por crear soluciones para contact centers. Más de 50 clientes en 10 países confían en nosotros.
-      </p>
+    <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-4 md:grid-cols-[1.4fr_1fr]">
+      <div>
+        <Eyebrow>Nosotros</Eyebrow>
+        <h1 class="mt-4 font-display text-[44px] font-extrabold leading-[1.02] tracking-tight text-md-ink md:text-[68px]">
+          Tecnología que <Glow>transforma</Glow> la atención al cliente.
+        </h1>
+        <p class="mt-6 max-w-xl text-md-muted md:text-lg">
+          Somos un equipo apasionado por crear soluciones para contact centers de América Latina: agentes de IA, calidad, omnicanalidad y datos,
+          conectados en un solo hub.
+        </p>
+      </div>
+      <img src="/assets/brands/ISO.png" alt="" class="mx-auto w-48 opacity-90 md:w-full md:max-w-[320px]" />
     </div>
-  </section>
-
-  <section class="bg-white py-24">
-    <div class="mx-auto max-w-6xl space-y-20 px-4">
+    <dl class="relative mx-auto mt-16 grid max-w-6xl grid-cols-2 gap-y-8 px-4 md:grid-cols-4">
       {
-        reasons.map((r, i) => (
-          <Reveal className={`grid items-center gap-10 md:grid-cols-2 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}>
-            <div>
-              <p class="font-data text-sm text-md-cyan-dark">0{i + 1}</p>
-              <h2 class="mt-2 font-display text-3xl font-extrabold tracking-tight text-md-ink md:text-5xl">{r.title}</h2>
-              <p class="mt-4 text-md-muted md:text-lg">{r.body}</p>
-            </div>
-            <div class="overflow-hidden rounded-[28px] bg-md-bg">
-              <img src={r.img} alt="" loading="lazy" class="h-full w-full object-cover" />
-            </div>
-          </Reveal>
+        facts.map(([n, l]) => (
+          <div class="flex flex-col-reverse border-l border-md-ink/15 pl-5">
+            <dt class="mt-1 text-sm text-md-muted">{l}</dt>
+            <dd class="font-display text-4xl font-extrabold text-md-ink md:text-5xl">{n}</dd>
+          </div>
         ))
       }
+    </dl>
+  </section>
+
+  <section class="bg-white py-24 md:py-32">
+    <div class="mx-auto grid max-w-6xl gap-10 px-4 md:grid-cols-[1fr_2fr]">
+      <div>
+        <Eyebrow>Qué nos diferencia</Eyebrow>
+        <h2 class="mt-3 font-display text-3xl font-extrabold tracking-tight text-md-ink md:text-5xl">Socios, no proveedores.</h2>
+      </div>
+      <div class="divide-y divide-md-line border-y border-md-line">
+        {
+          reasons.map(([t, b], i) => (
+            <Reveal className="grid gap-2 py-8 md:grid-cols-[4rem_1fr]">
+              <p class="font-data text-sm text-md-cyan-dark">0{i + 1}</p>
+              <div>
+                <h3 class="font-display text-2xl font-extrabold text-md-ink">{t}</h3>
+                <p class="mt-2 text-md-muted md:text-lg">{b}</p>
+              </div>
+            </Reveal>
+          ))
+        }
+      </div>
     </div>
   </section>
 
-  <section class="bg-md-navy py-24 text-white">
-    <div class="mx-auto grid max-w-6xl gap-4 px-4 md:grid-cols-3">
-      <Reveal className="rounded-[24px] border border-white/10 bg-white/[0.04] p-8">
-        <p class="text-sm text-md-cyan">Misión</p>
-        <p class="mt-3 text-lg leading-relaxed">
-          Transformar la experiencia de atención al cliente con soluciones tecnológicas que potencien la relación entre empresas y sus clientes.
-        </p>
-      </Reveal>
-      <Reveal delay={0.08} className="rounded-[24px] border border-white/10 bg-white/[0.04] p-8">
-        <p class="text-sm text-md-cyan">Visión</p>
-        <p class="mt-3 text-lg leading-relaxed">
-          Ser líderes en la región en experiencia del cliente, reconocidos por nuestra innovación, calidad y compromiso con el éxito de cada cliente.
-        </p>
-      </Reveal>
-      <Reveal delay={0.16} className="rounded-[24px] border border-white/10 bg-white/[0.04] p-8">
-        <p class="text-sm text-md-cyan">Valores</p>
-        <ul class="mt-3 space-y-2 text-lg">{values.map((v) => <li>{v}</li>)}</ul>
-      </Reveal>
+  <section class="bg-md-bg py-24 md:py-32">
+    <div class="mx-auto max-w-6xl px-4">
+      <div class="grid gap-12 md:grid-cols-2">
+        <Reveal>
+          <p class="font-data text-sm uppercase tracking-wider text-md-cyan-dark">Misión</p>
+          <p class="mt-4 font-display text-2xl font-bold leading-snug text-md-ink md:text-3xl">
+            Transformar la experiencia de atención al cliente con soluciones tecnológicas que potencien la relación entre empresas y sus clientes.
+          </p>
+        </Reveal>
+        <Reveal delay={0.08}>
+          <p class="font-data text-sm uppercase tracking-wider text-md-cyan-dark">Visión</p>
+          <p class="mt-4 font-display text-2xl font-bold leading-snug text-md-ink md:text-3xl">
+            Ser líderes en la región en experiencia del cliente, reconocidos por nuestra innovación, calidad y compromiso con el éxito de cada cliente.
+          </p>
+        </Reveal>
+      </div>
+      <p class="mt-16 font-data text-sm uppercase tracking-wider text-md-cyan-dark">Valores</p>
+      <ul class="mt-4 flex flex-wrap gap-3">
+        {values.map((v) => <li class="rounded-full border border-md-line bg-white px-5 py-2.5 font-medium text-md-ink">{v}</li>)}
+      </ul>
     </div>
   </section>
 
   <section class="bg-white py-24">
     <div class="mx-auto max-w-6xl px-4">
-      <Eyebrow>Dónde estamos</Eyebrow>
-      <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          offices.map(([city, addr]) => (
-            <div class="rounded-[20px] border border-md-line p-6">
-              <p class="font-display text-xl font-bold text-md-ink">{city}</p>
-              <p class="mt-2 text-sm text-md-muted">{addr}</p>
-            </div>
-          ))
-        }
+      <Eyebrow>Partners y tecnología</Eyebrow>
+      <div class="mt-8 flex flex-wrap items-center gap-x-14 gap-y-8">
+        {partners.map(([name, src]) => <img src={src} alt={name} loading="lazy" class="h-8 w-auto opacity-70 brightness-0" />)}
       </div>
-      <div class="mt-12 flex justify-center"><PillLink href={DEMO_WHATSAPP_URL}>Hablemos</PillLink></div>
+
+      <div class="mt-24">
+        <Eyebrow>Dónde estamos</Eyebrow>
+        <div class="mt-6 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {
+            offices.map(([city, country, addr]) => (
+              <div class="border-t-2 border-md-cyan pt-5">
+                <p class="text-xs font-semibold uppercase tracking-wider text-md-muted">{country}</p>
+                <p class="mt-1 font-display text-xl font-bold text-md-ink">{city}</p>
+                <p class="mt-2 text-sm text-md-muted">{addr}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
     </div>
   </section>
+
+  <Closing />
 </Layout>
