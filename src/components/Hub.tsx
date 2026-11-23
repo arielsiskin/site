@@ -66,7 +66,7 @@ export function Solutions() {
     const t0 = performance.now();
     const loop = () => {
       const top = box.current?.getBoundingClientRect().top ?? 0;
-      frame(((performance.now() - t0) / 1000) * 0.08 - top / 900);
+      frame(((performance.now() - t0) / 1000) * 0.2 - top / 900);
       raf = requestAnimationFrame(loop);
     };
     const io = new IntersectionObserver(([e]) => {
