@@ -137,7 +137,9 @@ export function Footer() {
           </div>
         ))}
       </div>
-      <p className="mx-auto mt-12 max-w-6xl px-4 text-xs">© {new Date().getFullYear()} Mayday Global</p>
+      <p className="mx-auto mt-12 max-w-6xl px-4 text-xs">
+        © {new Date().getFullYear()} Mayday Global. Una marca de Leadit SRL (Argentina), Synergy LLC (Estados Unidos) y EFC Tecnología y Software (México).
+      </p>
     </footer>
   );
 }

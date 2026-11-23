@@ -53,5 +53,4 @@ Si querés más información sobre esta política o ejercer tus derechos, escrib
 
 - Gorostiaga 2355 Of. 802, CABA, Buenos Aires.
 - Calle Avellano 12, Santa María la Ribera, Cuauhtémoc, Ciudad de México.
-- Av. Aviadores del Chaco 2050, Asunción.
 - 201 Collins Av. Apt 1226, 33139 Miami Beach.
