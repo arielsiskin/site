@@ -19,6 +19,6 @@ export const createWhatsAppUrl = (
   return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 };
 
-// Default WhatsApp contact for demo requests
-export const DEMO_WHATSAPP_NUMBER = "5491124569563";
-export const DEMO_WHATSAPP_URL = createWhatsAppUrl(DEMO_WHATSAPP_NUMBER);
+// Default WhatsApp contact for demo requests (Juan Moraca)
+export const DEMO_WHATSAPP_NUMBER = "5491130365381";
+export const DEMO_WHATSAPP_URL = createWhatsAppUrl(DEMO_WHATSAPP_NUMBER, "Quiero más información del Hub de Soluciones de Mayday Global");
