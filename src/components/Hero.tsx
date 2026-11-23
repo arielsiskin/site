@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { Aurora, Eyebrow, Glow, MayaAvatar, PillLink, Wave } from "./ui";
 
 const NAV = [
-  { name: "Agentic IA", href: "/#agentic" },
-  { name: "QualityIQ", href: "/#quality" },
   { name: "Soluciones", href: "/#soluciones" },
   { name: "Nuestro método", href: "/metodo" },
   { name: "Nosotros", href: "/about-us" },
