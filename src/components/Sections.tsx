@@ -6,7 +6,7 @@ import { Aurora, Glow, PillLink, Reveal, SectionTitle } from "./ui";
 function Count({ to, suffix = "" }: { to: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
-  const [v, setV] = useState(0);
+  const [v, setV] = useState(to); // the HTML carries the real figure (search engines, link previews); the count-up starts in view
   useEffect(() => {
     if (!inView) return;
     const c = animate(0, to, { duration: 1.4, ease: "easeOut", onUpdate: (x) => setV(Math.round(x)) });
@@ -35,7 +35,7 @@ const FAQS = [
   ["¿Con qué sistemas se integra?", "Con tu telefonía actual, CRM y APIs internas: consultas de saldo, estado de pedidos, bloqueos, turnos. Lo armamos en el diseñador de flujos, sin código."],
   ["¿Qué evalúa QualityIQ?", "Tu propio protocolo, ítem por ítem, con la cita exacta y el minuto de la llamada. Además mide emociones, detecta alertas (maltrato, amenaza de baja, datos sensibles) y propone práctica para cada agente."],
   ["¿Qué pasa con los datos de las llamadas?", "Se procesan en la nube de Google, cifrados, en buckets separados por cliente. En esta demo el audio no se guarda."],
-  ["¿En cuánto tiempo lo tengo funcionando?", "Un piloto de voicebot o de QualityIQ suele estar operativo en dos a cuatro semanas, según las integraciones."],
+  ["¿En cuánto tiempo lo tengo funcionando?", "Un piloto de voicebot o de QualityIQ suele estar operativo en dos a cuatro semanas, según las integraciones, y la salida a producción completa llega alrededor de la semana 6."],
 ];
 
 // Mayday GO, the implementation method (from the commercial proposals): co-design 3 business goals, MVP, CSM follow-up.
@@ -131,7 +131,16 @@ export function Footer() {
             <p className="text-sm font-semibold text-white">{h as string}</p>
             <ul className="mt-3 space-y-2 text-sm">
               {(links as string[][]).map(([l, href]) => (
-                <li key={l}><a href={href} data-cookie-settings={href === "#cookies" ? "" : undefined} className="hover:text-white">{l}</a></li>
+                <li key={l}>
+                  <a
+                    href={href}
+                    data-cookie-settings={href === "#cookies" ? "" : undefined}
+                    {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="hover:text-white"
+                  >
+                    {l}
+                  </a>
+                </li>
               ))}
             </ul>
           </div>

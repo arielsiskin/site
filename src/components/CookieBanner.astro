@@ -58,8 +58,8 @@
 
   function open(detailed: boolean) {
     const c = read();
-    field("analytics").checked = c?.analytics ?? true;
-    field("ads").checked = c?.ads ?? true;
+    field("analytics").checked = c?.analytics ?? false; // unticked until the visitor chooses: pre-ticked boxes are not valid consent
+    field("ads").checked = c?.ads ?? false;
     prefs.hidden = !detailed;
     btn("save").hidden = !detailed;
     btn("config").hidden = detailed;

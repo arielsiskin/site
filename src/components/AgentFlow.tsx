@@ -61,10 +61,11 @@ function Node({ kind, title, detail, tools, status, lit, children }: { kind: "ag
           {tools.map((t) => (
             <li
               key={t}
-              className={`flex max-w-full items-center gap-1 break-all rounded-md px-1.5 py-0.5 font-data text-[9px] transition md:text-[10px] ${lit ? "bg-[#FEF3C7] text-[#92400E]" : "bg-md-chip text-md-muted"}`}
+              className={`flex max-w-full items-center gap-1 break-words rounded-md px-1.5 py-0.5 font-data text-[9px] transition md:text-[10px] ${lit ? "bg-[#FEF3C7] text-[#92400E]" : "bg-md-chip text-md-muted"}`}
             >
               <Svg d={ICON.tool} className="hidden size-2.5 shrink-0 sm:block" />
-              {t}
+              {/* wrap after "_" (validar_ / identidad), never mid-word */}
+              <span className="min-w-0">{t.replaceAll("_", "_​")}</span>
             </li>
           ))}
         </ul>

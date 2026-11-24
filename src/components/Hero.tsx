@@ -8,8 +8,10 @@ const NAV = [
   { name: "Nosotros", href: "/about-us" },
 ];
 
-export function Nav() {
+export function Nav({ path = "/" }: { path?: string }) {
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const current = (href: string) => !href.includes("#") && path.replace(/\/$/, "") === href;
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 12);
     on();
@@ -20,26 +22,60 @@ export function Nav() {
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-3">
       <nav
         className={`mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full px-4 transition-all duration-300 md:px-6 ${
-          scrolled ? "bg-white/75 shadow-[0_6px_24px_rgba(1,1,54,0.08)] backdrop-blur-xl" : "bg-transparent"
+          scrolled || open ? "bg-white/75 shadow-[0_6px_24px_rgba(1,1,54,0.08)] backdrop-blur-xl" : "bg-transparent"
         }`}
       >
         <a href="/" className="flex items-center gap-2" aria-label="Mayday Global, inicio">
           <img src="/assets/logo.svg" alt="" className="h-7 w-auto" />
-          <span className="font-display text-[15px] font-extrabold tracking-wide text-md-navy">MAYDAY GLOBAL</span>
+          <span className="hidden whitespace-nowrap font-display text-[13px] min-[380px]:inline md:text-[15px] font-extrabold tracking-wide text-md-navy">MAYDAY GLOBAL</span>
         </a>
         <ul className="hidden items-center gap-1 md:flex">
           {NAV.map((n) => (
             <li key={n.name}>
-              <a href={n.href} className="rounded-full px-3 py-2 text-sm font-medium text-md-ink/80 transition hover:bg-md-chip hover:text-md-ink">
+              <a
+                href={n.href}
+                aria-current={current(n.href) ? "page" : undefined}
+                className={`rounded-full px-3 py-2 text-sm font-medium transition hover:bg-md-chip hover:text-md-ink ${current(n.href) ? "bg-md-chip text-md-ink" : "text-md-ink/80"}`}
+              >
                 {n.name}
               </a>
             </li>
           ))}
         </ul>
-        <a href="/#contacto" className="rounded-full bg-md-navy px-4 py-2 text-sm font-semibold text-white transition hover:bg-md-indigo">
-          Pedir demo
-        </a>
+        <div className="flex items-center gap-1 md:gap-2">
+          <a href="/#contacto" className="whitespace-nowrap rounded-full bg-md-navy px-3.5 py-2 md:px-4 text-sm font-semibold text-white transition hover:bg-md-indigo">
+            Pedir demo
+          </a>
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-controls="menu-mobile"
+            aria-label={open ? "Cerrar menú" : "Abrir menú"}
+            className="grid h-10 w-10 place-items-center rounded-full text-md-navy transition hover:bg-md-chip md:hidden"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d={open ? "M6 6l12 12M18 6L6 18" : "M4 7h16M4 12h16M4 17h16"} />
+            </svg>
+          </button>
+        </div>
       </nav>
+      {open && (
+        <ul id="menu-mobile" className="mx-auto mt-2 max-w-6xl rounded-3xl bg-white/95 p-2 shadow-[0_12px_32px_rgba(1,1,54,0.12)] backdrop-blur-xl md:hidden">
+          {NAV.map((n) => (
+            <li key={n.name}>
+              <a
+                href={n.href}
+                onClick={() => setOpen(false)}
+                aria-current={current(n.href) ? "page" : undefined}
+                className={`block rounded-2xl px-4 py-3 text-base font-medium ${current(n.href) ? "bg-md-chip text-md-ink" : "text-md-ink/80"}`}
+              >
+                {n.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
     </header>
   );
 }

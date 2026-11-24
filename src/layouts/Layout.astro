@@ -9,7 +9,8 @@ interface Props {
   description: string;
 }
 const { title, description } = Astro.props;
-const url = new URL(Astro.url.pathname, "https://mayday.global");
+// No trailing slash, like the nav links and sitemap.xml: /metodo/ and /metodo both serve, Google must see one.
+const url = new URL(Astro.url.pathname.replace(/(.)\/$/, "$1"), "https://mayday.global");
 ---
 
 <!doctype html>
@@ -58,7 +59,7 @@ const url = new URL(Astro.url.pathname, "https://mayday.global");
     </script>
   </head>
   <body class="min-h-screen bg-white font-body text-md-ink antialiased">
-    <Nav client:load />
+    <Nav client:load path={Astro.url.pathname} />
     <main>
       <slot />
     </main>
