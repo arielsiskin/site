@@ -137,14 +137,14 @@ export function Footer() {
         ].map(([h, links]) => (
           <div key={h as string}>
             <p className="text-sm font-semibold text-white">{h as string}</p>
-            <ul className="mt-3 space-y-2 text-sm">
+            <ul className="mt-2 text-sm">
               {(links as string[][]).map(([l, href]) => (
                 <li key={l}>
                   <a
                     href={href}
                     data-cookie-settings={href === "#cookies" ? "" : undefined}
                     {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="hover:text-white"
+                    className="inline-block py-2 hover:text-white"
                   >
                     {l}
                   </a>

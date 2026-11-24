@@ -206,7 +206,7 @@ export function CallAgent({ scenario }: { scenario: ScenarioId }) {
                   aria-checked={country === id}
                   disabled={busy}
                   onClick={() => setCountry(id)}
-                  className={`rounded-full px-3 py-1 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${country === id ? "bg-white text-md-navy" : "bg-[#13163F] text-md-dark-muted hover:text-white"}`}
+                  className={`rounded-full px-3.5 py-2 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${country === id ? "bg-white text-md-navy" : "bg-[#13163F] text-md-dark-muted hover:text-white"}`}
                 >
                   {COUNTRIES[id].label}
                 </button>
