@@ -83,7 +83,7 @@ export function Solutions() {
   const w = cardW(vw);
   return (
     <section id="soluciones" ref={box} className="relative overflow-x-clip bg-white pb-24 md:pb-32">
-      <div className="mx-auto max-w-6xl px-4 pt-24 text-center md:pt-32">
+      <div className="mx-auto max-w-6xl px-4 pt-40 text-center md:pt-32">
         <p className="text-[13px] font-medium text-md-muted">Hub de soluciones con IA</p>
         <h2 className="mx-auto mt-3 max-w-3xl font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-md-ink md:text-7xl">
           Un hub. Todo tu contact center.

@@ -111,7 +111,7 @@ export function OmniDemo() {
 
         <div className="relative mt-10 overflow-hidden rounded-[32px] bg-md-sky p-3 md:p-6">
           <Aurora className="opacity-80" />
-          <div className="relative grid overflow-hidden rounded-[24px] border border-md-line bg-white shadow-[0_24px_60px_rgba(1,1,54,0.15)] md:h-[520px] md:grid-cols-[260px_1fr] lg:grid-cols-[280px_1fr_260px]">
+          <div className="relative grid grid-cols-1 overflow-hidden rounded-[24px] border border-md-line bg-white shadow-[0_24px_60px_rgba(1,1,54,0.15)] md:h-[520px] md:grid-cols-[260px_1fr] lg:grid-cols-[280px_1fr_260px]">
             {/* inbox */}
             <div className="border-b border-md-line bg-md-surface2 md:border-b-0 md:border-r">
               <div className="flex items-center justify-between px-4 py-3">
