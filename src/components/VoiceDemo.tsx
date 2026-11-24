@@ -96,7 +96,7 @@ export function CallAgent({ scenario }: { scenario: ScenarioId }) {
     return () => clearInterval(t);
   }, [phase]);
 
-  /** Atendió: deja de sonar y corre el reloj. Lo dispara la primera vez que Maya habla (o el respaldo de 8 s). */
+  /** Atendió: deja de sonar y corre el reloj. Lo dispara la sala al conectar, antes del saludo. */
   function answered() {
     stopRing.current?.();
     stopRing.current = null;
@@ -144,7 +144,6 @@ export function CallAgent({ scenario }: { scenario: ScenarioId }) {
       });
       r.on(RoomEvent.ActiveSpeakersChanged, (ps) => {
         const who = !ps.length ? null : ps.some((p) => p.identity === r.localParticipant.identity) ? "user" : "bot";
-        if (who === "bot") answered();
         setSpeaker(who);
       });
       r.on(RoomEvent.AudioPlaybackStatusChanged, () => setBlocked(!r.canPlaybackAudio));
@@ -161,8 +160,10 @@ export function CallAgent({ scenario }: { scenario: ScenarioId }) {
         throw new Error("Necesitamos permiso para usar el micrófono.");
       });
       // Maya greets when this arrives (voice-agent/src/worker.ts): the visitor is connected and listening.
+      // Stop the ringback before she speaks: it masked her first syllable, and on phone speakers the mic picked it up
+      // and VAD cut her greeting.
+      answered();
       await r.localParticipant.publishData(new TextEncoder().encode(JSON.stringify({ type: "hello" })), { reliable: true });
-      setTimeout(() => room.current === r && answered(), 8000); // si el indicador de quién habla no llega, igual deja de sonar
     } catch (e) {
       setError((e as Error).message);
       stopRing.current?.();
