@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import { Aurora, Eyebrow, Glow, Reveal } from "@/components/ui";
 import { Closing } from "@/components/Sections";
+import { PHONES } from "@/lib/utils";
 
 // Editorial layout (no stock photos): facts up front, what sets us apart, mission/vision/values, partners, offices.
 const facts = [
@@ -144,6 +145,9 @@ const offices = [
                   <p class="text-xs font-semibold uppercase tracking-wider text-md-muted">{country}</p>
                   <p class="mt-1 font-display text-xl font-bold text-md-ink">{city}</p>
                   <p class="mt-1 text-sm text-md-muted">{addr}</p>
+                  {PHONES.filter((p) => p.country === country).map((p) => (
+                    <a href={`tel:${p.tel}`} class="mt-1 inline-block text-sm font-semibold text-md-ink underline-offset-4 hover:underline">{p.label}</a>
+                  ))}
                 </div>
               ))
             }
