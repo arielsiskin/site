@@ -52,5 +52,5 @@ En Mayday Global nos comprometemos a garantizar la seguridad y el uso adecuado d
 Si querés más información sobre esta política o ejercer tus derechos, escribinos a [marketing@mayday.global](mailto:marketing@mayday.global).
 
 - Gorostiaga 2355 Of. 802, CABA, Buenos Aires.
-- Calle Avellano 12, Santa María la Ribera, Cuauhtémoc, Ciudad de México.
+- Av. Paseo de la Reforma 42, Col. Juárez, Cuauhtémoc, Ciudad de México.
 - 201 Collins Av. Apt 1226, 33139 Miami Beach.
