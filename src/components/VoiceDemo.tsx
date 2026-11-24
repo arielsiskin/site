@@ -163,6 +163,10 @@ export function CallAgent({ scenario }: { scenario: ScenarioId }) {
       // Stop the ringback before she speaks: it masked her first syllable, and on phone speakers the mic picked it up
       // and VAD cut her greeting.
       answered();
+      // Android switches audio to call mode when the mic turns on and swallows the first ~300 ms of playback: without
+      // this pause she started 0.2 s after the mic and lost "Bi-" of "Bienvenido".
+      // shortcut: fixed 800 ms, not a readiness signal; raise it if slow phones still clip the greeting.
+      await new Promise((ok) => setTimeout(ok, 800));
       await r.localParticipant.publishData(new TextEncoder().encode(JSON.stringify({ type: "hello" })), { reliable: true });
     } catch (e) {
       setError((e as Error).message);
