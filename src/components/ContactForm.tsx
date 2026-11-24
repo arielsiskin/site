@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ACTION, SITE_KEY, TEST_SITE_KEY } from "@/lib/turnstile";
+import { COUNTRIES } from "@/lib/zoho";
 
 declare global {
   interface Window {
@@ -82,8 +83,15 @@ export function ContactForm() {
         <input name="email" type="email" required maxLength={160} autoComplete="email" className={input} />
       </label>
       <label className="grid gap-1 text-sm font-medium text-md-ink">
-        <span>Teléfono <span className="font-normal text-md-muted">(opcional)</span></span>
-        <input name="telefono" type="tel" maxLength={40} autoComplete="tel" className={input} />
+        Teléfono
+        <input name="telefono" type="tel" required maxLength={40} autoComplete="tel" className={input} />
+      </label>
+      <label className="grid gap-1 text-sm font-medium text-md-ink sm:col-span-2">
+        País
+        <select name="pais" required defaultValue="" className={input}>
+          <option value="" disabled>Elegí tu país</option>
+          {COUNTRIES.map((c) => <option key={c}>{c}</option>)}
+        </select>
       </label>
       <label className="grid gap-1 text-sm font-medium text-md-ink sm:col-span-2">
         ¿Qué querés resolver?
