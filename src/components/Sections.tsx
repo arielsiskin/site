@@ -135,7 +135,7 @@ export function Footer() {
         </div>
         {[
           ["Soluciones", [["Omnichannel", "/#omnichannel"], ["Agentic IA", "/#agentic"], ["QualityIQ", "/#quality"], ["MIS", "/#mis"]]],
-          ["Empresa", [["Nuestro método", "/metodo"], ["Nosotros", "/about-us"], ["LinkedIn", "https://www.linkedin.com/company/mayday-global/"]]],
+          ["Empresa", [["Nuestro método", "/metodo"], ["Nosotros", "/about-us"], ["Contacto", "/contacto"], ["LinkedIn", "https://www.linkedin.com/company/mayday-global/"]]],
           ["Legal", [["Privacidad", "/policy"], ["Configurar cookies", "#cookies"]]],
         ].map(([h, links]) => (
           <div key={h as string}>

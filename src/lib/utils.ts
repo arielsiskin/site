@@ -25,6 +25,13 @@ export const PHONES = [
   { country: "México", label: "+52 33 4170 3535", tel: "+523341703535" },
 ] as const;
 
+// Offices on Nosotros and Contacto. x/y: % position on /assets/map/americas.svg (lon -128..-30, lat 52..-56, equirectangular).
+export const OFFICES = [
+  ["Ciudad de México", "México", "Av. Paseo de la Reforma 42, Col. Juárez, Cuauhtémoc, CDMX", 29.5, 30.2],
+  ["Miami", "Estados Unidos", "201 Collins Av. Apt 1226, Miami Beach 33139", 48.8, 24.3],
+  ["Buenos Aires", "Argentina", "Gorostiaga 2355 Of. 802, CABA", 71, 80.2],
+] as const;
+
 // Default WhatsApp contact for demo requests (Juan Moraca)
 export const DEMO_WHATSAPP_NUMBER = "5491130365381";
 export const DEMO_WHATSAPP_URL = createWhatsAppUrl(DEMO_WHATSAPP_NUMBER, "Quiero más información del Hub de Soluciones de Mayday Global");

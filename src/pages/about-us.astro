@@ -3,7 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import { Aurora, Eyebrow, Glow, Reveal } from "@/components/ui";
 import { Closing } from "@/components/Sections";
 import { ContactForm } from "@/components/ContactForm";
-import { PHONES } from "@/lib/utils";
+import { OFFICES, PHONES } from "@/lib/utils";
 
 // Editorial layout (no stock photos): facts up front, what sets us apart, mission/vision/values, partners, offices.
 const facts = [
@@ -25,12 +25,7 @@ const partners = [
   ["Collaborix", "/assets/brands/collaborix.svg", 30],
   ["Vocalcom", "/assets/brands/vocalcom.svg", 21],
 ] as const;
-// x/y: % position on /assets/map/americas.svg (lon -128..-30, lat 52..-56, equirectangular).
-const offices = [
-  ["Ciudad de México", "México", "Av. Paseo de la Reforma 42, Col. Juárez, Cuauhtémoc, CDMX", 29.5, 30.2],
-  ["Miami", "Estados Unidos", "201 Collins Av. Apt 1226, Miami Beach 33139", 48.8, 24.3],
-  ["Buenos Aires", "Argentina", "Gorostiaga 2355 Of. 802, CABA", 71, 80.2],
-] as const;
+const offices = OFFICES;
 ---
 
 <Layout title="Nosotros | Mayday Global" description="Somos un equipo apasionado por crear soluciones tecnológicas que transforman la experiencia del cliente en América Latina.">

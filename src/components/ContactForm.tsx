@@ -82,7 +82,7 @@ export function ContactForm() {
         <input name="email" type="email" required maxLength={160} autoComplete="email" className={input} />
       </label>
       <label className="grid gap-1 text-sm font-medium text-md-ink">
-        Teléfono <span className="font-normal text-md-muted">(opcional)</span>
+        <span>Teléfono <span className="font-normal text-md-muted">(opcional)</span></span>
         <input name="telefono" type="tel" maxLength={40} autoComplete="tel" className={input} />
       </label>
       <label className="grid gap-1 text-sm font-medium text-md-ink sm:col-span-2">
