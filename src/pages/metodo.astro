@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import { Aurora, Eyebrow, Glow } from "@/components/ui";
 import { Closing, Method } from "@/components/Sections";
+import { ContactForm } from "@/components/ContactForm";
 ---
 
 <Layout
@@ -22,5 +23,5 @@ import { Closing, Method } from "@/components/Sections";
     </div>
   </section>
   <Method client:visible />
-  <Closing />
+  <Closing><ContactForm client:visible /></Closing>
 </Layout>

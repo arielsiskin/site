@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Deploys the site to Cloud Run in the AR-Mayday Global - Site project. Keys come from Secret Manager, never files.
-# Cloud Run only gets what it uses: Gemini (chat and QualityIQ demos) and the LiveKit secret to sign call tokens.
+# Cloud Run only gets what it uses: Gemini (chat and QualityIQ demos), the LiveKit secret to sign call tokens and the
+# Turnstile secret for the contact form (/api/contact).
 # Deepgram and ElevenLabs live only on the LiveKit VM (scripts/livekit.sh).
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -16,7 +17,7 @@ npm run check
 gcloud run deploy mayday-site --source . --region=$R --project=$P --quiet \
   --allow-unauthenticated --min-instances=0 --max-instances=3 \
   --memory=512Mi --cpu=1 --timeout=120 --concurrency=40 \
-  --set-secrets="GEMINI_API_KEY=gemini-api-key:latest,LIVEKIT_API_SECRET=livekit-api-secret:latest" \
+  --set-secrets="GEMINI_API_KEY=gemini-api-key:latest,LIVEKIT_API_SECRET=livekit-api-secret:latest,TURNSTILE_SECRET=turnstile-secret:latest" \
   --set-env-vars="LIVEKIT_URL=wss://$LIVEKIT_HOST"
 
 gcloud run services describe mayday-site --region=$R --project=$P --format='value(status.url)'

@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import { Aurora, Eyebrow, Glow, Reveal } from "@/components/ui";
 import { Closing } from "@/components/Sections";
+import { ContactForm } from "@/components/ContactForm";
 import { PHONES } from "@/lib/utils";
 
 // Editorial layout (no stock photos): facts up front, what sets us apart, mission/vision/values, partners, offices.
@@ -157,5 +158,5 @@ const offices = [
     </div>
   </section>
 
-  <Closing />
+  <Closing><ContactForm client:visible /></Closing>
 </Layout>

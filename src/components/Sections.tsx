@@ -1,5 +1,5 @@
 import { useInView, animate } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { DEMO_WHATSAPP_URL, PHONES } from "@/lib/utils";
 import { Aurora, Glow, PillLink, Reveal, SectionTitle } from "./ui";
 
@@ -97,7 +97,8 @@ export function Faq() {
   );
 }
 
-export function Closing() {
+/** `children` is the contact form island (ContactForm with client:visible), passed in from each page. */
+export function Closing({ children }: { children?: ReactNode }) {
   return (
     <section id="contacto" className="relative overflow-hidden bg-md-sky py-28 text-center md:py-36">
       <Aurora className="top-1/3" />
@@ -106,8 +107,10 @@ export function Closing() {
           ¿Listo para que cada interacción <Glow>sume</Glow>?
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-md-muted md:text-lg">Te mostramos todas nuestras aplicaciones en 30 minutos.</p>
-        <div className="mt-8 flex justify-center">
-          <PillLink href={DEMO_WHATSAPP_URL}>Agendar una demo</PillLink>
+        <div className="mx-auto mt-8 max-w-2xl">{children}</div>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <span className="text-sm text-md-muted">¿Preferís WhatsApp?</span>
+          <PillLink href={DEMO_WHATSAPP_URL} variant="light">Agendar una demo</PillLink>
         </div>
         <p className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-md-muted">
           {PHONES.map((p) => (

@@ -6,6 +6,7 @@ import { QualityDemo } from "@/components/QualityDemo";
 import { OmniDemo } from "@/components/OmniDemo";
 import { MisDemo } from "@/components/MisDemo";
 import { Closing, Faq, Numbers } from "@/components/Sections";
+import { ContactForm } from "@/components/ContactForm";
 import { Solutions } from "@/components/Hub";
 ---
 
@@ -21,5 +22,5 @@ import { Solutions } from "@/components/Hub";
   <MisDemo client:visible />
   <Numbers client:visible />
   <Faq />
-  <Closing />
+  <Closing><ContactForm client:visible /></Closing>
 </Layout>
