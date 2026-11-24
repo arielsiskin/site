@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- shortcut: written by hand, one <url> per page in src/pages. Add a line when a page is added, or switch to @astrojs/sitemap if pages multiply. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://mayday.global/</loc></url>
+  <url><loc>https://mayday.global/about-us</loc></url>
+  <url><loc>https://mayday.global/metodo</loc></url>
+  <url><loc>https://mayday.global/policy</loc></url>
+</urlset>
