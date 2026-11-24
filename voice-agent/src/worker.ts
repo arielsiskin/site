@@ -120,7 +120,8 @@ export default defineAgent({
     await session.start({ agent: Agent.create({ instructions: c.instructions }), room: ctx.room });
     await hello;
     console.log(`[demo] llamada ${ctx.room.name}`);
-    session.say(c.greeting);
+    // Room noise on phones tripped VAD and cut the greeting: she always finishes introducing herself.
+    session.say(c.greeting, { allowInterruptions: false });
   },
 });
 
