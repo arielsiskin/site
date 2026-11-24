@@ -1,6 +1,6 @@
 import { useInView, animate } from "framer-motion";
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import { DEMO_WHATSAPP_URL, PHONES } from "@/lib/utils";
+import { DEMO_WHATSAPP_URL } from "@/lib/utils";
 import { Aurora, Glow, PillLink, Reveal, SectionTitle } from "./ui";
 
 function Count({ to, suffix = "" }: { to: number; suffix?: string }) {
@@ -112,14 +112,6 @@ export function Closing({ children }: { children?: ReactNode }) {
           <span className="text-sm text-md-muted">¿Preferís WhatsApp?</span>
           <PillLink href={DEMO_WHATSAPP_URL} variant="light">Agendar una demo</PillLink>
         </div>
-        <p className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-md-muted">
-          {PHONES.map((p) => (
-            <span key={p.tel}>
-              {p.country}{" "}
-              <a href={`tel:${p.tel}`} className="font-semibold text-md-ink underline-offset-4 hover:underline">{p.label}</a>
-            </span>
-          ))}
-        </p>
       </Reveal>
     </section>
   );
